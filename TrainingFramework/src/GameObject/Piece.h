@@ -1,21 +1,35 @@
 #pragma once
 #include "Sprite2D.h"
 
-class Piece : Sprite2D
+enum class PieceType
+{
+	HP,
+	Mana,
+	Poison,
+	Shield,
+	Spell,
+	Sword,
+	None
+};
+
+class Piece : public Sprite2D
 {
 private:
 	int m_col;
 	int m_row;
-	std::string m_kind;
+	/*std::string m_kind;*/
+	PieceType m_type;
 
 public:
-	Piece() : Sprite2D(), m_col(0), m_row(0), m_kind("") {}
+	Piece() : Sprite2D(), m_col(0), m_row(0), m_type(PieceType::None) {}
+	Piece(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture,
+		int col, int row, PieceType m_type) : Sprite2D(model, shader, texture) {};
 	~Piece();
 
 	void SetCol(int x);
 	int GetCol();
 	void SetRow(int y);
 	int GetRow();
-	void SetKind(std::string kind);
-	std::string GetKind();
+	// void SetKind(std::string kind);
+	// std::string GetKind();
 };
