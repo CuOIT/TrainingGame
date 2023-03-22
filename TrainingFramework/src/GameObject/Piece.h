@@ -4,12 +4,12 @@
 class Piece : Sprite2D
 {
 private:
-	int m_Col;
-	int m_Row;
-	std::string m_Kind;
+	int m_col;
+	int m_row;
+	std::string m_kind;
 
 public:
-	Piece() : Sprite2D(), m_Col(0), m_Row(0), m_Kind("") {}
+	Piece() : Sprite2D(), m_col(0), m_row(0), m_kind("") {}
 	~Piece();
 
 	void SetCol(int x);
