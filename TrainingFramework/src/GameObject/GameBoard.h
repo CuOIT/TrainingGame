@@ -1,9 +1,9 @@
 #pragma once
-#include"Sprite2D.h"
+#include"Piece.h"
 class GameBoard 
 {
 private:
-	std::vector < std::vector<Sprite2D>> m_gameBoard;
+	std::vector < std::vector<Piece>> m_gameBoard;
 public:
 	GameBoard();
 	~GameBoard();

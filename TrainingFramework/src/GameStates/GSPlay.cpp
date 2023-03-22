@@ -59,6 +59,8 @@ void GSPlay::Init()
 	obj->SetSize(30, 40);
 	m_listAnimation.push_back(obj);
 	m_KeyPress = 0;
+
+
 }
 
 void GSPlay::Exit()
