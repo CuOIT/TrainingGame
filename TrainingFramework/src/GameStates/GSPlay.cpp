@@ -10,6 +10,7 @@
 #include "Text.h"
 #include "GameButton.h"
 #include "SpriteAnimation.h"
+#include "Piece.h"
 
 
 
@@ -60,7 +61,7 @@ void GSPlay::Init()
 	m_listAnimation.push_back(obj);
 	m_KeyPress = 0;
 
-
+	
 }
 
 void GSPlay::Exit()
