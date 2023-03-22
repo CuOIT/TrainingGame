@@ -15,14 +15,6 @@ protected:
 
 	std::string	m_name;
 
-	void		Init() override;
-	void		Draw() override;
-	void		Update(GLfloat deltatime) override;
-
-	void		Set2DPosition(GLfloat x, GLfloat y);
-	Vector2		Get2DPosition();
-	void		SetRotation(Vector3 rotation);
-	void		SetSize(GLint width, GLint height);
 public:
 	int			getMaxHP();
 	int			getMaxMana();
