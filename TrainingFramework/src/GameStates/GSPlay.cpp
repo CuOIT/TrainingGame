@@ -10,6 +10,7 @@
 #include "Text.h"
 #include "GameButton.h"
 #include "SpriteAnimation.h"
+#include "Piece.h"
 
 
 
@@ -33,8 +34,13 @@ void GSPlay::Init()
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 	m_background = std::make_shared<Sprite2D>(model, shader, texture);
 	m_background->Set2DPosition((float)Globals::screenWidth / 2.0f, (float)Globals::screenHeight / 2.0f);
+
 	m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
 
+	m_gameBoard =std::make_shared<GameBoard>();
+	/*while (m_gameBoard->HasAnMatch()) {
+		m_gameBoard->Init();
+	}*/
 	// button close
 	texture = ResourceManagers::GetInstance()->GetTexture("btn_close.tga");
 	std::shared_ptr<GameButton>  button = std::make_shared<GameButton>(model, shader, texture);
@@ -55,10 +61,12 @@ void GSPlay::Init()
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
 	texture = ResourceManagers::GetInstance()->GetTexture("Actor1_2.tga");
 	std::shared_ptr<SpriteAnimation> obj = std::make_shared<SpriteAnimation>(model, shader, texture, 9, 6, 3, 0.1f);
-	obj->Set2DPosition(240.0f, 400.0f);
+	obj->Set2DPosition(50, 50);
 	obj->SetSize(30, 40);
 	m_listAnimation.push_back(obj);
 	m_KeyPress = 0;
+	std::cout << "GSPlay Init" << std::endl;
+	
 }
 
 void GSPlay::Exit()
@@ -143,6 +151,11 @@ void GSPlay::HandleKeyEvents(int key, bool bIsPressed)//Insert more case if you 
 //Handle button event
 void GSPlay::HandleTouchEvents(float x, float y, bool bIsPressed)
 {
+	if (bIsPressed == false) {
+	m_gameBoard->HandleClick(x, y);
+	std::cout << "Handle Click" << std::endl;
+	}
+
 	for (auto button : m_listButton)
 	{
 		if(button->HandleTouchEvents(x, y, bIsPressed))
@@ -155,10 +168,12 @@ void GSPlay::HandleTouchEvents(float x, float y, bool bIsPressed)
 void GSPlay::HandleMouseMoveEvents(float x, float y)
 {
 	//Code to handle mouse event
+
 }
 
 void GSPlay::Update(float deltaTime)
 {
+	m_gameBoard->Update(deltaTime);
 	HandleEvents();
 
 	//Update button list
@@ -178,7 +193,6 @@ void GSPlay::Draw()
 {
 	//Render background
 	m_background->Draw();
-
 	//Render score text
 	m_score->Draw();
 
@@ -187,7 +201,7 @@ void GSPlay::Draw()
 	{
 		it->Draw();
 	}
-
+	m_gameBoard->Draw();
 	//Render animation list
 	for (auto it : m_listAnimation)
 	{
