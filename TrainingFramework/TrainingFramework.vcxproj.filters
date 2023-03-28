@@ -78,6 +78,9 @@
     <ClCompile Include="src\GameObject\Piece.cpp">
       <Filter>TrainingFramework\src\GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameObject\Entity.cpp">
+      <Filter>TrainingFramework\src\GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">

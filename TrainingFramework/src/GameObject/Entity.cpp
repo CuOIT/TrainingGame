@@ -1,9 +1,15 @@
 #include "Entity.h"
 
-Entity::Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture)
+Entity::Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture,
+	std::string name, int maxHealth, int maxMana, int attack, int defense, bool isAlive = true)
 	: Sprite2D(model, shader, texture)
 {
-
+	m_name = name;
+	m_maxHealth = maxHealth;
+	m_maxMana = maxMana;
+	m_attack = attack;
+	m_defense = defense;
+	m_isAlive = isAlive;
 }
 
 Entity::~Entity()
@@ -11,14 +17,14 @@ Entity::~Entity()
 
 }
 
-int	Entity::GetMaxHP()
+int	Entity::GetMaxHealth()
 {
-	return m_maxHP;
+	return m_maxHealth;
 };
 
-void Entity::SetMaxHP(int maxHP)
+void Entity::SetMaxHealth(int maxHealth)
 {
-	m_maxHP = maxHP;
+	m_maxHealth = maxHealth;
 }
 
 int	Entity::GetMaxMana()
@@ -51,14 +57,14 @@ void Entity::SetDefense(int defense)
 	m_defense = defense;
 }
 
-int	Entity::GetCurrentHP()
+int	Entity::GetCurrentHealth()
 {
-	return m_currentHP;
+	return m_currentHealth;
 };
 
-void Entity::SetCurrentHP(int curHP)
+void Entity::SetHealth(int health)
 {
-	m_currentHP = curHP;
+	m_currentHealth = health;
 }
 
 int	Entity::GetCurrentMana()
@@ -66,9 +72,9 @@ int	Entity::GetCurrentMana()
 	return m_currentMana;
 };
 
-void Entity::SetCurrentMana(int curMana)
+void Entity::SetMana(int mana)
 {
-	m_currentMana = curMana;
+	m_currentMana = mana;
 }
 
 bool Entity::GetIsAlive()
@@ -81,15 +87,34 @@ void Entity::SetIsAlive(bool isAlive)
 	m_isAlive = isAlive;
 }
 
-void Entity::TakeDamage(int damage)
+std::string Entity::GetName() 
 {
-	int iHP = m_currentHP - damage;
-	if (iHP > 0)
+	return m_name;
+}
+
+void Entity::SetName(std::string name)
+{
+	m_name = name;
+}
+
+void Entity::TakeDamage(int amount)
+{
+	int health = m_currentHealth - amount;
+	if (health <= 0)
 	{
-		SetCurrentHP(iHP);
+		SetIsAlive(false);
 	}
 	else
+		SetHealth(health);
+}
+
+void Entity::Heal(int amount)
+{
+	int health = m_currentHealth + amount;
+	if (health > m_maxHealth)
 	{
-		SetCurrentHP(0);
+		SetHealth(m_maxHealth);
 	}
+	else 
+		SetHealth(health);
 }
