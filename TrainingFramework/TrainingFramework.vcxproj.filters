@@ -155,9 +155,6 @@
     <ClInclude Include="src\GameObject\Player.h">
       <Filter>TrainingFramework\src\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="src\GameObject\Header.h">
-      <Filter>TrainingFramework</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
