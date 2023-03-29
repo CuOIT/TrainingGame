@@ -2,24 +2,28 @@
 #include"Piece.h"
 #include"Sprite2D.h"
 #include<set>
+
+enum class Phase {
+	BASE_PHASE,
+	SWAP_PHASE,
+	DESTROY_PHASE,
+	REFILL_PHASE,
+};
+
 class GameBoard : public Sprite2D
 {
-	enum class Phase {
-		BASE_PHASE,
-		SWAP_PHASE,
-		DESTROY_PHASE,
-		REFILL_PHASE, 
-	};
+	
 private:
 	std::shared_ptr<Sprite2D>			m_frame;
 	std::vector<std::pair<int,int>>		m_click;
 	std::shared_ptr<Sprite2D>			m_selected_piece;
 	Phase								m_phase;
 	int									m_standbyTime;
-
+	
 
 public:
 	std::vector < std::vector<std::shared_ptr<Piece>>> m_board;
+	bool	m_isChangeTurn = false;
 	GameBoard();
 	~GameBoard();
 	void Init();

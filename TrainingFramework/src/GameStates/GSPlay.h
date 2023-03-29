@@ -1,6 +1,8 @@
 #pragma once
 #include "GameStateBase.h"
 #include"GameBoard.h"
+#include "Entity.h"
+
 class Sprite2D;
 class Sprite3D;
 class Text;
@@ -35,5 +37,7 @@ private:
 	std::list<std::shared_ptr<GameButton>>	m_listButton;
 	std::list<std::shared_ptr<SpriteAnimation>>	m_listAnimation;
 	std::shared_ptr<Piece>	m_piece;
+	std::shared_ptr<Entity> m_player;
+	std::shared_ptr<Entity> m_enemy;
 };
 
