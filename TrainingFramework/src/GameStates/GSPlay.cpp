@@ -67,9 +67,11 @@ void GSPlay::Init()
 	m_KeyPress = 0;*/
 
 	shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
+	texture = ResourceManagers::GetInstance()->GetTexture("piece_hp.tga");
 	m_player = std::make_shared<Entity>(model, shader, texture, "abc", 100, 20, 5, 1, true);
 	m_player->Set2DPosition(48.0f, 48.0f);
 	m_player->SetSize(48.0f, 48.0f);
+	std::cout << m_player->GetName() << std::endl;
 
 	m_enemy = std::make_shared<Entity>(model, shader, texture, "xyz", 100, 20, 5, 1, true);
 	m_enemy->Set2DPosition(Globals::screenWidth - 48.0f, 48.0f);
