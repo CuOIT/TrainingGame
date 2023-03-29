@@ -44,7 +44,10 @@ int	Entity::GetAttack()
 
 void Entity::SetAttack(int attack)
 {
-	m_attack = attack;
+	if (attack > 0)
+		m_attack = attack;
+	else
+		m_attack = 1;
 }
 
 int	Entity::GetDefense()
@@ -54,7 +57,10 @@ int	Entity::GetDefense()
 
 void Entity::SetDefense(int defense)
 {
-	m_defense = defense;
+	if (defense > 0)
+		m_defense = defense;
+	else
+		m_defense = 0;
 }
 
 int	Entity::GetCurrentHealth()
@@ -64,7 +70,10 @@ int	Entity::GetCurrentHealth()
 
 void Entity::SetHealth(int health)
 {
-	m_currentHealth = health;
+	if (health > 0)
+		m_currentHealth = health;
+	else
+		m_currentHealth = 0;
 }
 
 int	Entity::GetCurrentMana()
@@ -74,7 +83,10 @@ int	Entity::GetCurrentMana()
 
 void Entity::SetMana(int mana)
 {
-	m_currentMana = mana;
+	if (mana > 0)
+		m_currentMana = mana;
+	else
+		m_currentMana = 0;
 }
 
 bool Entity::GetIsAlive()
@@ -108,7 +120,7 @@ void Entity::TakeDamage(int amount)
 		SetHealth(health);
 }
 
-void Entity::Heal(int amount)
+void Entity::AddHealth(int amount)
 {
 	int health = m_currentHealth + amount;
 	if (health > m_maxHealth)
@@ -117,4 +129,15 @@ void Entity::Heal(int amount)
 	}
 	else 
 		SetHealth(health);
+}
+
+void Entity::AddMana(int amount)
+{
+	int mana = m_currentMana + amount;
+	if (mana > m_maxMana)
+	{
+		SetMana(m_maxMana);
+	}
+	else
+		SetMana(mana);
 }

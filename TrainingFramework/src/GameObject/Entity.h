@@ -40,5 +40,6 @@ public:
 	void		SetName(std::string name);
 
 	void		TakeDamage(int damage);
-	void		Heal(int amount);
+	void		AddHealth(int amount);
+	void		AddMana(int amount);
 };

@@ -11,7 +11,7 @@
 #include "GameButton.h"
 #include "SpriteAnimation.h"
 #include "Piece.h"
-
+#include "GameManager.h"
 
 
 GSPlay::GSPlay()
@@ -58,13 +58,23 @@ void GSPlay::Init()
 	m_score->Set2DPosition(Vector2(5.0f, 25.0f));
 
 	//animation
-	shader = ResourceManagers::GetInstance()->GetShader("Animation");
+	/*shader = ResourceManagers::GetInstance()->GetShader("Animation");
 	texture = ResourceManagers::GetInstance()->GetTexture("Actor1_2.tga");
 	std::shared_ptr<SpriteAnimation> obj = std::make_shared<SpriteAnimation>(model, shader, texture, 9, 6, 3, 0.1f);
 	obj->Set2DPosition(50, 50);
 	obj->SetSize(30, 40);
 	m_listAnimation.push_back(obj);
-	m_KeyPress = 0;
+	m_KeyPress = 0;*/
+
+	shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
+	m_player = std::make_shared<Entity>(model, shader, texture, "abc", 100, 20, 5, 1, true);
+	m_player->Set2DPosition(48.0f, 48.0f);
+	m_player->SetSize(48.0f, 48.0f);
+
+	m_enemy = std::make_shared<Entity>(model, shader, texture, "xyz", 100, 20, 5, 1, true);
+	m_enemy->Set2DPosition(Globals::screenWidth - 48.0f, 48.0f);
+	m_enemy->SetSize(48.0f, 48.0f);
+
 	std::cout << "GSPlay Init" << std::endl;
 	
 }
@@ -173,6 +183,7 @@ void GSPlay::HandleMouseMoveEvents(float x, float y)
 
 void GSPlay::Update(float deltaTime)
 {
+	GameManager::GetInstance()->Update(deltaTime, *m_gameBoard, *m_player, *m_enemy);
 	m_gameBoard->Update(deltaTime);
 	HandleEvents();
 
@@ -183,10 +194,10 @@ void GSPlay::Update(float deltaTime)
 	}
 
 	//Update animation list
-	for (auto it : m_listAnimation)
+	/*for (auto it : m_listAnimation)
 	{
 		it->Update(deltaTime);
-	}
+	}*/
 }
 
 void GSPlay::Draw()
@@ -203,8 +214,8 @@ void GSPlay::Draw()
 	}
 	m_gameBoard->Draw();
 	//Render animation list
-	for (auto it : m_listAnimation)
+	/*for (auto it : m_listAnimation)
 	{
 		it->Draw();
-	}
+	}*/
 }
