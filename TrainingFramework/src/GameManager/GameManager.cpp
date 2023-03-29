@@ -8,12 +8,11 @@ std::map<std::string, int> GameManager::CalculatePoint (GameBoard &gameBoard)
 {
 	std::set<std::pair<int, int>> listOfMatch = gameBoard.GetMatchList();
 	
-	int healthMatch = 0, manaMatch = 0, attackMatch = 0, defenseMatch = 0;
 	std::map<std::string, int> point;
-	point["health"] = healthMatch;
-	point["mana"] = manaMatch;
-	point["attack"] = attackMatch;
-	point["defense"] = defenseMatch;
+	point["health"] = 0;
+	point["mana"] = 0;
+	point["attack"] = 0;
+	point["defense"] = 0;
 
 	if (gameBoard.HasAnMatch())
 	{
@@ -26,16 +25,16 @@ std::map<std::string, int> GameManager::CalculatePoint (GameBoard &gameBoard)
 			switch (type)
 			{
 			case PieceType::HP:
-				healthMatch++;
+				point["health"]++;
 				break;
 			case PieceType::Mana:
-				manaMatch++;
+				point["mana"] = 0;
 				break;
 			case PieceType::Sword:
-				attackMatch++;
+				point["attack"] = 0;
 				break;
 			case PieceType::Shield:
-				defenseMatch++;
+				point["defense"] = 0;
 				break;
 			}
 		}
