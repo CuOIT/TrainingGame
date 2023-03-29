@@ -85,6 +85,7 @@ void GameBoard::Init() {
 }
 
 void GameBoard::Update(float deltaTime) {
+	/*std::cout << "Update" << std::endl;*/
 
 	switch (m_phase) {
 		case Phase::BASE_PHASE:
@@ -94,6 +95,8 @@ void GameBoard::Update(float deltaTime) {
 		}
 		case Phase::SWAP_PHASE:
 		{
+			m_isChangeTurn = false;
+			std::cout << "SWAP" << std::endl;
 
 			int lastRow = m_click[0].first;
 			int lastCol = m_click[0].second;
@@ -144,6 +147,7 @@ void GameBoard::Update(float deltaTime) {
 				if (!HasAnAvailableMove()) {
 					Init();
 				}
+				m_isChangeTurn = true;
 			}
 			else {
 				SetPhase(Phase::DESTROY_PHASE);

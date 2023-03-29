@@ -344,6 +344,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\GameManager\GameManager.cpp" />
     <ClCompile Include="src\GameManager\ResourceManagers.cpp" />
     <ClCompile Include="src\GameObject\Entity.cpp" />
     <ClCompile Include="src\GameObject\Font.cpp" />
@@ -368,6 +369,7 @@
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\GameConfig.h" />
+    <ClInclude Include="src\GameManager\GameManager.h" />
     <ClInclude Include="src\GameManager\ResourceManagers.h" />
     <ClInclude Include="src\GameManager\Singleton.h" />
     <ClInclude Include="src\GameObject\BaseObject.h" />

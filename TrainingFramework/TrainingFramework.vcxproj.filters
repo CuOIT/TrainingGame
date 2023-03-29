@@ -81,6 +81,9 @@
     <ClCompile Include="src\GameObject\Entity.cpp">
       <Filter>TrainingFramework\src\GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameManager\GameManager.cpp">
+      <Filter>TrainingFramework\src\GameManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -155,8 +158,8 @@
     <ClInclude Include="src\GameObject\Player.h">
       <Filter>TrainingFramework\src\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="src\GameObject\Header.h">
-      <Filter>TrainingFramework</Filter>
+    <ClInclude Include="src\GameManager\GameManager.h">
+      <Filter>TrainingFramework\src\GameManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
