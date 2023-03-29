@@ -65,14 +65,17 @@ void GameManager::Update(float deltatime, GameBoard &gameboard, Entity player, E
 		if (point["mana"] > 0)
 		{
 			player.AddMana(point["mana"]);
+			std::cout << "mana: " + player.GetCurrentMana() << std::endl;
 		}
 		if (point["defense"] > 0)
 		{
 			player.SetDefense(point["defense"] + player.GetDefense());
+			std::cout << "defense: " + player.GetDefense() << std::endl;
 		}
 		if (point["attack"] > 0)
 		{
 			enemy.TakeDamage(point["attack"]);
+			std::cout << "attack" << std::endl;
 		}
 		if (!player.GetIsAlive())
 			SetTurn(Turn::END);
