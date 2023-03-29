@@ -15,7 +15,8 @@ private:
 	std::vector<std::pair<int,int>>		m_click;
 	std::shared_ptr<Sprite2D>			m_selected_piece;
 	Phase								m_phase;
-	int									m_standbyTime;
+	float								m_standbyTime;
+	int									m_moveSpeed;
 
 
 public:
@@ -29,7 +30,6 @@ public:
 	Phase getPhase() {
 		return m_phase;
 	}
-	void GenerateGameBoard(); //generate a new game board 
 	bool HasAnAvailableMove(); //check if there are any available move
 	std::set<std::pair<int,int>> GetMatchList();
 	bool HasAnMatch(); //Check if there are at least 3 pieces matching together

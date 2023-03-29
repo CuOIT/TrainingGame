@@ -1,15 +1,6 @@
 #include "Piece.h"
 #include "ResourceManagers.h"
 
-Piece::Piece(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, 
-	int col, int row, PieceType type) : Sprite2D(model, shader, texture)
-{
-	this->m_position = Vector3(col * 48, row * 48, 0);
-	this->m_col = col;
-	this->m_row = row;
-	this->m_type = type;
-}
-
 Piece::~Piece()
 {
 }
@@ -34,9 +25,9 @@ void Piece::SetRow(int y)
 	m_row = y;
 }
 
-void Piece::Dropping(float t) {
-	if (abs(this->Get2DPosition().y - 226 - 50 * m_row) >= 4) {
-		this->Set2DPosition(this->Get2DPosition().x,this->Get2DPosition().y+int(t*100));
+void Piece::Dropping(float s) {
+	if (abs(this->Get2DPosition().y - 226 - 50 * m_row) >= s) {
+		this->Set2DPosition(this->Get2DPosition().x,this->Get2DPosition().y+int(s));
 	}
 	else {
 		this->Set2DPosition(this->Get2DPosition().x, 226 + 50 * m_row);

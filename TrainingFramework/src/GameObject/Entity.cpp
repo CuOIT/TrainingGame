@@ -1,16 +1,16 @@
 #include "Entity.h"
 
-Entity::Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture,
-	std::string name, int maxHealth, int maxMana, int attack, int defense, bool isAlive = true)
-	: Sprite2D(model, shader, texture)
-{
-	m_name = name;
-	m_maxHealth = maxHealth;
-	m_maxMana = maxMana;
-	m_attack = attack;
-	m_defense = defense;
-	m_isAlive = isAlive;
-}
+//Entity::Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture,
+//	std::string name, int maxHealth, int maxMana, int attack, int defense, bool isAlive = true)
+//	: Sprite2D(model, shader, texture)
+//{
+//	m_name = name;
+//	m_maxHealth = maxHealth;
+//	m_maxMana = maxMana;
+//	m_attack = attack;
+//	m_defense = defense;
+//	m_isAlive = isAlive;
+//}
 
 Entity::~Entity()
 {

@@ -82,7 +82,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Nvidia|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -375,6 +375,7 @@
     <ClInclude Include="src\GameObject\Font.h" />
     <ClInclude Include="src\GameObject\GameBoard.h" />
     <ClInclude Include="src\GameObject\GameButton.h" />
+    <ClInclude Include="src\GameObject\Header.h" />
     <ClInclude Include="src\GameObject\Piece.h" />
     <ClInclude Include="src\GameObject\Player.h" />
     <ClInclude Include="src\GameObject\Sprite2D.h" />
