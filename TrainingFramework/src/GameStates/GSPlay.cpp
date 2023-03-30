@@ -47,7 +47,7 @@ void GSPlay::Init()
 	button->Set2DPosition(Globals::screenWidth - 50.0f, 50.0f);
 	button->SetSize(50, 50);
 	button->SetOnClick([this]() {
-			GameStateMachine::GetInstance()->PopState();
+		GameStateMachine::GetInstance()->PopState();
 		});
 	m_listButton.push_back(button);
 

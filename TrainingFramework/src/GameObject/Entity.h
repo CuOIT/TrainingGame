@@ -4,39 +4,41 @@
 class Entity : public Sprite2D 
 {
 protected:
-	int			m_maxHP;
+	int			m_maxHealth;
 	int			m_maxMana;
 	int			m_attack;
 	int			m_defense;
 
 	bool		m_isAlive;
-	int			m_currentHP;
+	int			m_currentHealth;
 	int			m_currentMana;
 
 	std::string	m_name;
 
 public:
-	Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture)
+	Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, 
+		std::string name, int maxHealth, int maxMana, int attack, int defense, bool isAlive)
 		: Sprite2D(model, shader, texture) {};
 	~Entity();
 
-	int			GetMaxHP();
+	int			GetMaxHealth();
 	int			GetMaxMana();
 	int 		GetAttack();
 	int 		GetDefense();
-
-	int			GetCurrentHP();
+	std::string GetName();
+	int			GetCurrentHealth();
 	int			GetCurrentMana();
 	bool		GetIsAlive();
 	 
-	void		SetMaxHP(int maxHP);
+	void		SetMaxHealth(int maxHealth);
 	void		SetMaxMana(int maxMana);
-	void 		SetCurrentHP(int curHP);
-	void 		SetCurrentMana(int curMana);
-	void 		SetAttack(int curAtt);
-	void		SetDefense(int curDef);
+	void 		SetHealth(int health);
+	void 		SetMana(int mana);
+	void 		SetAttack(int attack);
+	void		SetDefense(int defense);
 	void		SetIsAlive(bool isAlive);
+	void		SetName(std::string name);
 
 	void		TakeDamage(int damage);
-
+	void		Heal(int amount);
 };

@@ -1,7 +1,6 @@
 #include "Piece.h"
 #include "ResourceManagers.h"
 
-
 Piece::~Piece()
 {
 }
@@ -26,9 +25,9 @@ void Piece::SetRow(int y)
 	m_row = y;
 }
 
-void Piece::Dropping(float t) {
-	if (abs(this->Get2DPosition().y - 226 - 50 * m_row) >= 4) {
-		this->Set2DPosition(this->Get2DPosition().x,this->Get2DPosition().y+int(t*100));
+void Piece::Dropping(float s) {
+	if (abs(this->Get2DPosition().y - 226 - 50 * m_row) >= s) {
+		this->Set2DPosition(this->Get2DPosition().x,this->Get2DPosition().y+int(s));
 	}
 	else {
 		this->Set2DPosition(this->Get2DPosition().x, 226 + 50 * m_row);
