@@ -17,6 +17,7 @@ class Piece : public Sprite2D
 private:
 	int m_col;
 	int m_row;
+	/*std::string m_kind;*/
 	PieceType m_type;
 
 public:

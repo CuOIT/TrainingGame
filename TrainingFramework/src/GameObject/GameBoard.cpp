@@ -5,65 +5,86 @@
 #include<random>
 #include <queue>
 #include <set>
-GameBoard::GameBoard() :Sprite2D(),m_phase(Phase::BASE_PHASE),m_standbyTime(0) {
+
+GameBoard::GameBoard() :Sprite2D(),m_phase(Phase::BASE_PHASE),m_standbyTime(0),m_moveSpeed(300) {
 	this->Set2DPosition(200, 200);
 	Init();
 };
-GameBoard::~GameBoard() {}
-void GameBoard::Init() {
-	m_board.clear();
-	//std::vector<std::vector<std::shared_ptr<Piece>>> board;
-	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
-	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
-	auto texture = ResourceManagers::GetInstance()->GetTexture("frame.tga");
-	m_frame = std::make_shared<Sprite2D>(model, shader, texture);
-	m_frame->SetSize(600, 600);
-	m_frame->Set2DPosition(400, 400);
 
-	texture = ResourceManagers::GetInstance()->GetTexture("selected_piece.tga");
-	m_selected_piece = std::make_shared<Sprite2D>(model, shader, texture);
-	m_selected_piece->SetSize(50, 50);
-	srand(time(NULL));
-	std::vector<std::shared_ptr<Piece>> line;
-	for (int i = 0; i < 8; i++) {
-		line.clear();
-		for (int j = 0; j < 8; j++) {
-			int ran = rand() % 6;
-			
-			PieceType type = static_cast<PieceType>(ran);
-			texture = ResourceManagers::GetInstance()->GetTexture("piece_hp.tga");
-			switch (type) {
-			case PieceType::HP:
+GameBoard::~GameBoard() {}
+
+void GameBoard::Init() {
+	do {
+		m_board.clear();
+
+		auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
+		auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
+		auto texture = ResourceManagers::GetInstance()->GetTexture("frame.tga");
+		m_frame = std::make_shared<Sprite2D>(model, shader, texture);
+		m_frame->SetSize(600, 600);
+		m_frame->Set2DPosition(400, 400);
+		texture = ResourceManagers::GetInstance()->GetTexture("selected_piece.tga");
+		m_selected_piece = std::make_shared<Sprite2D>(model, shader, texture);
+		m_selected_piece->SetSize(50, 50);
+		srand(time(NULL));
+		std::vector<std::shared_ptr<Piece>> line;
+		for (int i = 0; i < 8; i++) {
+			line.clear();
+			for (int j = 0; j < 8; j++) {
+				int colCheck;
+				if (i <= 1) {
+					colCheck = -1;
+				}
+				else {
+					int pre3 = static_cast<int>(m_board[i-1][j]->GetType());
+					int pre4 = static_cast<int>(m_board[i-2][j]->GetType());
+					colCheck = (pre3 == pre4 ? pre3 : -1);
+				}
+				int ran = rand() % 6;
+				if (j > 1) {
+					int pre1 = static_cast<int>(line[j - 1]->GetType());
+					int pre2 = static_cast<int>(line[j - 2]->GetType());
+					int rowCheck = (pre1 == pre2?pre1:-1);
+
+
+					while (ran == rowCheck || ran == colCheck) ran = rand() % 6;
+
+
+				}
+				PieceType type = static_cast<PieceType>(ran);
 				texture = ResourceManagers::GetInstance()->GetTexture("piece_hp.tga");
-				break;
-			case PieceType::Mana:
-				texture = ResourceManagers::GetInstance()->GetTexture("piece_mana.tga");
-				break;
-			case PieceType::Poison:
-				texture = ResourceManagers::GetInstance()->GetTexture("piece_poison.tga");
-				break;
-			case PieceType::Shield:
-				texture = ResourceManagers::GetInstance()->GetTexture("piece_shield.tga");
-				break;
-			case PieceType::Spell:
-				texture = ResourceManagers::GetInstance()->GetTexture("piece_spell.tga");
-				break;
-			case PieceType::Sword:
-				texture = ResourceManagers::GetInstance()->GetTexture("piece_sword.tga");
-				break;
+				switch (type) {
+				case PieceType::HP:
+					texture = ResourceManagers::GetInstance()->GetTexture("piece_hp.tga");
+					break;
+				case PieceType::Mana:
+					texture = ResourceManagers::GetInstance()->GetTexture("piece_mana.tga");
+					break;
+				case PieceType::Poison:
+					texture = ResourceManagers::GetInstance()->GetTexture("piece_poison.tga");
+					break;
+				case PieceType::Shield:
+					texture = ResourceManagers::GetInstance()->GetTexture("piece_shield.tga");
+					break;
+				case PieceType::Spell:
+					texture = ResourceManagers::GetInstance()->GetTexture("piece_spell.tga");
+					break;
+				case PieceType::Sword:
+					texture = ResourceManagers::GetInstance()->GetTexture("piece_sword.tga");
+					break;
+				}
+				std::shared_ptr<Piece> p = std::make_shared<Piece>(model, shader, texture, i, j, type);
+				p->Set2DPosition(this->Get2DPosition().x + j * 50 + 26,this->Get2DPosition().y + i * 50 + 26);
+				p->SetSize(48, 48);
+				line.push_back(p);
 			}
-			std::shared_ptr<Piece> p = std::make_shared<Piece>(model, shader, texture, i, j, type);
-			p->Set2DPosition(this->Get2DPosition().x + j * 50 + 26,this->Get2DPosition().y + i * 50 + 26);
-			p->SetSize(48, 48);
-			line.push_back(p);
+			m_board.push_back(line);
 		}
-		m_board.push_back(line);
-	}
+	} while (!HasAnAvailableMove());
 
 }
 
 void GameBoard::Update(float deltaTime) {
-	std::cout << "Update" << std::endl;
 
 	switch (m_phase) {
 		case Phase::BASE_PHASE:
@@ -73,25 +94,27 @@ void GameBoard::Update(float deltaTime) {
 		}
 		case Phase::SWAP_PHASE:
 		{
-			std::cout << "SWAP" << std::endl;
 
 			int lastRow = m_click[0].first;
 			int lastCol = m_click[0].second;
 			int curRow = m_click[1].first;
 			int curCol = m_click[1].second;
-			if (m_board[lastRow][lastCol]->InRightPosition() && m_board[curRow][curCol]->InRightPosition()) {
-				/*auto matchList = GetMatchList();
-				if(matchList.empty()) SwapTwoSelectedPiece(lastRow, lastCol, curRow, curCol);*/
-				 SetPhase(Phase::DESTROY_PHASE);
+			if (m_board[lastRow][lastCol]->Get2DPosition().x == 226 +lastCol * 50 && m_board[lastRow][lastCol]->Get2DPosition().y == 226 + lastRow * 50) {
+				m_standbyTime += deltaTime;
+				if (m_standbyTime >= 0.5f) {
+					m_standbyTime = 0;
+					SetPhase(Phase::DESTROY_PHASE);
+				}
 			}
 			else {
 				int vx = (lastCol - curCol > 0 ? 1 : (lastCol - curCol == 0 ? 0 : -1));
 				int vy = (lastRow - curRow > 0 ? 1 : (lastRow - curRow == 0 ? 0 : -1));
-				m_board[lastRow][lastCol]->Set2DPosition(m_board[lastRow][lastCol]->Get2DPosition().x + vx * (int)(100 * deltaTime), m_board[lastRow][lastCol]->Get2DPosition().y + vy * (int)(100 * deltaTime));
-				m_board[curRow][curCol]->Set2DPosition(m_board[curRow][curCol]->Get2DPosition().x - vx * (int)(100 * deltaTime), m_board[curRow][curCol]->Get2DPosition().y - vy * (int)(100 * deltaTime));
-				if (abs(m_board[lastRow][lastCol]->Get2DPosition().x - 226 - 50 * lastCol + m_board[lastRow][lastCol]->Get2DPosition().y - 226 - 50 * lastRow) < 4)
+				std::cout << "Move speed:" << m_moveSpeed << std::endl;
+				m_board[lastRow][lastCol]->Set2DPosition(m_board[lastRow][lastCol]->Get2DPosition().x + vx * (int)(m_moveSpeed * deltaTime), m_board[lastRow][lastCol]->Get2DPosition().y + vy * (int)(m_moveSpeed * deltaTime));
+				m_board[curRow][curCol]->Set2DPosition(m_board[curRow][curCol]->Get2DPosition().x - vx * (int)(m_moveSpeed * deltaTime), m_board[curRow][curCol]->Get2DPosition().y - vy * (int)(m_moveSpeed * deltaTime));
+				if (abs(m_board[lastRow][lastCol]->Get2DPosition().x - 226 - 50 * lastCol + m_board[lastRow][lastCol]->Get2DPosition().y - 226 - 50 * lastRow) < abs((int)(m_moveSpeed * deltaTime)))
 					m_board[lastRow][lastCol]->Set2DPosition(226+50*lastCol,226+50*lastRow);
-				if (abs(m_board[curRow][curCol]->Get2DPosition().x - 226 - 50 * curCol + m_board[curRow][curCol]->Get2DPosition().y - 226 - 50 * curRow) < 4)
+				if (abs(m_board[curRow][curCol]->Get2DPosition().x - 226 - 50 * curCol + m_board[curRow][curCol]->Get2DPosition().y - 226 - 50 * curRow) < abs((int)(m_moveSpeed * deltaTime)))
 					m_board[curRow][curCol]->Set2DPosition(226+50*curCol,226+50*curRow);
 				//SetPhase(Phase::DESTROY_PHASE);
 			}
@@ -102,14 +125,6 @@ void GameBoard::Update(float deltaTime) {
 		case Phase::DESTROY_PHASE: 
 		{
 			m_click.clear();
-			auto matchList = this->GetMatchList();
-			//if (matchList.empty()) {
-			//	SwapTwoSelectedPiece(m_click[0].first, m_click[0].second, m_click[1].first, m_click[1].second);
-			//	SetPhase(Phase::BASE_PHASE);
-			//}
-			//else {
-			//	//Moving;
-			//}
 			DestroyPieces(this->GetMatchList());
 			RefillGameBoard();
 			SetPhase(Phase::REFILL_PHASE);
@@ -119,13 +134,16 @@ void GameBoard::Update(float deltaTime) {
 		{
 			for (int i = 0; i < 8; i++)
 				for (int j = 0; j < 8; j++) {
-					m_board[i][j]->Dropping(deltaTime);
+					m_board[i][j]->Dropping(m_moveSpeed*deltaTime);
 				}
-			m_standbyTime += (int)(100 * deltaTime);
-			if (m_standbyTime >= 400) {
+			m_standbyTime +=deltaTime;
+			if (m_standbyTime >= 400/m_moveSpeed) {
 			auto matchList = this->GetMatchList();
 			if (matchList.empty()) {
 				SetPhase(Phase::BASE_PHASE);
+				if (!HasAnAvailableMove()) {
+					Init();
+				}
 			}
 			else {
 				SetPhase(Phase::DESTROY_PHASE);
@@ -142,8 +160,8 @@ void GameBoard::Draw() {
 	m_frame->Draw();
 	for (int i = 0; i < 8; i++)
 		for (int j = 0; j < 8; j++) {
-			if(m_board[i][j]!=nullptr)
-			m_board[i][j]->Draw();
+			if(m_board[i][j]!=nullptr &&m_board[i][j]->Get2DPosition().y>=200)
+				m_board[i][j]->Draw();
 
 		}
 	if (m_click.size() == 1) {
@@ -263,11 +281,6 @@ std::set<std::pair<int,int>> GameBoard::GetMatchList() {
 }
 bool GameBoard::HasAnMatch() {
 
-
-	//std::cout << "Tong so matching la: " << matchingListOfBoard.size() << std::endl;
-	//for (auto a : matchingListOfBoard) {
-	//	std::cout << a->GetRow() << " va " << a->GetCol() << std::endl;
-	//}
 	if (this->GetMatchList().empty()) {
 		return false;
 	}
@@ -318,27 +331,13 @@ void GameBoard::RefillGameBoard() {
 				while (k <= 6 && m_board[k + 1][j] == nullptr) {
 					SwapTwoPiece(k, j, k + 1, j);
 					k++;
-					//for (int k = i; k > 0; k--) {
-					//	SwapTwoPiece(k, j, k - 1, j);
-					//	//COn bug khi tang tren deu nullptr
-					//	for (int ii = 0; ii < 8; ii++) {
-					//		for (int jj = 0; jj < 8; jj++) {
-					//			if (m_board[ii][jj] != nullptr)
-					//				std::cout << static_cast<int>(m_board[ii][jj]->GetType()) << " ";
-					//			else std::cout << -1 << " ";
-					//		}
-					//		std::cout << std::endl;
-
-					//	}
-					//	std::cout << "dang Swap" << std::endl;
-					//}
 				}
 			}
 		}
 		while (nullCount<=7 && m_board[nullCount][j] == nullptr) {
 			nullCount++;
 		}
-		std::cout << nullCount<<" ";
+
 		int temp = nullCount;//the number of pieces on the top of the board waiting to drop;
 		while (nullCount--) {
 			auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
@@ -373,6 +372,33 @@ void GameBoard::RefillGameBoard() {
 		}
 	}
 }
+bool GameBoard::HasAnAvailableMove() {
+	int i = 0;
+	for (int j = 1; j < 7; j++) {
+		auto type = m_board[i][j]->GetType();
+		if (m_board[i][j - 1]->GetType() == type && m_board[i + 1][j + 1]->GetType() == type) return true;
+		if (m_board[i + 1][j - 1]->GetType() == type && m_board[i + 1][j + 1]->GetType() == type) return true;
+		if (m_board[i + 1][j - 1]->GetType() == type && m_board[i][j + 1]->GetType() == type) return true;
+	}
+	for(i=1;i<7;i++)
+		for (int j = 1; j < 7; j++) {
+			auto type = m_board[i][j]->GetType();
+			if (m_board[i][j - 1]->GetType() == type && m_board[i + 1][j + 1]->GetType() == type) return true;
+			if (m_board[i+1][j - 1]->GetType() == type && m_board[i + 1][j + 1]->GetType() == type) return true;
+			if (m_board[i+1][j - 1]->GetType() == type && m_board[i ][j + 1]->GetType() == type) return true;
+			if (m_board[i-1][j - 1]->GetType() == type && m_board[i][j + 1]->GetType() == type) return true;
+			if (m_board[i][j-1]->GetType() == type && m_board[i - 1][j + 1]->GetType() == type) return true;
+			if (m_board[i-1][j - 1]->GetType() == type && m_board[i - 1][j + 1]->GetType() == type) return true;
+
+		}
+	for (int j = 1; j < 7; j++) {
+		auto type = m_board[i][j]->GetType();
+		if (m_board[i - 1][j - 1]->GetType() == type && m_board[i][j + 1]->GetType() == type) return true;
+		if (m_board[i][j - 1]->GetType() == type && m_board[i - 1][j + 1]->GetType() == type) return true;
+		if (m_board[i - 1][j - 1]->GetType() == type && m_board[i - 1][j + 1]->GetType() == type) return true;
+	}
+	return false;
+}
 bool GameBoard::CanSwapTwoPiece(int lastRow, int lastCol, int curRow, int curCol) {
 
 	SwapTwoPiece(lastRow, lastCol, curRow, curCol);
@@ -399,15 +425,15 @@ void GameBoard::HandleClick(float _x, float _y)
 		if (m_click.size() == 1) {
 			int lastRow = m_click[0].first;
 			int lastCol = m_click[0].second;
-			if (abs(lastRow - curRow) + abs(curCol - lastCol) == 1) 
-				if (m_board[curRow][curCol]->GetType() != m_board[lastRow][lastCol]->GetType()) {
+			if (abs(lastRow - curRow) + abs(curCol - lastCol) == 1)  {
 					m_click.push_back({curRow, curCol});
-					SwapTwoSelectedPiece(lastRow, lastCol, curRow, curCol);
-					SetPhase(Phase::SWAP_PHASE);
-					/*SwapTwoSelectedPiece(lastRow, lastCol, curRow, curCol);
-					auto matchList = this->GetMatchList();
-					DestroyPieces(matchList);
-					RefillGameBoard();*/
+					if (CanSwapTwoPiece(lastRow, lastCol, curRow, curCol)) {
+						SwapTwoSelectedPiece(lastRow, lastCol, curRow, curCol);
+						SetPhase(Phase::SWAP_PHASE);
+					}
+					else {
+						m_click.clear();
+					}
 				}
 		}
 		else if (m_click.empty()) {
