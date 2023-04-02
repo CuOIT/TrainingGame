@@ -28,7 +28,7 @@ GSPlay::~GSPlay()
 void GSPlay::Init()
 {
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
-	auto texture = ResourceManagers::GetInstance()->GetTexture("bg_play1.tga");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("background.tga");
 
 	// background
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
@@ -59,27 +59,40 @@ void GSPlay::Init()
 
 	//animation
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
-	texture = ResourceManagers::GetInstance()->GetTexture("Actor1_2.tga");
-	std::shared_ptr<SpriteAnimation> obj = std::make_shared<SpriteAnimation>(model, shader, texture, 9, 6, 3, 0.1f);
-	obj->Set2DPosition(50, 50);
-	obj->SetSize(30, 40);
-	m_listAnimation.push_back(obj);
+	texture = ResourceManagers::GetInstance()->GetTexture("warrior3_auto_x24.tga");
+	//for (int i = 0; i < 1; i++) {
+
+		std::shared_ptr<SpriteAnimation> obj = std::make_shared<SpriteAnimation>(model, shader, texture,8, 6, 4, 0.08f);
+		obj->Set2DPosition(100, 700);
+		obj->SetSize(250,250);
+		m_listAnimation.push_back(obj);
+	//}
 	m_KeyPress = 0;
+
+	std::string name = "gsPlay_sound.wav";
+	ResourceManagers::GetInstance()->PlaySound(name, true);
 	std::cout << "GSPlay Init" << std::endl;
 	
 }
 
 void GSPlay::Exit()
+
 {
+	std::string name = "gsPlay_sound.wav";
+	ResourceManagers::GetInstance()->StopSound(name);
 }
 
 
 void GSPlay::Pause()
 {
+	std::string name = "gsPlay_sound.wav";
+	ResourceManagers::GetInstance()->StopSound(name);
 }
 
 void GSPlay::Resume()
 {
+	std::string name = "gsPlay_sound.wav";
+	ResourceManagers::GetInstance()->PlaySound(name, true);
 }
 
 

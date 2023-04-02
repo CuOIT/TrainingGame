@@ -12,6 +12,7 @@ class GameBoard : public Sprite2D
 	};
 private:
 	std::shared_ptr<Sprite2D>			m_frame;
+	std::shared_ptr<Sprite2D>			m_background;
 	std::vector<std::pair<int,int>>		m_click;
 	std::shared_ptr<Sprite2D>			m_selected_piece;
 	Phase								m_phase;

@@ -21,8 +21,12 @@ void GameBoard::Init() {
 		auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 		auto texture = ResourceManagers::GetInstance()->GetTexture("frame.tga");
 		m_frame = std::make_shared<Sprite2D>(model, shader, texture);
-		m_frame->SetSize(600, 600);
+		m_frame->SetSize(450, 450);
 		m_frame->Set2DPosition(400, 400);
+		texture= ResourceManagers::GetInstance()->GetTexture("board.tga");
+		m_background= std::make_shared<Sprite2D>(model, shader, texture);
+		m_background->SetSize(420, 420);
+		m_background->Set2DPosition(400, 400);
 		texture = ResourceManagers::GetInstance()->GetTexture("selected_piece.tga");
 		m_selected_piece = std::make_shared<Sprite2D>(model, shader, texture);
 		m_selected_piece->SetSize(50, 50);
@@ -157,13 +161,14 @@ void GameBoard::Update(float deltaTime) {
 
 }
 void GameBoard::Draw() {
-	m_frame->Draw();
+	m_background->Draw();
 	for (int i = 0; i < 8; i++)
 		for (int j = 0; j < 8; j++) {
 			if(m_board[i][j]!=nullptr &&m_board[i][j]->Get2DPosition().y>=200)
 				m_board[i][j]->Draw();
 
 		}
+	m_frame->Draw();
 	if (m_click.size() == 1) {
 		m_selected_piece->Draw();
 	}
@@ -431,10 +436,9 @@ void GameBoard::HandleClick(float _x, float _y)
 						SwapTwoSelectedPiece(lastRow, lastCol, curRow, curCol);
 						SetPhase(Phase::SWAP_PHASE);
 					}
-					else {
+				}else {
 						m_click.clear();
 					}
-				}
 		}
 		else if (m_click.empty()) {
 			m_click.push_back({ curRow,curCol });
