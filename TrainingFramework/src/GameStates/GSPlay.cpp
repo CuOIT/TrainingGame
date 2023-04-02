@@ -11,7 +11,9 @@
 #include "GameButton.h"
 #include "SpriteAnimation.h"
 #include "Piece.h"
-
+#include "GameField.h"
+#include "Player.h"
+#include"Entity.h"
 
 
 GSPlay::GSPlay()
@@ -38,6 +40,7 @@ void GSPlay::Init()
 	m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
 
 	m_gameBoard =std::make_shared<GameBoard>();
+	
 	/*while (m_gameBoard->HasAnMatch()) {
 		m_gameBoard->Init();
 	}*/
@@ -61,16 +64,23 @@ void GSPlay::Init()
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
 	texture = ResourceManagers::GetInstance()->GetTexture("warrior3_auto_x24.tga");
 	//for (int i = 0; i < 1; i++) {
+		std::shared_ptr<Player> player = std::make_shared<Player>(model,shader,texture,8,6,5,0.05f,"Player",200,200,2,0,true);
+		player->Set2DPosition(100, 700);
+		player->SetSize(250, 250);
+		std::shared_ptr<Entity> enermy = std::make_shared<Entity>(model, shader, texture, 8, 6, 4, 0.05f, "Player", 200, 200, 2, 0, true);
+		enermy->Set2DPosition(600, 700);
+		enermy->SetSize(-250, 250);
+		m_gameField = std::make_shared<GameField>(player, enermy);
 
-		std::shared_ptr<SpriteAnimation> obj = std::make_shared<SpriteAnimation>(model, shader, texture,8, 6, 4, 0.08f);
-		obj->Set2DPosition(100, 700);
-		obj->SetSize(250,250);
-		m_listAnimation.push_back(obj);
+		//std::shared_ptr<SpriteAnimation> obj = std::make_shared<SpriteAnimation>(model, shader, texture,8, 6,5	,1.f);
+		//obj->Set2DPosition(100, 700);
+		//obj->SetSize(250,250);
+		//m_listAnimation.push_back(obj);
 	//}
 	m_KeyPress = 0;
 
 	std::string name = "gsPlay_sound.wav";
-	ResourceManagers::GetInstance()->PlaySound(name, true);
+	//ResourceManagers::GetInstance()->PlaySound(name, true);
 	std::cout << "GSPlay Init" << std::endl;
 	
 }
@@ -187,6 +197,7 @@ void GSPlay::HandleMouseMoveEvents(float x, float y)
 void GSPlay::Update(float deltaTime)
 {
 	m_gameBoard->Update(deltaTime);
+	m_gameField->Update(deltaTime);
 	HandleEvents();
 
 	//Update button list
@@ -208,13 +219,14 @@ void GSPlay::Draw()
 	m_background->Draw();
 	//Render score text
 	m_score->Draw();
+	m_gameField->Draw();
 
 	//Render button list
 	for (auto it : m_listButton)
 	{
 		it->Draw();
 	}
-	m_gameBoard->Draw();
+	//m_gameBoard->Draw();
 	//Render animation list
 	for (auto it : m_listAnimation)
 	{

@@ -1,7 +1,7 @@
 #pragma once
-#include"Sprite2D.h"
+#include"SpriteAnimation.h"
 
-class Entity : public Sprite2D 
+class Entity : public SpriteAnimation 
 {
 protected:
 	int			m_maxHealth;
@@ -16,9 +16,9 @@ protected:
 	std::string	m_name;
 
 public:
-	Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, 
+	Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime,
 		std::string name, int maxHealth, int maxMana, int attack, int defense, bool isAlive)
-		: Sprite2D(model, shader, texture) {};
+		: SpriteAnimation(model, shader, texture,numFrames,numActions,currentAction,frameTime),m_name(name),m_maxHealth(maxHealth),m_maxMana(maxMana),m_attack(attack),m_defense(defense),m_isAlive(isAlive){};
 	~Entity();
 
 	int			GetMaxHealth();

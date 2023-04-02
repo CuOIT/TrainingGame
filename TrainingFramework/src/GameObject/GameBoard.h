@@ -14,13 +14,13 @@ private:
 	std::shared_ptr<Sprite2D>			m_frame;
 	std::shared_ptr<Sprite2D>			m_background;
 	std::vector<std::pair<int,int>>		m_click;
-	std::shared_ptr<Sprite2D>			m_selected_piece;
 	Phase								m_phase;
 	float								m_standbyTime;
 	int									m_moveSpeed;
 
 
 public:
+	std::shared_ptr<Sprite2D>			m_selected_piece;
 	std::vector < std::vector<std::shared_ptr<Piece>>> m_board;
 	GameBoard();
 	~GameBoard();
