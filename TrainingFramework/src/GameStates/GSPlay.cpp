@@ -30,20 +30,17 @@ GSPlay::~GSPlay()
 void GSPlay::Init()
 {
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
-	auto texture = ResourceManagers::GetInstance()->GetTexture("background.tga");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("HP_bar.tga");
 
 	// background
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 	m_background = std::make_shared<Sprite2D>(model, shader, texture);
+	/*m_background->Set2DPosition(620, 950);
+	m_background->SetSize(-320, 80);*/
 	m_background->Set2DPosition((float)Globals::screenWidth / 2.0f, (float)Globals::screenHeight / 2.0f);
 
 	m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
 
-	m_gameBoard =std::make_shared<GameBoard>();
-	
-	/*while (m_gameBoard->HasAnMatch()) {
-		m_gameBoard->Init();
-	}*/
 	// button close
 	texture = ResourceManagers::GetInstance()->GetTexture("btn_close.tga");
 	std::shared_ptr<GameButton>  button = std::make_shared<GameButton>(model, shader, texture);
@@ -64,10 +61,10 @@ void GSPlay::Init()
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
 	texture = ResourceManagers::GetInstance()->GetTexture("warrior3_auto_x24.tga");
 	//for (int i = 0; i < 1; i++) {
-		std::shared_ptr<Player> player = std::make_shared<Player>(model,shader,texture,8,6,5,0.05f,"Player",200,200,2,0,true);
+		std::shared_ptr<Player> player = std::make_shared<Player>(model,shader,texture,8,6,5,0.05f,"Player",200,200,2,0);
 		player->Set2DPosition(100, 700);
 		player->SetSize(250, 250);
-		std::shared_ptr<Entity> enermy = std::make_shared<Entity>(model, shader, texture, 8, 6, 4, 0.05f, "Player", 200, 200, 2, 0, true);
+		std::shared_ptr<Entity> enermy = std::make_shared<Entity>(model, shader, texture, 8, 6, 4, 0.05f, "Player", 200, 200, 2, 0);
 		enermy->Set2DPosition(600, 700);
 		enermy->SetSize(-250, 250);
 		m_gameField = std::make_shared<GameField>(player, enermy);
@@ -175,7 +172,7 @@ void GSPlay::HandleKeyEvents(int key, bool bIsPressed)//Insert more case if you 
 void GSPlay::HandleTouchEvents(float x, float y, bool bIsPressed)
 {
 	if (bIsPressed == false) {
-	m_gameBoard->HandleClick(x, y);
+	m_gameField->HandleClick(x, y);
 	std::cout << "Handle Click" << std::endl;
 	}
 
@@ -196,7 +193,6 @@ void GSPlay::HandleMouseMoveEvents(float x, float y)
 
 void GSPlay::Update(float deltaTime)
 {
-	m_gameBoard->Update(deltaTime);
 	m_gameField->Update(deltaTime);
 	HandleEvents();
 
