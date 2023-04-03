@@ -29,7 +29,10 @@ void GameBoard::Init() {
 		m_background->Set2DPosition(400, 400);
 		texture = ResourceManagers::GetInstance()->GetTexture("selected_piece.tga");
 		m_selected_piece = std::make_shared<Sprite2D>(model, shader, texture);
+		m_selected_piece2 = std::make_shared<Sprite2D>(model, shader, texture);
 		m_selected_piece->SetSize(50, 50);
+		m_selected_piece2->SetSize(50, 50);
+
 		srand(time(NULL));
 		std::vector<std::shared_ptr<Piece>> line;
 		for (int i = 0; i < 8; i++) {
@@ -105,54 +108,6 @@ void GameBoard::ChangePositionOfTwoPiece(int lastRow, int lastCol, int curRow, i
 	}
 };
 
-//void GameBoard::Update(float deltaTime,GameField::Phase phase) {
-//
-//	switch (phase) {
-//		case GameField::Phase::BASE_PHASE:
-//		{
-//			
-//			break;
-//		}
-//		case Phase::SWAP_PHASE:
-//		{
-//
-//			int lastRow = m_click[0].first;
-//			int lastCol = m_click[0].second;
-//			int curRow = m_click[1].first;
-//			int curCol = m_click[1].second;
-//			ChangePositionOfTwoPiece(lastRow, lastCol, curRow, curCol, deltaTime);
-//			break;
-//		}
-//		case Phase::DESTROY_PHASE: 
-//		{
-//			m_click.clear();
-//			DestroyPieces(this->GetMatchList());
-//			RefillGameBoard();
-//			SetPhase(Phase::REFILL_PHASE);
-//			break;
-//		}
-//		case Phase::REFILL_PHASE:
-//		{
-//			RefillPositionGameBoard(deltaTime);	
-//			if (m_standbyTime >= 400/m_moveSpeed) {
-//			auto matchList = this->GetMatchList();
-//			if (matchList.empty()) {
-//				SetPhase(Phase::BASE_PHASE);
-//				if (!HasAnAvailableMove()) {
-//					Init();
-//				}
-//			}
-//			else {
-//				SetPhase(Phase::DESTROY_PHASE);
-//			}
-//			m_standbyTime = 0;
-//			}
-//			break;
-//		}
-//	}
-//
-//
-//}
 void GameBoard::RefillPositionGameBoard(float deltaTime) {
 	for (int i = 0; i < 8; i++)
 		for (int j = 0; j < 8; j++) {
@@ -174,6 +129,8 @@ void GameBoard::Draw() {
 		}
 	m_frame->Draw();
 	m_selected_piece->Draw();
+
+	m_selected_piece2->Draw();
 }
 
 std::set<std::pair<int,int>> GameBoard::GetMatchList() {
@@ -416,6 +373,72 @@ bool GameBoard::HasAnAvailableMove() {
 	}
 	return false;
 }
+std::vector<std::vector<int>> GameBoard::GetAvailableMoveList() {
+	std::vector<std::vector<int>> list;
+	int i = 0;
+	for (int j = 1; j < 7; j++) {
+		auto type = m_board[i][j]->GetType();
+		if (m_board[i][j - 1]->GetType() == type && m_board[i + 1][j + 1]->GetType() == type) {
+			std::vector<int> res={i,j+1,i+1,j+1};
+			list.push_back(res);
+		}
+		if (m_board[i + 1][j - 1]->GetType() == type && m_board[i + 1][j + 1]->GetType() == type) {
+			std::vector<int> res = { i,j ,i + 1,j };
+			list.push_back(res);
+		};
+		if (m_board[i + 1][j - 1]->GetType() == type && m_board[i][j + 1]->GetType() == type) {
+			std::vector<int> res = { i,j - 1,i+1,j - 1 };
+			list.push_back(res);
+		};
+	}
+	for (i = 1; i < 7; i++)
+		for (int j = 1; j < 7; j++) {
+			auto type = m_board[i][j]->GetType();
+			if (m_board[i][j - 1]->GetType() == type && m_board[i + 1][j + 1]->GetType() == type) {
+				std::vector<int> res = { i,j + 1,i + 1,j + 1 };
+				list.push_back(res);
+			};
+			if (m_board[i + 1][j - 1]->GetType() == type && m_board[i + 1][j + 1]->GetType() == type) {
+				std::vector<int> res = { i,j ,i + 1,j };
+				list.push_back(res);
+			};
+			if (m_board[i + 1][j - 1]->GetType() == type && m_board[i][j + 1]->GetType() == type) {
+				std::vector<int> res = { i,j - 1,i + 1,j - 1 };
+				list.push_back(res);
+			};
+			if (m_board[i - 1][j - 1]->GetType() == type && m_board[i][j + 1]->GetType() == type) { 
+				std::vector<int> res = { i,j - 1,i - 1,j - 1 };
+				list.push_back(res);
+			};
+			if (m_board[i][j - 1]->GetType() == type && m_board[i - 1][j + 1]->GetType() == type) {
+				std::vector<int> res = { i,j + 1,i - 1,j + 1 };
+				list.push_back(res);
+			};
+			if (m_board[i - 1][j - 1]->GetType() == type && m_board[i - 1][j + 1]->GetType() == type) {
+				std::vector<int> res = { i,j ,i - 1,j};
+				list.push_back(res);
+			};
+
+		}
+	for (int j = 1; j < 7; j++) {
+		auto type = m_board[i][j]->GetType();
+		if (m_board[i - 1][j - 1]->GetType() == type && m_board[i][j + 1]->GetType() == type) { 
+			std::vector<int> res = { i,j - 1,i - 1,j - 1 };
+			list.push_back(res);
+		};
+		if (m_board[i][j - 1]->GetType() == type && m_board[i - 1][j + 1]->GetType() == type) {
+			std::vector<int> res = { i,j + 1,i - 1,j + 1 };
+			list.push_back(res);
+		};
+		if (m_board[i - 1][j - 1]->GetType() == type && m_board[i - 1][j + 1]->GetType() == type) { 
+			std::vector<int> res = { i,j ,i - 1,j };
+			list.push_back(res);
+		};
+	}
+
+	return list;
+};
+
 bool GameBoard::CanSwapTwoPiece(int lastRow, int lastCol, int curRow, int curCol) {
 
 	SwapTwoPiece(lastRow, lastCol, curRow, curCol);
