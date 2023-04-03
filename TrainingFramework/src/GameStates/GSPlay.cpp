@@ -11,7 +11,9 @@
 #include "GameButton.h"
 #include "SpriteAnimation.h"
 #include "Piece.h"
-#include "GameManager.h"
+#include "GameField.h"
+#include "Player.h"
+#include"Entity.h"
 
 
 GSPlay::GSPlay()
@@ -28,19 +30,17 @@ GSPlay::~GSPlay()
 void GSPlay::Init()
 {
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
-	auto texture = ResourceManagers::GetInstance()->GetTexture("bg_play1.tga");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("HP_bar.tga");
 
 	// background
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 	m_background = std::make_shared<Sprite2D>(model, shader, texture);
+	/*m_background->Set2DPosition(620, 950);
+	m_background->SetSize(-320, 80);*/
 	m_background->Set2DPosition((float)Globals::screenWidth / 2.0f, (float)Globals::screenHeight / 2.0f);
 
 	m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
 
-	m_gameBoard =std::make_shared<GameBoard>();
-	/*while (m_gameBoard->HasAnMatch()) {
-		m_gameBoard->Init();
-	}*/
 	// button close
 	texture = ResourceManagers::GetInstance()->GetTexture("btn_close.tga");
 	std::shared_ptr<GameButton>  button = std::make_shared<GameButton>(model, shader, texture);
@@ -58,40 +58,48 @@ void GSPlay::Init()
 	m_score->Set2DPosition(Vector2(5.0f, 25.0f));
 
 	//animation
-	/*shader = ResourceManagers::GetInstance()->GetShader("Animation");
-	texture = ResourceManagers::GetInstance()->GetTexture("Actor1_2.tga");
-	std::shared_ptr<SpriteAnimation> obj = std::make_shared<SpriteAnimation>(model, shader, texture, 9, 6, 3, 0.1f);
-	obj->Set2DPosition(50, 50);
-	obj->SetSize(30, 40);
-	m_listAnimation.push_back(obj);
-	m_KeyPress = 0;*/
+	shader = ResourceManagers::GetInstance()->GetShader("Animation");
+	texture = ResourceManagers::GetInstance()->GetTexture("warrior3_auto_x24.tga");
+	//for (int i = 0; i < 1; i++) {
+		std::shared_ptr<Player> player = std::make_shared<Player>(model,shader,texture,8,6,5,0.05f,"Player",200,200,2,0);
+		player->Set2DPosition(100, 700);
+		player->SetSize(250, 250);
+		std::shared_ptr<Entity> enermy = std::make_shared<Entity>(model, shader, texture, 8, 6, 4, 0.05f, "Player", 200, 200, 2, 0);
+		enermy->Set2DPosition(600, 700);
+		enermy->SetSize(-250, 250);
+		m_gameField = std::make_shared<GameField>(player, enermy);
 
-	shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
-	texture = ResourceManagers::GetInstance()->GetTexture("piece_hp.tga");
-	m_player = std::make_shared<Entity>(model, shader, texture, "abc", 100, 20, 5, 1, true);
-	m_player->Set2DPosition(48.0f, 48.0f);
-	m_player->SetSize(48.0f, 48.0f);
-	std::cout << m_player->GetName() << std::endl;
+		//std::shared_ptr<SpriteAnimation> obj = std::make_shared<SpriteAnimation>(model, shader, texture,8, 6,5	,1.f);
+		//obj->Set2DPosition(100, 700);
+		//obj->SetSize(250,250);
+		//m_listAnimation.push_back(obj);
+	//}
+	m_KeyPress = 0;
 
-	m_enemy = std::make_shared<Entity>(model, shader, texture, "xyz", 100, 20, 5, 1, true);
-	m_enemy->Set2DPosition(Globals::screenWidth - 48.0f, 48.0f);
-	m_enemy->SetSize(48.0f, 48.0f);
-
+	std::string name = "gsPlay_sound.wav";
+	//ResourceManagers::GetInstance()->PlaySound(name, true);
 	std::cout << "GSPlay Init" << std::endl;
 	
 }
 
 void GSPlay::Exit()
+
 {
+	std::string name = "gsPlay_sound.wav";
+	ResourceManagers::GetInstance()->StopSound(name);
 }
 
 
 void GSPlay::Pause()
 {
+	std::string name = "gsPlay_sound.wav";
+	ResourceManagers::GetInstance()->StopSound(name);
 }
 
 void GSPlay::Resume()
 {
+	std::string name = "gsPlay_sound.wav";
+	ResourceManagers::GetInstance()->PlaySound(name, true);
 }
 
 
@@ -164,7 +172,7 @@ void GSPlay::HandleKeyEvents(int key, bool bIsPressed)//Insert more case if you 
 void GSPlay::HandleTouchEvents(float x, float y, bool bIsPressed)
 {
 	if (bIsPressed == false) {
-	m_gameBoard->HandleClick(x, y);
+	m_gameField->HandleClick(x, y);
 	std::cout << "Handle Click" << std::endl;
 	}
 
@@ -185,8 +193,7 @@ void GSPlay::HandleMouseMoveEvents(float x, float y)
 
 void GSPlay::Update(float deltaTime)
 {
-	GameManager::GetInstance()->Update(deltaTime, *m_gameBoard, *m_player, *m_enemy);
-	m_gameBoard->Update(deltaTime);
+	m_gameField->Update(deltaTime);
 	HandleEvents();
 
 	//Update button list
@@ -208,13 +215,14 @@ void GSPlay::Draw()
 	m_background->Draw();
 	//Render score text
 	m_score->Draw();
+	m_gameField->Draw();
 
 	//Render button list
 	for (auto it : m_listButton)
 	{
 		it->Draw();
 	}
-	m_gameBoard->Draw();
+	//m_gameBoard->Draw();
 	//Render animation list
 	/*for (auto it : m_listAnimation)
 	{

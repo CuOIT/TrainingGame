@@ -2,47 +2,48 @@
 #include"Piece.h"
 #include"Sprite2D.h"
 #include<set>
-
-enum class Phase {
-	BASE_PHASE,
-	SWAP_PHASE,
-	DESTROY_PHASE,
-	REFILL_PHASE,
-};
-
 class GameBoard : public Sprite2D
 {
-	
+
 private:
 	std::shared_ptr<Sprite2D>			m_frame;
+	std::shared_ptr<Sprite2D>			m_background;
 	std::vector<std::pair<int,int>>		m_click;
-	std::shared_ptr<Sprite2D>			m_selected_piece;
-	Phase								m_phase;
-	float								m_standbyTime;
 	int									m_moveSpeed;
+	bool								m_isSwapping;
+	bool								m_isRefilling;
+
 
 
 public:
+	float								m_standbyTime;
+	std::shared_ptr<Sprite2D>			m_selected_piece;
 	std::vector < std::vector<std::shared_ptr<Piece>>> m_board;
 	bool	m_isChangeTurn = false;
 	GameBoard();
 	~GameBoard();
 	void Init();
-	void SetPhase(Phase phase) {
-		m_phase = phase;
+
+	int GetMoveSpeedOfPieceDrop() {
+		return m_moveSpeed;
 	}
-	Phase getPhase() {
-		return m_phase;
+	bool IsSwapping() {
+		return m_isSwapping;
+	}
+	bool IsRefilling() {
+		return m_isRefilling;
 	}
 	bool HasAnAvailableMove(); //check if there are any available move
-	std::set<std::pair<int,int>> GetMatchList();
+	std::set<std::pair<int, int>> GetMatchList();
+	bool SameType(int lastRow, int lastCol, int curRow, int curCol);
 	bool HasAnMatch(); //Check if there are at least 3 pieces matching together
-	void HandleClick(float _x,float _y);
 	bool CanSwapTwoPiece(int lastRow, int lastCol, int curRow, int curCol);  //check if the swap is available by check the same neighbor pieces 
 	void SwapTwoPiece(int lastRow,int lastCol,int curRow,int curCol);  //Swap 2 piece
+	void ChangePositionOfTwoPiece(int lastRow, int lastCol, int curRow, int curCol,float deltaTime);
 	void SwapTwoSelectedPiece(int lastRow, int lastCol, int curRow, int curCol);  //Swap 2 piece
 	void DestroyPieces(std::set<std::pair<int, int>>); //Destroy pieces that match together
-	void RefillGameBoard(); //Refill Gameboard after destroy;
+	void RefillGameBoard(); //Refill Gameboard after destroy but wrong position;
+	void RefillPositionGameBoard(float deltaTime); //Dropping the piece 
 	void Draw();
-	void Update(float deltaTime);
+	//void Update(float deltaTime);
 };

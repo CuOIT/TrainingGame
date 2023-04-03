@@ -81,8 +81,14 @@
     <ClCompile Include="src\GameObject\Entity.cpp">
       <Filter>TrainingFramework\src\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameManager\GameManager.cpp">
-      <Filter>TrainingFramework\src\GameManager</Filter>
+    <ClCompile Include="src\GameObject\GameField.cpp">
+      <Filter>TrainingFramework\src\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameObject\Player.cpp">
+      <Filter>TrainingFramework\src\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameObject\HpBar.cpp">
+      <Filter>TrainingFramework\src\GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -155,11 +161,14 @@
     <ClInclude Include="src\GameObject\Piece.h">
       <Filter>TrainingFramework\src\GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="src\GameObject\GameField.h">
+      <Filter>TrainingFramework\src\GameObject</Filter>
+    </ClInclude>
     <ClInclude Include="src\GameObject\Player.h">
       <Filter>TrainingFramework\src\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="src\GameManager\GameManager.h">
-      <Filter>TrainingFramework\src\GameManager</Filter>
+    <ClInclude Include="src\GameObject\HpBar.h">
+      <Filter>TrainingFramework\src\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
