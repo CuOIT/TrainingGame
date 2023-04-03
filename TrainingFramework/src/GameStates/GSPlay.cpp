@@ -30,7 +30,7 @@ GSPlay::~GSPlay()
 void GSPlay::Init()
 {
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
-	auto texture = ResourceManagers::GetInstance()->GetTexture("background .tga");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("background.tga");
 
 	// background
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
@@ -77,7 +77,7 @@ void GSPlay::Init()
 	m_KeyPress = 0;
 
 	std::string name = "gsPlay_sound.wav";
-	ResourceManagers::GetInstance()->PlaySound(name, true);
+	//ResourceManagers::GetInstance()->PlaySound(name, true);
 	std::cout << "GSPlay Init" << std::endl;
 	
 }
