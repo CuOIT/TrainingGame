@@ -28,7 +28,17 @@ void GameField::Update(float deltaTime) {
 	case Phase::BASE_PHASE:
 	{
 		if (m_currentTurn == ENEMY_TURN) {
-			
+			auto moveList = m_gameBoard->GetAvailableMoveList();
+			auto move = moveList[0];
+			m_gameBoard->SwapTwoSelectedPiece(move[0],move[1],move[2],move[3]);
+			std::pair<int, int> firstClick = { move[0],move[1] };
+			m_click.push_back(firstClick);
+			m_gameBoard->m_selected_piece->Set2DPosition(225 + 50 * move[1], 225 + 50 *move[0]);
+			std::pair<int, int> secondClick = { move[2],move[3] };
+			m_gameBoard->m_selected_piece2->Set2DPosition(225 + 50 * move[3], 225 + 50 * move[2]);
+
+			m_click.push_back(secondClick);
+			SetPhase(Phase::SWAP_PHASE);
 		}
 		break;
 	}
@@ -52,6 +62,8 @@ void GameField::Update(float deltaTime) {
 		m_click.clear();
 		auto matchList = m_gameBoard->GetMatchList();
 		std::cout << "M: " << matchList.size();
+		m_gameBoard->m_selected_piece->Set2DPosition(-200,-200);
+		m_gameBoard->m_selected_piece2->Set2DPosition(-200,-200);
 		//Calculate Damage;
 		m_gameBoard->DestroyPieces(matchList);
 		m_gameBoard->RefillGameBoard();//this function will set refilling=true;
@@ -71,6 +83,7 @@ void GameField::Update(float deltaTime) {
 				if (!m_gameBoard->HasAnAvailableMove()) {
 					m_gameBoard->Init();
 				}
+				m_currentTurn = !m_currentTurn;
 			}
 			else {
 				SetPhase(Phase::DESTROY_PHASE);

@@ -18,6 +18,7 @@ private:
 public:
 	float								m_standbyTime;
 	std::shared_ptr<Sprite2D>			m_selected_piece;
+	std::shared_ptr<Sprite2D>			m_selected_piece2;
 	std::vector < std::vector<std::shared_ptr<Piece>>> m_board;
 	GameBoard();
 	~GameBoard();
@@ -36,6 +37,7 @@ public:
 	std::set<std::pair<int, int>> GetMatchList();
 	bool SameType(int lastRow, int lastCol, int curRow, int curCol);
 	bool HasAnMatch(); //Check if there are at least 3 pieces matching together
+	std::vector<std::vector<int>> GetAvailableMoveList();
 	bool CanSwapTwoPiece(int lastRow, int lastCol, int curRow, int curCol);  //check if the swap is available by check the same neighbor pieces 
 	void SwapTwoPiece(int lastRow,int lastCol,int curRow,int curCol);  //Swap 2 piece
 	void ChangePositionOfTwoPiece(int lastRow, int lastCol, int curRow, int curCol,float deltaTime);
