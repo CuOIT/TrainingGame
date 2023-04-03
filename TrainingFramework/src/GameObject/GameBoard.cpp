@@ -6,7 +6,7 @@
 #include <queue>
 #include <set>
 
-GameBoard::GameBoard() :Sprite2D(),m_phase(Phase::BASE_PHASE),m_standbyTime(0),m_moveSpeed(300) {
+GameBoard::GameBoard() :Sprite2D(),m_standbyTime(0),m_moveSpeed(300) {
 	this->Set2DPosition(200, 200);
 	Init();
 };
@@ -41,7 +41,7 @@ void GameBoard::Init() {
 				}
 				else {
 					int pre3 = static_cast<int>(m_board[i-1][j]->GetType());
-					int pre4 = static_cast<int>(m_board[i-2][j]->GetType());
+					int pre4 = static_cast<int>(m_board[i-2][j]->GetType()); 
 					colCheck = (pre3 == pre4 ? pre3 : -1);
 				}
 				int ran = rand() % 6;
@@ -88,77 +88,81 @@ void GameBoard::Init() {
 
 }
 
-void GameBoard::Update(float deltaTime) {
-
-	switch (m_phase) {
-		case Phase::BASE_PHASE:
-		{
-			
-			break;
-		}
-		case Phase::SWAP_PHASE:
-		{
-
-			int lastRow = m_click[0].first;
-			int lastCol = m_click[0].second;
-			int curRow = m_click[1].first;
-			int curCol = m_click[1].second;
-			if (m_board[lastRow][lastCol]->Get2DPosition().x == 226 +lastCol * 50 && m_board[lastRow][lastCol]->Get2DPosition().y == 226 + lastRow * 50) {
-				m_standbyTime += deltaTime;
-				if (m_standbyTime >= 0.5f) {
-					m_standbyTime = 0;
-					SetPhase(Phase::DESTROY_PHASE);
-				}
-			}
-			else {
-				int vx = (lastCol - curCol > 0 ? 1 : (lastCol - curCol == 0 ? 0 : -1));
-				int vy = (lastRow - curRow > 0 ? 1 : (lastRow - curRow == 0 ? 0 : -1));
-				std::cout << "Move speed:" << m_moveSpeed << std::endl;
-				m_board[lastRow][lastCol]->Set2DPosition(m_board[lastRow][lastCol]->Get2DPosition().x + vx * (int)(m_moveSpeed * deltaTime), m_board[lastRow][lastCol]->Get2DPosition().y + vy * (int)(m_moveSpeed * deltaTime));
-				m_board[curRow][curCol]->Set2DPosition(m_board[curRow][curCol]->Get2DPosition().x - vx * (int)(m_moveSpeed * deltaTime), m_board[curRow][curCol]->Get2DPosition().y - vy * (int)(m_moveSpeed * deltaTime));
-				if (abs(m_board[lastRow][lastCol]->Get2DPosition().x - 226 - 50 * lastCol + m_board[lastRow][lastCol]->Get2DPosition().y - 226 - 50 * lastRow) < abs((int)(m_moveSpeed * deltaTime)))
-					m_board[lastRow][lastCol]->Set2DPosition(226+50*lastCol,226+50*lastRow);
-				if (abs(m_board[curRow][curCol]->Get2DPosition().x - 226 - 50 * curCol + m_board[curRow][curCol]->Get2DPosition().y - 226 - 50 * curRow) < abs((int)(m_moveSpeed * deltaTime)))
-					m_board[curRow][curCol]->Set2DPosition(226+50*curCol,226+50*curRow);
-				//SetPhase(Phase::DESTROY_PHASE);
-			}
-			
-			
-			break;
-		}
-		case Phase::DESTROY_PHASE: 
-		{
-			m_click.clear();
-			DestroyPieces(this->GetMatchList());
-			RefillGameBoard();
-			SetPhase(Phase::REFILL_PHASE);
-			break;
-		}
-		case Phase::REFILL_PHASE:
-		{
-			for (int i = 0; i < 8; i++)
-				for (int j = 0; j < 8; j++) {
-					m_board[i][j]->Dropping(m_moveSpeed*deltaTime);
-				}
-			m_standbyTime +=deltaTime;
-			if (m_standbyTime >= 400/m_moveSpeed) {
-			auto matchList = this->GetMatchList();
-			if (matchList.empty()) {
-				SetPhase(Phase::BASE_PHASE);
-				if (!HasAnAvailableMove()) {
-					Init();
-				}
-			}
-			else {
-				SetPhase(Phase::DESTROY_PHASE);
-			}
-			m_standbyTime = 0;
-			}
-			break;
-		}
+void GameBoard::ChangePositionOfTwoPiece(int lastRow, int lastCol, int curRow, int curCol,float deltaTime) {
+	if (m_board[lastRow][lastCol]->Get2DPosition().x == 226 + lastCol * 50 && m_board[lastRow][lastCol]->Get2DPosition().y == 226 + lastRow * 50) {
+		m_isSwapping = false;
 	}
+	else {
+		int vx = (lastCol - curCol > 0 ? 1 : (lastCol - curCol == 0 ? 0 : -1));
+		int vy = (lastRow - curRow > 0 ? 1 : (lastRow - curRow == 0 ? 0 : -1));
+		m_board[lastRow][lastCol]->Set2DPosition(m_board[lastRow][lastCol]->Get2DPosition().x + vx * (int)(m_moveSpeed * deltaTime), m_board[lastRow][lastCol]->Get2DPosition().y + vy * (int)(m_moveSpeed * deltaTime));
+		m_board[curRow][curCol]->Set2DPosition(m_board[curRow][curCol]->Get2DPosition().x - vx * (int)(m_moveSpeed * deltaTime), m_board[curRow][curCol]->Get2DPosition().y - vy * (int)(m_moveSpeed * deltaTime));
+		if (abs(m_board[lastRow][lastCol]->Get2DPosition().x - 226 - 50 * lastCol + m_board[lastRow][lastCol]->Get2DPosition().y - 226 - 50 * lastRow) < abs((int)(m_moveSpeed * deltaTime)))
+			m_board[lastRow][lastCol]->Set2DPosition(226 + 50 * lastCol, 226 + 50 * lastRow);
+		if (abs(m_board[curRow][curCol]->Get2DPosition().x - 226 - 50 * curCol + m_board[curRow][curCol]->Get2DPosition().y - 226 - 50 * curRow) < abs((int)(m_moveSpeed * deltaTime)))
+			m_board[curRow][curCol]->Set2DPosition(226 + 50 * curCol, 226 + 50 * curRow);
+		//SetPhase(Phase::DESTROY_PHASE);
+	}
+};
 
-
+//void GameBoard::Update(float deltaTime,GameField::Phase phase) {
+//
+//	switch (phase) {
+//		case GameField::Phase::BASE_PHASE:
+//		{
+//			
+//			break;
+//		}
+//		case Phase::SWAP_PHASE:
+//		{
+//
+//			int lastRow = m_click[0].first;
+//			int lastCol = m_click[0].second;
+//			int curRow = m_click[1].first;
+//			int curCol = m_click[1].second;
+//			ChangePositionOfTwoPiece(lastRow, lastCol, curRow, curCol, deltaTime);
+//			break;
+//		}
+//		case Phase::DESTROY_PHASE: 
+//		{
+//			m_click.clear();
+//			DestroyPieces(this->GetMatchList());
+//			RefillGameBoard();
+//			SetPhase(Phase::REFILL_PHASE);
+//			break;
+//		}
+//		case Phase::REFILL_PHASE:
+//		{
+//			RefillPositionGameBoard(deltaTime);	
+//			if (m_standbyTime >= 400/m_moveSpeed) {
+//			auto matchList = this->GetMatchList();
+//			if (matchList.empty()) {
+//				SetPhase(Phase::BASE_PHASE);
+//				if (!HasAnAvailableMove()) {
+//					Init();
+//				}
+//			}
+//			else {
+//				SetPhase(Phase::DESTROY_PHASE);
+//			}
+//			m_standbyTime = 0;
+//			}
+//			break;
+//		}
+//	}
+//
+//
+//}
+void GameBoard::RefillPositionGameBoard(float deltaTime) {
+	for (int i = 0; i < 8; i++)
+		for (int j = 0; j < 8; j++) {
+			m_board[i][j]->Dropping(m_moveSpeed * deltaTime);
+		}
+	m_standbyTime += deltaTime;
+	if (m_standbyTime > 400 / m_moveSpeed) {
+		m_isRefilling = false;
+		m_standbyTime = 0;
+	}
 }
 void GameBoard::Draw() {
 	m_background->Draw();
@@ -169,9 +173,7 @@ void GameBoard::Draw() {
 
 		}
 	m_frame->Draw();
-	if (m_click.size() == 1) {
-		m_selected_piece->Draw();
-	}
+	m_selected_piece->Draw();
 }
 
 std::set<std::pair<int,int>> GameBoard::GetMatchList() {
@@ -301,6 +303,8 @@ void GameBoard::SwapTwoSelectedPiece(int lastRow, int lastCol, int curRow, int c
 
 	m_board[curRow][curCol]->SetRow(curRow);
 	m_board[curRow][curCol]->SetCol(curCol);
+	m_isSwapping = true;
+
 }
 void GameBoard::SwapTwoPiece(int lastRow, int lastCol, int curRow, int curCol) {
 
@@ -316,7 +320,6 @@ void GameBoard::SwapTwoPiece(int lastRow, int lastCol, int curRow, int curCol) {
 		m_board[curRow][curCol]->SetRow(curRow);
 		m_board[curRow][curCol]->SetCol(curCol);
 	}
-
 }
 
 void GameBoard::DestroyPieces(std::set<std::pair<int,int>> matchList) {
@@ -376,6 +379,15 @@ void GameBoard::RefillGameBoard() {
 			m_board[nullCount][j] = p;
 		}
 	}
+	m_isRefilling = true;
+}
+bool GameBoard::SameType(int lastRow, int lastCol, int curRow, int curCol) {
+	if (lastRow < 0 || lastRow>7 ||
+		lastCol < 0 || lastCol>7 ||
+		curRow < 0 || curRow>7 ||
+		curCol < 0 || curCol>7) return false;
+	if (m_board[lastRow][lastCol]->GetType() == m_board[curRow][curCol]->GetType()) return true;
+	return false;
 }
 bool GameBoard::HasAnAvailableMove() {
 	int i = 0;
@@ -416,35 +428,4 @@ bool GameBoard::CanSwapTwoPiece(int lastRow, int lastCol, int curRow, int curCol
 		return false;
 	}
 }
-void GameBoard::HandleClick(float _x, float _y)
-{	
-	float posX = this->Get2DPosition().x;
-	float posY = this->Get2DPosition().y;
-	//std::cout << _x << " va " << _y<<std::endl;
-	if(m_phase==Phase::BASE_PHASE)
-	if (posX <= _x && _x <= posX + 400
-		&& posY <= _y && _y <= posY + 400) {
-		int curRow = (int)(_y - posY) / 50;
-		int curCol = (int)(_x-posX) / 50;
-		//std::cout << curRow << " va " << curCol <<" co " <<static_cast<int>(m_board[curRow][curCol]->GetType()) << std::endl;
-		if (m_click.size() == 1) {
-			int lastRow = m_click[0].first;
-			int lastCol = m_click[0].second;
-			if (abs(lastRow - curRow) + abs(curCol - lastCol) == 1)  {
-					m_click.push_back({curRow, curCol});
-					if (CanSwapTwoPiece(lastRow, lastCol, curRow, curCol)) {
-						SwapTwoSelectedPiece(lastRow, lastCol, curRow, curCol);
-						SetPhase(Phase::SWAP_PHASE);
-					}
-				}else {
-						m_click.clear();
-					}
-		}
-		else if (m_click.empty()) {
-			m_click.push_back({ curRow,curCol });
-			m_selected_piece->Set2DPosition(curCol * 50 + 226, curRow * 50 + 226);
-		}
-	}
 
-
-}
