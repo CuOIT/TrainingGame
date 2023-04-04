@@ -64,7 +64,7 @@ void GSPlay::Init()
 		std::shared_ptr<Player> player = std::make_shared<Player>(model,shader,texture,8,6,5,0.05f,"Player",200,200,2,0);
 		player->Set2DPosition(100, 700);
 		player->SetSize(250, 250);
-		std::shared_ptr<Entity> enermy = std::make_shared<Entity>(model, shader, texture, 8, 6, 4, 0.05f, "Player", 200, 200, 2, 0);
+		std::shared_ptr<Entity> enermy = std::make_shared<Entity>(model, shader, texture, 8, 6, 4, 0.05f, "Enemy", 200, 200, 2, 0);
 		enermy->Set2DPosition(600, 700);
 		enermy->SetSize(-250, 250);
 		m_gameField = std::make_shared<GameField>(player, enermy);
