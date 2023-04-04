@@ -35,6 +35,7 @@ public:
 	}
 	bool HasAnAvailableMove(); //check if there are any available move
 	std::set<std::pair<int, int>> GetMatchList();
+	std::vector<int> GetPieceList(std::set<std::pair<int, int>>);
 	bool SameType(int lastRow, int lastCol, int curRow, int curCol);
 	bool HasAnMatch(); //Check if there are at least 3 pieces matching together
 	std::vector<std::vector<int>> GetAvailableMoveList();

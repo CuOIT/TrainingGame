@@ -87,7 +87,7 @@
     <ClCompile Include="src\GameObject\Player.cpp">
       <Filter>TrainingFramework\src\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameObject\HpBar.cpp">
+    <ClCompile Include="src\GameObject\StatusBar.cpp">
       <Filter>TrainingFramework\src\GameObject</Filter>
     </ClCompile>
   </ItemGroup>
@@ -167,7 +167,7 @@
     <ClInclude Include="src\GameObject\Player.h">
       <Filter>TrainingFramework\src\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="src\GameObject\HpBar.h">
+    <ClInclude Include="src\GameObject\StatusBar.h">
       <Filter>TrainingFramework\src\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
