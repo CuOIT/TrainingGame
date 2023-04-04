@@ -41,21 +41,15 @@ void GSPlay::Init()
 
 	m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
 
-	// button close
-	/*texture = ResourceManagers::GetInstance()->GetTexture("btn_close.tga");
+	// button 
+	texture = ResourceManagers::GetInstance()->GetTexture("btn_menu.tga");
 	std::shared_ptr<GameButton>  button = std::make_shared<GameButton>(model, shader, texture);
 	button->Set2DPosition(Globals::screenWidth - 50.0f, 50.0f);
 	button->SetSize(50, 50);
 	button->SetOnClick([this]() {
 		GameStateMachine::GetInstance()->PopState();
 		});
-	m_listButton.push_back(button);*/
-
-	// score
-	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
-	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Brightly Crush Shine.otf");
-	m_score = std::make_shared< Text>(shader, font, "score: 10", TextColor::RED, 1.0f);
-	m_score->Set2DPosition(Vector2(5.0f, 25.0f));
+	m_listButton.push_back(button);
 
 	//animation
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
@@ -215,8 +209,7 @@ void GSPlay::Draw()
 {
 	//Render background
 	m_background->Draw();
-	//Render score text
-	m_score->Draw();
+	
 	m_gameField->Draw();
 
 	//Render button list
