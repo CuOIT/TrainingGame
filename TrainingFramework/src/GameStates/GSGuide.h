@@ -1,21 +1,13 @@
 #pragma once
 #include "GameStateBase.h"
-#include"GameBoard.h"
-#include"GameField.h"
-#include"Player.h"
-#include"Entity.h"
-class Sprite2D;
-class Sprite3D;
-class Text;
-class GameButton;
-class SpriteAnimation;
+#include "GameButton.h"
 
-class GSPlay :
+class GSGuide :
 	public GameStateBase
 {
 public:
-	GSPlay();
-	~GSPlay();
+	GSGuide();
+	~GSGuide();
 
 	void	Init() override;
 	void	Exit() override;
@@ -29,16 +21,10 @@ public:
 	void	HandleMouseMoveEvents(float x, float y) override;
 	void	Update(float deltaTime) override;
 	void	Draw() override;
-	int m_KeyPress;
 
 private:
-	std::shared_ptr<GameBoard>	m_gameBoard;
-	std::shared_ptr<GameField>	m_gameField;
-	std::shared_ptr<Sprite2D>	m_background;
+	std::shared_ptr<Sprite2D>				m_background;
 	std::list<std::shared_ptr<GameButton>>	m_listButton;
-	std::list<std::shared_ptr<SpriteAnimation>>	m_listAnimation;
-	std::shared_ptr<Piece>	m_piece;
-	std::shared_ptr<Entity> m_player;
-	std::shared_ptr<Entity> m_enemy;
-};
+	std::list<std::shared_ptr<Text>>		m_listText;
 
+};
