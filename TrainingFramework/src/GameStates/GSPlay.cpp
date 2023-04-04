@@ -42,14 +42,14 @@ void GSPlay::Init()
 	m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
 
 	// button close
-	texture = ResourceManagers::GetInstance()->GetTexture("btn_close.tga");
+	/*texture = ResourceManagers::GetInstance()->GetTexture("btn_close.tga");
 	std::shared_ptr<GameButton>  button = std::make_shared<GameButton>(model, shader, texture);
 	button->Set2DPosition(Globals::screenWidth - 50.0f, 50.0f);
 	button->SetSize(50, 50);
 	button->SetOnClick([this]() {
 		GameStateMachine::GetInstance()->PopState();
 		});
-	m_listButton.push_back(button);
+	m_listButton.push_back(button);*/
 
 	// score
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
@@ -77,7 +77,7 @@ void GSPlay::Init()
 	m_KeyPress = 0;
 
 	std::string name = "gsPlay_sound.wav";
-	//ResourceManagers::GetInstance()->PlaySound(name, true);
+	ResourceManagers::GetInstance()->PlaySound(name, true);
 	std::cout << "GSPlay Init" << std::endl;
 	
 }
