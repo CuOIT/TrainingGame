@@ -40,5 +40,6 @@ private:
 	std::shared_ptr<Piece>	m_piece;
 	std::shared_ptr<Entity> m_player;
 	std::shared_ptr<Entity> m_enemy;
+	bool m_isPause = false;
 };
 
