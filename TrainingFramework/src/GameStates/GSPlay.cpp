@@ -38,16 +38,16 @@ void GSPlay::Init()
 	/*m_background->Set2DPosition(620, 950);
 	m_background->SetSize(-320, 80);*/
 	m_background->Set2DPosition((float)Globals::screenWidth / 2.0f, (float)Globals::screenHeight / 2.0f);
-
 	m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
 
 	// button 
-	texture = ResourceManagers::GetInstance()->GetTexture("btn_menu.tga");
+	texture = ResourceManagers::GetInstance()->GetTexture("btn_more.tga");
 	std::shared_ptr<GameButton>  button = std::make_shared<GameButton>(model, shader, texture);
 	button->Set2DPosition(Globals::screenWidth - 50.0f, 50.0f);
 	button->SetSize(50, 50);
 	button->SetOnClick([this]() {
-		GameStateMachine::GetInstance()->PopState();
+		m_isPause = true;
+		this->Pause();
 		});
 	m_listButton.push_back(button);
 
@@ -91,6 +91,13 @@ void GSPlay::Pause()
 
 	std::string name = "gsPlay_sound.wav";
 	ResourceManagers::GetInstance()->StopSound(name);
+
+	// bg pause
+	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
+	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("bg_pause.tga");
+
+
 }
 void GSPlay::Resume()
 {
@@ -189,14 +196,19 @@ void GSPlay::HandleMouseMoveEvents(float x, float y)
 
 void GSPlay::Update(float deltaTime)
 {
-	m_gameField->Update(deltaTime);
-	HandleEvents();
-
-	//Update button list
-	for (auto it : m_listButton)
+	if (!m_isPause)
 	{
-		it->Update(deltaTime);
+		m_gameField->Update(deltaTime);
+		HandleEvents();
+
+		//Update button list
+		for (auto it : m_listButton)
+		{
+			it->Update(deltaTime);
+		}
 	}
+
+	
 
 	//Update animation list
 	/*for (auto it : m_listAnimation)
