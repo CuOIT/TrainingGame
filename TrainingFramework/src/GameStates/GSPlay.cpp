@@ -51,20 +51,14 @@ void GSPlay::Init()
 	//animation
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
 	texture = ResourceManagers::GetInstance()->GetTexture("warrior3_auto_x24.tga");
-	//for (int i = 0; i < 1; i++) {
-		std::shared_ptr<Player> player = std::make_shared<Player>(model,shader,texture,8,6,5,0.05f,"Player",200,200,2,0);
-		player->Set2DPosition(100, 700);
-		player->SetSize(250, 250);
-		std::shared_ptr<Entity> enermy = std::make_shared<Entity>(model, shader, texture, 8, 6, 4, 0.05f, "Enemy", 200, 200, 2, 0);
-		enermy->Set2DPosition(600, 700);
-		enermy->SetSize(-250, 250);
-		m_gameField = std::make_shared<GameField>(player, enermy);
-
-		//std::shared_ptr<SpriteAnimation> obj = std::make_shared<SpriteAnimation>(model, shader, texture,8, 6,5	,1.f);
-		//obj->Set2DPosition(100, 700);
-		//obj->SetSize(250,250);
-		//m_listAnimation.push_back(obj);
-	//}
+	std::shared_ptr<Player> player = std::make_shared<Player>(model,shader,texture,8,6,5,0.05f,"Player",200,200,2,0);
+	player->Set2DPosition(100, 700);
+	player->SetSize(250, 250);
+	std::shared_ptr<Entity> enermy = std::make_shared<Entity>(model, shader, texture, 8, 6, 4, 0.05f, "Enemy", 200, 200, 2, 0);
+	enermy->Set2DPosition(600, 700);
+	enermy->SetSize(-250, 250);
+	m_gameField = std::make_shared<GameField>(player, enermy);
+	
 	m_KeyPress = 0;
 
 	std::string name = "gsPlay_sound.wav";
