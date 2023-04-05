@@ -10,25 +10,25 @@ StatusBar::StatusBar(int maxHp, int maxMana, bool isPlayer) :m_maxHp(maxHp), m_m
 	m_statusBarBG	= std::make_shared<Sprite2D>(model, shader, texture);
 	texture = ResourceManagers::GetInstance()->GetTexture("hp_bar.tga");
 	m_hpBar			= std::make_shared<Sprite2D>(model, shader, texture);
-	m_hpBar->SetSize(180, 10);
+	m_hpBar->SetSize(SB_maxBarWidth, SB_barHeight);
 ;	texture = ResourceManagers::GetInstance()->GetTexture("mana_bar.tga");
 	m_manaBar = std::make_shared<Sprite2D>(model, shader, texture);
-	m_manaBar->SetSize(180, 10);
+	m_manaBar->SetSize(SB_maxBarWidth, SB_barHeight);
 
 	this->x = 20;
 
 	if (isPlayer) {
-		m_statusBarBG->Set2DPosition(180, 950);
-		m_statusBarBG->SetSize(320, 80);
-		m_hpBar->Set2DPosition(this->x+190, this->y+17);
-		m_manaBar->Set2DPosition(this->x +190, this->y + 41);
+		m_statusBarBG->Set2DPosition(SB_posX+SB_width/2, SB_posY+SB_height/2);
+		m_statusBarBG->SetSize(SB_width, SB_height);
+		m_hpBar->Set2DPosition(SB_posXOfBar + SB_maxBarWidth/2, SB_posYOfHpBar+SB_barHeight/2);
+		m_manaBar->Set2DPosition(SB_posXOfBar + SB_maxBarWidth / 2, SB_posYOfHpBar + SB_barHeight / 2);
 
 	}
 	else {
-		m_statusBarBG->Set2DPosition(620, 950);
-		m_statusBarBG->SetSize(-320, 80);
-		m_hpBar->Set2DPosition(800-(this->x+190), this->y + 17);
-		m_manaBar->Set2DPosition(800-(this->x + 190), this->y + 41);
+		m_statusBarBG->Set2DPosition(Globals::screenWidth-(SB_posX+SB_width/2), SB_posY + SB_height / 2);
+		m_statusBarBG->SetSize(-SB_width, SB_height);
+		m_hpBar->Set2DPosition(Globals::screenWidth-(SB_posXOfBar + SB_maxBarWidth / 2), SB_posYOfHpBar + SB_barHeight / 2);
+		m_manaBar->Set2DPosition(Globals::screenWidth - (SB_posXOfBar + SB_maxBarWidth / 2), SB_posYOfManaBar + SB_barHeight / 2);
 	}
 };
 StatusBar::~StatusBar(){};
@@ -36,22 +36,22 @@ StatusBar::~StatusBar(){};
 
 void StatusBar::SetHp(int hp) {
 	m_hp = hp;
-	m_hpBar->SetSize(180 * m_hp / m_maxHp, 10);
+	m_hpBar->SetSize(SB_maxBarWidth * m_hp / m_maxHp, SB_barHeight);
 	if (m_isPlayer) {
-	m_hpBar->Set2DPosition(this->x +100+ 90 * m_hp / m_maxHp, this->y + 17);
+	m_hpBar->Set2DPosition(SB_posXOfBar+ SB_maxBarWidth * m_hp / m_maxHp / 2, SB_posYOfHpBar + SB_barHeight / 2);
 	}
 	else {
-		m_hpBar->Set2DPosition(800-(this->x + 100 + 90 * m_hp / m_maxHp), this->y + 17);
+		m_hpBar->Set2DPosition(Globals::screenWidth - (SB_posXOfBar + SB_maxBarWidth * m_hp / m_maxHp / 2), SB_posYOfHpBar + SB_barHeight / 2);
 	}
 }
 void StatusBar::SetMana(int mana) {
 	m_mana = mana;
-	m_manaBar->SetSize(180 * m_mana / m_maxMana, 10);
+	m_manaBar->SetSize(SB_maxBarWidth * m_mana / m_maxMana, SB_barHeight);
 	if (m_isPlayer) {
-		m_manaBar->Set2DPosition(this->x + 100 + 90 * m_mana / m_maxMana, this->y + 41);
+		m_manaBar->Set2DPosition(SB_posXOfBar + SB_maxBarWidth * m_mana / m_maxMana / 2, SB_posYOfManaBar + SB_barHeight / 2);
 	}
 	else {
-		m_manaBar->Set2DPosition(800 - (this->x + 100 + 90 * m_mana / m_maxMana), this->y + 41);
+		m_manaBar->Set2DPosition(Globals::screenWidth - (SB_posXOfBar + SB_maxBarWidth * m_mana / m_maxMana / 2), SB_posYOfManaBar + SB_barHeight / 2);
 	}
 }
 void StatusBar::Update(float deltaTime,std::shared_ptr<Entity> entity) {
