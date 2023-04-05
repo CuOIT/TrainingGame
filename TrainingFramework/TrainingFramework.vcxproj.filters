@@ -87,9 +87,8 @@
     <ClCompile Include="src\GameObject\Player.cpp">
       <Filter>TrainingFramework\src\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameObject\StatusBar.cpp" />
-    <ClCompile Include="src\GameStates\GSGuide.cpp">
-      <Filter>TrainingFramework\src\GameStates</Filter>
+    <ClCompile Include="src\GameObject\StatusBar.cpp">
+      <Filter>TrainingFramework\src\GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -168,9 +167,8 @@
     <ClInclude Include="src\GameObject\Player.h">
       <Filter>TrainingFramework\src\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="src\GameObject\StatusBar.h" />
-    <ClInclude Include="src\GameStates\GSGuide.h">
-      <Filter>TrainingFramework\src\GameStates</Filter>
+    <ClInclude Include="src\GameObject\StatusBar.h">
+      <Filter>TrainingFramework\src\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -350,9 +350,9 @@
     <ClCompile Include="src\GameObject\GameBoard.cpp" />
     <ClCompile Include="src\GameObject\GameButton.cpp" />
     <ClCompile Include="src\GameObject\GameField.cpp" />
-    <ClCompile Include="src\GameObject\StatusBar.cpp" />
     <ClCompile Include="src\GameObject\Piece.cpp" />
     <ClCompile Include="src\GameObject\Player.cpp" />
+    <ClCompile Include="src\GameObject\StatusBar.cpp" />
     <ClCompile Include="src\GameObject\Sprite2D.cpp" />
     <ClCompile Include="src\GameObject\Camera.cpp" />
     <ClCompile Include="src\GameObject\Sprite3D.cpp" />
@@ -380,7 +380,6 @@
     <ClInclude Include="src\GameObject\GameBoard.h" />
     <ClInclude Include="src\GameObject\GameButton.h" />
     <ClInclude Include="src\GameObject\GameField.h" />
-    <ClInclude Include="src\GameObject\StatusBar.h" />
     <ClInclude Include="src\GameObject\Piece.h" />
     <ClInclude Include="src\GameObject\Player.h" />
     <ClInclude Include="src\GameObject\Sprite2D.h" />
@@ -389,6 +388,7 @@
     <ClInclude Include="src\GameObject\Model.h" />
     <ClInclude Include="src\GameObject\Shader.h" />
     <ClInclude Include="src\GameObject\SpriteAnimation.h" />
+    <ClInclude Include="src\GameObject\StatusBar.h" />
     <ClInclude Include="src\GameObject\Text.h" />
     <ClInclude Include="src\GameObject\Texture.h" />
     <ClInclude Include="src\GameStates\GameStateBase.h" />
