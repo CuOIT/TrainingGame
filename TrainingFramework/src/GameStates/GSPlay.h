@@ -4,6 +4,8 @@
 #include"GameField.h"
 #include"Player.h"
 #include"Entity.h"
+#include "PauseMenu.h"
+
 class Sprite2D;
 class Sprite3D;
 class Text;
@@ -30,6 +32,9 @@ public:
 	void	Update(float deltaTime) override;
 	void	Draw() override;
 	int m_KeyPress;
+	
+	bool GetIsPause() { return m_isPause; };
+	void SetIsPause(bool isPause) { m_isPause = isPause; };
 
 private:
 	std::shared_ptr<GameBoard>	m_gameBoard;
@@ -40,6 +45,8 @@ private:
 	std::shared_ptr<Piece>	m_piece;
 	std::shared_ptr<Entity> m_player;
 	std::shared_ptr<Entity> m_enemy;
+	std::shared_ptr<PauseMenu> m_pauseMenu;
 	bool m_isPause = false;
+	
 };
 

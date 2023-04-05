@@ -1,6 +1,7 @@
 #pragma once
 #include "GameStateBase.h"
 #include "GameButton.h"
+#include "GameStateMachine.h"
 
 class GSMenu :
 	public GameStateBase

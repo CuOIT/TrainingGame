@@ -29,7 +29,7 @@ void GSMenu::Init()
 	std::shared_ptr<GameButton> button = std::make_shared<GameButton>(model, shader, texture);
 	button->Set2DPosition(Globals::screenWidth / 2.0f, Globals::screenHeight / 2.0f - 150.0f);
 	button->SetSize(300, 100);
-	button->SetOnClick([]() {
+	button->SetOnClick([this]() {
 		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
 		});
 	m_listButton.push_back(button);
@@ -38,7 +38,7 @@ void GSMenu::Init()
 	button = std::make_shared<GameButton>(model, shader, texture);
 	button->Set2DPosition(Globals::screenWidth / 2.0f, Globals::screenHeight / 2.0f);
 	button->SetSize(300, 100);
-	button->SetOnClick([]() {
+	button->SetOnClick([this]() {
 		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_GUIDE);
 		});
 	m_listButton.push_back(button);
@@ -91,9 +91,7 @@ void GSMenu::Pause()
 
 void GSMenu::Resume()
 {
-	std::string name = "gravity_fall_theme_sound.wav";
 
-	ResourceManagers::GetInstance()->PlaySound(name, true);
 }
 
 
