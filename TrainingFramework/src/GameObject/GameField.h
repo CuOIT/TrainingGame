@@ -26,10 +26,8 @@ public:
 	void								SetPhase(Phase phase);
 	Phase								getPhase();
 	void								BotMove();
-
-	void Update(float deltaTime);
 	void Draw();
-	std::shared_ptr<GameBoard>			m_gameBoard;
+	
 private:
 	bool								m_currentTurn;
 	Phase								m_phase;
