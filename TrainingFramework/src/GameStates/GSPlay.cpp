@@ -35,18 +35,15 @@ void GSPlay::Init()
 	// background
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 	m_background = std::make_shared<Sprite2D>(model, shader, texture);
-	/*m_background->Set2DPosition(620, 950);
-	m_background->SetSize(-320, 80);*/
 	m_background->Set2DPosition((float)Globals::screenWidth / 2.0f, (float)Globals::screenHeight / 2.0f);
 	m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
 
 	// button 
 	texture = ResourceManagers::GetInstance()->GetTexture("btn_more.tga");
-	std::shared_ptr<GameButton>  button = std::make_shared<GameButton>(model, shader, texture);
+	std::shared_ptr<GameButton> button = std::make_shared<GameButton>(model, shader, texture);
 	button->Set2DPosition(Globals::screenWidth - 50.0f, 50.0f);
 	button->SetSize(50, 50);
 	button->SetOnClick([this]() {
-		m_isPause = true;
 		this->Pause();
 		});
 	m_listButton.push_back(button);
@@ -72,6 +69,7 @@ void GSPlay::Init()
 
 	std::string name = "gsPlay_sound.wav";
 	ResourceManagers::GetInstance()->PlaySound(name, true);
+
 	std::cout << "GSPlay Init" << std::endl;
 	
 }
@@ -88,21 +86,13 @@ void GSPlay::Exit()
 void GSPlay::Pause()
 {
 	std::cout << "Pause" << std::endl;
-
-	std::string name = "gsPlay_sound.wav";
-	ResourceManagers::GetInstance()->StopSound(name);
-
-	// bg pause
-	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
-	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
-	auto texture = ResourceManagers::GetInstance()->GetTexture("bg_pause.tga");
-
-
+	m_isPause = true;
+	m_pauseMenu = std::make_shared<PauseMenu>(this);
 }
 void GSPlay::Resume()
 {
-	std::string name = "gsPlay_sound.wav";
-	ResourceManagers::GetInstance()->PlaySound(name, true);
+	std::cout << "Resume" << std::endl;
+	m_isPause = false;
 }
 
 
@@ -174,9 +164,14 @@ void GSPlay::HandleKeyEvents(int key, bool bIsPressed)//Insert more case if you 
 //Handle button event
 void GSPlay::HandleTouchEvents(float x, float y, bool bIsPressed)
 {
-	if (bIsPressed == false) {
+	if (bIsPressed == false && m_isPause == false) {
 	m_gameField->HandleClick(x, y);
 	std::cout << "Handle Click" << std::endl;
+	}
+
+	if(m_isPause)
+	{
+		m_pauseMenu->HandleTouchEvents(x, y, bIsPressed);
 	}
 
 	for (auto button : m_listButton)
@@ -207,7 +202,10 @@ void GSPlay::Update(float deltaTime)
 			it->Update(deltaTime);
 		}
 	}
-
+	else
+	{
+		m_pauseMenu->Update(deltaTime);
+	}
 	
 
 	//Update animation list
@@ -221,14 +219,19 @@ void GSPlay::Draw()
 {
 	//Render background
 	m_background->Draw();
-	
 	m_gameField->Draw();
+	
+	if (m_isPause)
+	{
+		m_pauseMenu->Draw();
+	}
 
 	//Render button list
 	for (auto it : m_listButton)
 	{
 		it->Draw();
 	}
+
 	//m_gameBoard->Draw();
 	//Render animation list
 	/*for (auto it : m_listAnimation)
