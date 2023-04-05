@@ -68,9 +68,6 @@ void GSPlay::Init()
 	m_KeyPress = 0;
 
 	std::string name = "gsPlay_sound.wav";
-	//ResourceManagers::GetInstance()->PlaySound(name, true);
-
-	std::string name = "gsPlay_sound.wav";
 	ResourceManagers::GetInstance()->PlaySound(name, true);
 
 	std::cout << "GSPlay Init" << std::endl;
