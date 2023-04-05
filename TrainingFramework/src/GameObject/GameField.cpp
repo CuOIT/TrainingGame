@@ -2,7 +2,7 @@
 #include"Player.h"
 #include"GameBoard.h"
 #include"GameField.h"
-#include"Entity.h"
+#include"Entity.h"	
 #include"StatusBar.h"
 #include<queue>
 

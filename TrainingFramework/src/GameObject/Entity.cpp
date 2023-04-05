@@ -43,7 +43,10 @@ int	Entity::GetAttack()
 
 void Entity::SetAttack(int attack)
 {
-	m_attack = attack;
+	if (attack > 0)
+		m_attack = attack;
+	else
+		m_attack = 1;
 }
 
 int	Entity::GetDefense()
@@ -53,7 +56,10 @@ int	Entity::GetDefense()
 
 void Entity::SetDefense(int defense)
 {
-	m_defense = defense;
+	if (defense > 0)
+		m_defense = defense;
+	else
+		m_defense = 0;
 }
 
 int	Entity::GetCurrentHp()
