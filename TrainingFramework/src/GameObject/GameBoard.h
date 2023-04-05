@@ -20,6 +20,7 @@ public:
 	std::shared_ptr<Sprite2D>			m_selected_piece;
 	std::shared_ptr<Sprite2D>			m_selected_piece2;
 	std::vector < std::vector<std::shared_ptr<Piece>>> m_board;
+	bool	m_isChangeTurn = false;
 	GameBoard();
 	~GameBoard();
 	void Init();
