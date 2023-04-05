@@ -70,8 +70,8 @@ void GSMenu::Init()
 	// game title
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 	//font = ResourceManagers::GetInstance()->GetFont("Woodlook-nvyP.ttf");
-	text = std::make_shared<Text>(shader, font, "Magic Battle", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 3.0f);
-	text->Set2DPosition(Vector2(60, 200));
+	text = std::make_shared<Text>(shader, font, "Warrior Battle", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 3.0f);
+	text->Set2DPosition(Vector2(200, 200));
 	m_listText.push_back(text);
 
 	std::string name = "gravity_fall_theme_sound.wav";

@@ -243,6 +243,19 @@ std::set<std::pair<int,int>> GameBoard::GetMatchList() {
 	}
 	return matchListIndex;
 }
+
+std::vector<int> GameBoard::GetPieceList(std::set<std::pair<int, int>> matchList) {
+	int n = static_cast<int>(PieceType::COUNT);
+	std::vector<int> res(n);
+	for (auto x : matchList) {
+		int i = x.first;
+		int j = x.second;
+		int type = static_cast<int>(m_board[i][j]->GetType());
+		res[type]++;
+	}
+	return res;
+};
+
 bool GameBoard::HasAnMatch() {
 
 	if (this->GetMatchList().empty()) {
