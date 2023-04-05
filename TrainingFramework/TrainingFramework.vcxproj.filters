@@ -94,6 +94,9 @@
     <ClCompile Include="src\GameObject\PauseMenu.cpp">
       <Filter>TrainingFramework\src\GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameManager\SaveData.cpp">
+      <Filter>TrainingFramework\src\GameManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -177,6 +180,9 @@
     <ClInclude Include="src\GameStates\GSGuide.h" />
     <ClInclude Include="src\GameObject\PauseMenu.h">
       <Filter>TrainingFramework\src\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameManager\SaveData.h">
+      <Filter>TrainingFramework\src\GameManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

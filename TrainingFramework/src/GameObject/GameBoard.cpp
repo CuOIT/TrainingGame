@@ -5,6 +5,7 @@
 #include<random>
 #include <queue>
 #include <set>
+#include <SpriteAnimation.h>
 
 GameBoard::GameBoard() :Sprite2D(),m_standbyTime(0),m_moveSpeed(300) {
 	this->Set2DPosition(200, 200);
@@ -293,6 +294,7 @@ void GameBoard::SwapTwoPiece(int lastRow, int lastCol, int curRow, int curCol) {
 }
 
 void GameBoard::DestroyPieces(std::set<std::pair<int,int>> matchList) {
+
 	for (auto a : matchList) {
 		int i = a.first;
 		int j = a.second;
