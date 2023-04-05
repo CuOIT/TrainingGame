@@ -14,18 +14,22 @@ class GameField {
 	};
 public:
 
-	GameField();
+	GameField() {};
 	~GameField();
 	GameField(std::shared_ptr<Player> player, std::shared_ptr<Entity> enermy);
 	void Init(std::shared_ptr<Player> player, std::shared_ptr<Entity> enermy);
+
 	void HandleClick(float x, float y);
 	void Update(float deltaTime);
 
-	void Calculate(std::vector<int> pieceList,bool isPlayer);
-	void Draw();
+	void								Calculate(std::vector<int> pieceList,bool isPlayer);
+	void								SetPhase(Phase phase);
+	Phase								getPhase();
+	void								BotMove();
 
-	void SetPhase(Phase phase);
-	Phase getPhase();
+	void Update(float deltaTime);
+	void Draw();
+	std::shared_ptr<GameBoard>			m_gameBoard;
 private:
 	bool								m_currentTurn;
 	Phase								m_phase;

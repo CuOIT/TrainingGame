@@ -14,6 +14,7 @@
 #include "GameField.h"
 #include "Player.h"
 #include"Entity.h"
+#include <Windows.h>
 
 
 GSPlay::GSPlay()
@@ -29,6 +30,11 @@ GSPlay::~GSPlay()
 
 void GSPlay::Init()
 {
+	std::cout << "Pi :" << PI<<std::endl;
+	int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+	std::cout << "Screen resolution: " << screenWidth << "x" << screenHeight << std::endl;
+
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto texture = ResourceManagers::GetInstance()->GetTexture("background.tga");
 
@@ -60,6 +66,9 @@ void GSPlay::Init()
 	m_gameField = std::make_shared<GameField>(player, enermy);
 	
 	m_KeyPress = 0;
+
+	std::string name = "gsPlay_sound.wav";
+	//ResourceManagers::GetInstance()->PlaySound(name, true);
 
 	std::string name = "gsPlay_sound.wav";
 	ResourceManagers::GetInstance()->PlaySound(name, true);
@@ -225,7 +234,6 @@ void GSPlay::Draw()
 	{
 		it->Draw();
 	}
-
 	//m_gameBoard->Draw();
 	//Render animation list
 	/*for (auto it : m_listAnimation)
