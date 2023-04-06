@@ -1,7 +1,7 @@
 #include "GSMenu.h"
 #include "Camera.h"
-GSMenu::GSMenu() : GameStateBase(StateType::STATE_MENU), 
-	m_background(nullptr), m_listButton(std::list<std::shared_ptr<GameButton>>{}), m_listText(std::list<std::shared_ptr<Text>>{})
+GSMenu::GSMenu() : GameStateBase(StateType::STATE_MENU),
+m_background(nullptr), m_listButton(std::list<std::shared_ptr<GameButton>>{}), m_listText(std::list<std::shared_ptr<Text>>{})
 {
 }
 
@@ -54,11 +54,11 @@ void GSMenu::Init()
 
 	// text for btn
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
-	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Woodlook-nvyP.ttf");
+	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("DustyRanch-YzgEL.ttf");
 	std::shared_ptr<Text> text = std::make_shared<Text>(shader, font, "NEW GAME", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 1.2f);
 	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 80.0f, Globals::screenHeight / 2.0f - 145.0f));
 	m_listText.push_back(text);
-	
+
 	text = std::make_shared<Text>(shader, font, "GUIDE", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 1.8f);
 	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 70.0f, Globals::screenHeight / 2.0f + 15.0f));
 	m_listText.push_back(text);
@@ -70,12 +70,13 @@ void GSMenu::Init()
 	// game title
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 	//font = ResourceManagers::GetInstance()->GetFont("Woodlook-nvyP.ttf");
-	text = std::make_shared<Text>(shader, font, "Warrior Battle", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 3.0f);
-	text->Set2DPosition(Vector2(200, 200));
+	text = std::make_shared<Text>(shader, font, "Warrior Battle", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 3.0f, TextAlign::CENTER);
+	text->Set2DPosition(50, 100);
+	//text->Set2DPosition(Vector2(200, 200));
 	m_listText.push_back(text);
 
 	std::string name = "gravity_fall_theme_sound.wav";
-	ResourceManagers::GetInstance()->PlaySound(name,true);
+	ResourceManagers::GetInstance()->PlaySound(name, true);
 }
 
 void GSMenu::Exit()

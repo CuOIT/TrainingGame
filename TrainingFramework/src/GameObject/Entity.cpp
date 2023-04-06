@@ -2,7 +2,7 @@
 
 Entity::Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture
 	, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime,
-	std::string name, int maxHp, int maxMana, int attack,int defense)
+	std::string name, int maxHp, int maxMana, int attack, int defense)
 	: SpriteAnimation(model, shader, texture, numFrames, numActions, currentAction, frameTime)
 	, m_name(name), m_maxHp(maxHp), m_maxMana(maxMana), m_curHp(maxHp), m_curMana(0)
 	, m_attack(attack), m_defense(defense), m_isAlive(true) {
@@ -92,7 +92,14 @@ void Entity::SetIsAlive(bool isAlive)
 	m_isAlive = isAlive;
 }
 
-std::string Entity::GetName() 
+int Entity::GetPoison() {
+	int poison = 0;
+	for (auto x : m_poisonList) {
+		poison += x;
+	}
+	return poison;
+}
+std::string Entity::GetName()
 {
 	return m_name;
 }
@@ -122,12 +129,12 @@ void Entity::TakeDamage(int damage)
 }
 void Entity::TakeDamageOfPoison()
 {
-	int poison=0;
+	int poison = 0;
 	for (auto x : m_poisonList) {
 		poison += x;
 	}
-	 poison *= 10;
-	 std::cout << this->GetName() << " take POISON : " << poison << std::endl;
+	poison *= 10;
+	std::cout << this->GetName() << " take POISON : " << poison << std::endl;
 	int curHp = m_curHp - poison;
 	if (curHp <= 0)
 	{
@@ -143,10 +150,10 @@ void Entity::TakeDamageOfPoison()
 void Entity::Heal(int hp)
 {
 	int curHp = m_curHp + hp;
-	SetHp(curHp>m_maxHp?m_maxHp:curHp);
+	SetHp(curHp > m_maxHp ? m_maxHp : curHp);
 }
 void Entity::GainMana(int mana) {
-	int curMana = m_curMana + mana;
+	int curMana = m_curMana + 10 * mana;
 	SetMana(curMana > m_maxMana ? m_maxMana : curMana);
 }
 void Entity::LostMana(int mana) {
@@ -154,5 +161,5 @@ void Entity::LostMana(int mana) {
 	SetMana(curMana < 0 ? 0 : curMana);
 }
 void Entity::Poisoned(int poison) {
-	m_poisonList.back()+= poison;
+	m_poisonList.back() += poison;
 }

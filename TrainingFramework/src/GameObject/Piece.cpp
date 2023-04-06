@@ -1,7 +1,7 @@
 #include "Piece.h"
 #include "ResourceManagers.h"
 
-Piece::Piece(int row, int col, PieceType type):Sprite2D() {
+Piece::Piece(int row, int col, PieceType type) :Sprite2D() {
 	Init();
 	m_row = row;
 	m_col = col;
@@ -16,16 +16,16 @@ Piece::Piece(int row, int col, PieceType type):Sprite2D() {
 		texture = ResourceManagers::GetInstance()->GetTexture("piece_hp.tga");
 		break;
 	case PieceType::Mana:
-		texture = ResourceManagers::GetInstance()->GetTexture("piece_mana.tga");
+		texture = ResourceManagers::GetInstance()->GetTexture("piece_mana2.tga");
 		break;
 	case PieceType::Poison:
-		texture = ResourceManagers::GetInstance()->GetTexture("piece_poison.tga");
+		texture = ResourceManagers::GetInstance()->GetTexture("piece_poison2.tga");
 		break;
 	case PieceType::Shield:
-		texture = ResourceManagers::GetInstance()->GetTexture("piece_shield.tga");
+		texture = ResourceManagers::GetInstance()->GetTexture("piece_shield2.tga");
 		break;
 	case PieceType::Spell:
-		texture = ResourceManagers::GetInstance()->GetTexture("piece_spell.tga");
+		texture = ResourceManagers::GetInstance()->GetTexture("piece_magic2.tga");
 		break;
 	case PieceType::Sword:
 		texture = ResourceManagers::GetInstance()->GetTexture("piece_sword.tga");

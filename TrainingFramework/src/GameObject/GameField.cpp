@@ -154,9 +154,9 @@ void GameField::HandleClick(float _x, float _y) {
 					int lastCol = m_click[0].second;
 					if (abs(lastRow - curRow) + abs(curCol - lastCol) == 1) {
 						m_click.push_back({ curRow, curCol });
-						m_gameBoard->m_selected_piece2->Set2DPosition(curCol * Pi_size + Pi_size / 2 + GB_posX, curRow * Pi_size + Pi_size / 2 + GB_posY);
 
 						if (m_gameBoard->CanSwapTwoPiece(lastRow, lastCol, curRow, curCol)) {
+							m_gameBoard->m_selected_piece2->Set2DPosition(curCol * Pi_size + Pi_size / 2 + GB_posX, curRow * Pi_size + Pi_size / 2 + GB_posY);
 							m_gameBoard->SwapTwoSelectedPiece(lastRow, lastCol, curRow, curCol);
 							SetPhase(Phase::SWAP_PHASE);
 						}
@@ -193,7 +193,7 @@ void GameField::Calculate(std::vector<int> pieceList,bool isPlayer) {
 		m_player->GainMana(mana);
 		int poison= pieceList[static_cast<int>(PieceType::Poison)];
 		m_enemy->Poisoned(poison);
-		int shield= pieceList[static_cast<int>(PieceType::Shield)];
+		int shield= 10*pieceList[static_cast<int>(PieceType::Shield)];
 		m_player->SetDefense(shield+m_player->GetDefense());
 		int spell= pieceList[static_cast<int>(PieceType::Spell)];
 		spell = (m_enemy->GetCurrentMana() < spell ? m_enemy->GetCurrentMana() : spell);
@@ -209,7 +209,7 @@ void GameField::Calculate(std::vector<int> pieceList,bool isPlayer) {
 		m_enemy->GainMana(mana);
 		int poison = pieceList[static_cast<int>(PieceType::Poison)];
 		m_player->Poisoned(poison);
-		int shield = pieceList[static_cast<int>(PieceType::Shield)];
+		int shield = 10*pieceList[static_cast<int>(PieceType::Shield)];
 		m_enemy->SetDefense(shield + m_enemy->GetDefense());
 		int spell = pieceList[static_cast<int>(PieceType::Spell)];
 		m_enemy->GainMana(spell);
