@@ -5,7 +5,10 @@
 #include"Entity.h"	
 #include"StatusBar.h"
 #include<queue>
+#include "ResourceManagers.h"
 
+int speed = 350;
+int a = 200;
 #define  PLAYER_TURN  true
 #define  ENEMY_TURN false
 //GameField::GameField() {};
@@ -79,8 +82,8 @@ void GameField::Update(float deltaTime) {
 		m_gameBoard->m_selected_piece->Set2DPosition(-200,-200);
 		m_gameBoard->m_selected_piece2->Set2DPosition(-200,-200);
 		//Calculate Damage;
-		auto pieceList = m_gameBoard->GetPieceTypeMatchedList(matchList);
-		Calculate(pieceList,m_currentTurn);
+		m_pieceList = m_gameBoard->GetPieceTypeMatchedList(matchList);
+		Calculate(m_pieceList,m_currentTurn);
 		//for (auto x : pieceList) {
 		//	std::cout << x << " ";
 		//}
@@ -101,7 +104,23 @@ void GameField::Update(float deltaTime) {
 			m_gameBoard->RefillPositionGameBoard(deltaTime);
 		}
 		m_standbyTime += deltaTime;
-		if (m_standbyTime > 2 && !m_gameBoard->IsRefilling()) {
+		if (m_standbyTime < 1.5f) {
+			m_player->Set2DPosition((int)(m_player->Get2DPosition().x + (m_enemy->Get2DPosition().x - m_player->Get2DPosition().x) * deltaTime * 2), m_player->Get2DPosition().y);
+		}
+		else if (m_standbyTime < 2.0f) {
+			m_player->SetTexture(ResourceManagers::GetInstance()->GetTexture("warrior3_attack.tga"));
+			std::cout << "Hi";
+		}
+		else if (m_standbyTime < 3.5) {
+			m_player->SetTexture(ResourceManagers::GetInstance()->GetTexture("warrior3_run.tga"));
+
+			m_player->Set2DPosition((int)(m_player->Get2DPosition().x - (400-m_enemy->Get2DPosition().x + m_player->Get2DPosition().x) * deltaTime * 2), m_player->Get2DPosition().y);
+		}
+		
+		if (m_standbyTime > 5) {
+			m_PStatusBar->Update(deltaTime,m_player);
+			m_EStatusBar->Update(deltaTime, m_enemy);
+
 			auto matchList = m_gameBoard->GetPieceIndexMatchedList();
 			if (matchList.empty()) {
 				SetPhase(Phase::BEGIN_PHASE);
@@ -112,8 +131,8 @@ void GameField::Update(float deltaTime) {
 			}
 			else {
 				SetPhase(Phase::DESTROY_PHASE);
+				m_standbyTime = 0;
 			}
-			m_standbyTime = 0;
 		}
 		break;
 	}
@@ -122,14 +141,12 @@ void GameField::Update(float deltaTime) {
 	//m_gameBoard->Update(deltaTime);
 	m_player->Update(deltaTime);
 	m_enemy->Update(deltaTime);
-	m_PStatusBar->Update(deltaTime,m_player);
-	m_EStatusBar->Update(deltaTime, m_enemy);
 
 }
 void GameField::Draw() {
 	m_gameBoard->Draw();
-	m_player->Draw();
 	m_enemy->Draw();
+	m_player->Draw();
 	m_PStatusBar->Draw();
 	m_EStatusBar->Draw();
 }
