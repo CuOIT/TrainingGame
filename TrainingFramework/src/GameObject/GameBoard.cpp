@@ -50,16 +50,17 @@ void GameBoard::Init() {
 					colCheck = (pre3 == pre4 ? pre3 : -1);
 				}
 				int ran = rand() % 6;
+				int rowCheck = -1;
 				if (j > 1) {
 					int pre1 = static_cast<int>(line[j - 1]->GetType());
 					int pre2 = static_cast<int>(line[j - 2]->GetType());
-					int rowCheck = (pre1 == pre2?pre1:-1);
+					rowCheck = (pre1 == pre2?pre1:-1);
 
 
-					while (ran == rowCheck || ran == colCheck) ran = rand() % 6;
 
 
 				}
+					while (ran == rowCheck || ran == colCheck) ran = rand() % 6;
 				PieceType type = static_cast<PieceType>(ran);
 				std::shared_ptr<Piece> p = std::make_shared<Piece>(i, j, type);
 				p->Set2DPosition(GB_posX + j * Pi_size + Pi_size/2,GB_posY + i * Pi_size + Pi_size/2);

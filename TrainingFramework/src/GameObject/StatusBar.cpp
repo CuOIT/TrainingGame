@@ -13,7 +13,7 @@ StatusBar::StatusBar(int maxHp, int maxMana, bool isPlayer) :m_maxHp(maxHp), m_m
 	m_hpBar->SetSize(SB_maxBarWidth, SB_barHeight);
 	;	texture = ResourceManagers::GetInstance()->GetTexture("mana_bar.tga");
 	m_manaBar = std::make_shared<Sprite2D>(model, shader, texture);
-	m_manaBar->SetSize(SB_maxBarWidth, SB_barHeight);
+	m_manaBar->SetSize(0,0);
 	texture = ResourceManagers::GetInstance()->GetTexture("piece_shield.tga");
 	m_shieldStt = std::make_shared<Sprite2D>(model, shader, texture);
 	m_shieldStt->SetSize(SB_effectSize, SB_effectSize);
@@ -32,7 +32,7 @@ StatusBar::StatusBar(int maxHp, int maxMana, bool isPlayer) :m_maxHp(maxHp), m_m
 		m_statusBarBG->Set2DPosition(SB_posX + SB_width / 2, SB_posY + SB_height / 2);
 		m_statusBarBG->SetSize(SB_width, SB_height);
 		m_hpBar->Set2DPosition(SB_posXOfBar + SB_maxBarWidth / 2, SB_posYOfHpBar + SB_barHeight / 2);
-		m_manaBar->Set2DPosition(SB_posXOfBar + SB_maxBarWidth / 2, SB_posYOfHpBar + SB_barHeight / 2);
+		m_manaBar->Set2DPosition(SB_posXOfBar + SB_maxBarWidth / 2, SB_posYOfManaBar + SB_barHeight / 2);
 		m_shieldStt->Set2DPosition(SB_posX + SB_width / 3, SB_posY + 7*SB_height/10 + SB_effectSize/2);
 		m_poisonStt->Set2DPosition(SB_posX + SB_width / 3 + SB_effectSize+2, SB_posY +7* SB_height/10 + SB_effectSize/2);
 
