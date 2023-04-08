@@ -56,12 +56,12 @@ void GSPlay::Init()
 
 	//animation
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
-	texture = ResourceManagers::GetInstance()->GetTexture("warrior3_run.tga");
-	std::shared_ptr<Player> player = std::make_shared<Player>(model, shader, texture, 6, 1, 0, 0.1f, "Player", 200, 200, 2, 0);
+	texture = ResourceManagers::GetInstance()->GetTexture("warrior1_idle.tga");
+	std::shared_ptr<Player> player = std::make_shared<Player>(model, shader, texture, 6, 1, 0, 0.1f, "warrior1", 200, 200, 10, 0);
 	player->Set2DPosition(GF_posXOfPlayer, GF_posYOfPlayer);
 	player->SetSize(GF_playerWidth, GF_playerHeight);
-	texture = ResourceManagers::GetInstance()->GetTexture("warrior3_auto_x24.tga");
-	std::shared_ptr<Entity> enermy = std::make_shared<Entity>(model, shader, texture, 8, 6, 4, 0.05f, "Enemy", 200, 200, 2, 0);
+	texture = ResourceManagers::GetInstance()->GetTexture("warrior1_idle.tga");
+	std::shared_ptr<Entity> enermy = std::make_shared<Entity>(model, shader, texture, 6, 1, 0, 0.1f, "warrior2", 200, 200, 10, 0);
 	enermy->Set2DPosition(Globals::screenWidth - GF_posXOfPlayer, GF_posYOfPlayer);
 	enermy->SetSize(-GF_playerWidth, GF_playerHeight);
 	m_gameField = std::make_shared<GameField>(player, enermy);

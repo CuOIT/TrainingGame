@@ -12,6 +12,8 @@ protected:
 	int				m_curHp;
 	int				m_curMana;
 	int				m_defense;
+	bool			m_isAttacking;
+	int				m_attackNum;
 	std::list<int>	m_poisonList;//stored poison in 3 round;
 
 	std::string	m_name;
@@ -26,6 +28,8 @@ public:
 	//	,m_name(name),m_maxHealth(maxHealth),m_maxMana(maxMana),m_currentHealth(maxHealth),m_currentMana(0),m_attack(attack),m_defense(defense),m_isAlive(isAlive){};
 	~Entity();
 
+	void Update(float deltaTime);
+	bool MoveTo(float x, float deltaTime);
 	int			GetMaxHp();
 	int			GetMaxMana();
 	int 		GetAttack();
@@ -33,6 +37,16 @@ public:
 	std::string GetName();
 	int			GetCurrentHp();
 	int			GetCurrentMana();
+	void		Attack(std::shared_ptr<Entity> e, float deltaTime);
+	bool		IsAttacking() {
+		return m_isAttacking;
+	};
+	void		SetIsAttack(bool attack) {
+			m_isAttacking = attack;
+	}
+	void		SetAttackNum(int attackNum) {
+		m_attackNum = attackNum;
+	}
 	bool		IsAlive();
 
 	void		SetMaxHp(int maxHp);
