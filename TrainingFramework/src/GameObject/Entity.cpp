@@ -1,5 +1,5 @@
 #include "Entity.h"
-
+#include"ResourceManagers.h"
 Entity::Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture
 	, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime,
 	std::string name, int maxHp, int maxMana, int attack, int defense)
@@ -9,13 +9,59 @@ Entity::Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std
 	m_poisonList.push_back(0);
 	m_poisonList.push_back(0);
 	m_poisonList.push_back(0);
+	m_isAttacking = false;
 
 };
 Entity::~Entity()
 {
 
 }
+void Entity::Update(float deltaTime) {
+	m_currentTime += deltaTime;
+	if (m_currentTime >= m_frameTime)
+	{
+		m_currentFrame++;
+		if (m_currentFrame >= m_numFrames) {
+			if (IsAlive())
+				m_currentFrame = 0;
+			else m_currentFrame = m_numFrames - 1;
+		}
+		m_currentTime -= m_frameTime;
+	}
+}
+void Entity::Attack(std::shared_ptr<Entity> e,float deltaTime) {
+	if (m_attackNum>0) {
+		if (m_isAttacking) {
+			MoveTo(e->Get2DPosition().x, deltaTime);
+			if (abs(Get2DPosition().x - e->Get2DPosition().x) < 20) SetTexture(ResourceManagers::GetInstance()->GetTexture("warrior1_attack.tga"));
+			if (Get2DPosition().x == e->Get2DPosition().x) {
+				e->TakeDamage(m_attack*m_attackNum);
+				 SetTexture(ResourceManagers::GetInstance()->GetTexture("warrior1_idle.tga"));
+				m_isAttacking = false;
+			}
+		}
+		else {
+			MoveTo(Globals::screenWidth - e->Get2DPosition().x, deltaTime);
+		}
+		if (Get2DPosition().x == Globals::screenWidth - e->Get2DPosition().x) m_attackNum = 0;
+	}
+	
+}
+bool Entity::MoveTo(float x, float deltaTime) {
+	int s = (x - Get2DPosition().x) * deltaTime * 2;
+	if (abs(s) < 1) {
 
+	if ((x - Get2DPosition().x) * deltaTime * 2>0) s = 1;
+	else s = -1;
+	}
+	Set2DPosition((int)(Get2DPosition().x + s), GetPosition().y);
+	if (abs(Get2DPosition().x - x)< 2) {
+		Set2DPosition(x, GetPosition().y);
+		return true;
+	}
+	return false;
+
+}
 int	Entity::GetMaxHp()
 {
 	return m_maxHp;

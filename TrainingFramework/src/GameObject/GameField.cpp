@@ -45,7 +45,7 @@ void GameField::Update(float deltaTime) {
 	switch (m_phase) {
 	case Phase::BEGIN_PHASE:
 	{
-		if(m_currentTurn==PLAYER_TURN)
+		if (m_currentTurn == PLAYER_TURN)
 			m_player->TakeDamageOfPoison();
 		else
 			m_enemy->TakeDamageOfPoison();
@@ -55,8 +55,14 @@ void GameField::Update(float deltaTime) {
 	{
 
 		if (m_currentTurn == ENEMY_TURN) {
-			BotMove();
-			SetPhase(Phase::SWAP_PHASE);
+			m_standbyTime += deltaTime;
+			if (m_standbyTime > 1.7f) {
+				BotMove();
+				m_enemy->SetAttackNum(10);
+				m_enemy->SetIsAttack(true);
+				SetPhase(Phase::SWAP_PHASE);
+				m_standbyTime = 0;
+			}
 		}
 		break;
 	}
@@ -79,11 +85,11 @@ void GameField::Update(float deltaTime) {
 	{
 		m_click.clear();
 		auto matchList = m_gameBoard->GetPieceIndexMatchedList();
-		m_gameBoard->m_selected_piece->Set2DPosition(-200,-200);
-		m_gameBoard->m_selected_piece2->Set2DPosition(-200,-200);
+		m_gameBoard->m_selected_piece->Set2DPosition(-200, -200);
+		m_gameBoard->m_selected_piece2->Set2DPosition(-200, -200);
 		//Calculate Damage;
 		m_pieceList = m_gameBoard->GetPieceTypeMatchedList(matchList);
-		Calculate(m_pieceList,m_currentTurn);
+		Calculate(m_pieceList, m_currentTurn);
 		//for (auto x : pieceList) {
 		//	std::cout << x << " ";
 		//}
@@ -95,6 +101,16 @@ void GameField::Update(float deltaTime) {
 		//std::cout << "Enemy: " << m_enemy->GetCurrentMana() << " / " << m_enemy->GetMaxMana() << std::endl;
 		m_gameBoard->DestroyPieces(matchList);
 		m_gameBoard->RefillGameBoard();//this function will set refilling=true;
+		if (m_pieceList[static_cast<int>(PieceType::Sword)] > 0) {
+			if (m_currentTurn == PLAYER_TURN) {
+				 m_player->SetAttackNum(m_pieceList[static_cast<int>(PieceType::Sword)]);
+				 m_player->SetIsAttack(true);
+			}
+			else {
+				m_enemy->SetAttackNum(m_pieceList[static_cast<int>(PieceType::Sword)]);
+				m_enemy->SetIsAttack(true);
+			}
+		}
 		SetPhase(Phase::REFILL_PHASE);
 		break;
 	}
@@ -102,43 +118,32 @@ void GameField::Update(float deltaTime) {
 	{
 		if (m_gameBoard->IsRefilling()) {
 			m_gameBoard->RefillPositionGameBoard(deltaTime);
-		}
-		m_standbyTime += deltaTime;
-		if (m_standbyTime < 1.5f) {
-			m_player->Set2DPosition((int)(m_player->Get2DPosition().x + (m_enemy->Get2DPosition().x - m_player->Get2DPosition().x) * deltaTime * 2), m_player->Get2DPosition().y);
-		}
-		else if (m_standbyTime < 2.0f) {
-			m_player->SetTexture(ResourceManagers::GetInstance()->GetTexture("warrior3_attack.tga"));
-			std::cout << "Hi";
-		}
-		else if (m_standbyTime < 3.5) {
-			m_player->SetTexture(ResourceManagers::GetInstance()->GetTexture("warrior3_run.tga"));
+		}else{
 
-			m_player->Set2DPosition((int)(m_player->Get2DPosition().x - (400-m_enemy->Get2DPosition().x + m_player->Get2DPosition().x) * deltaTime * 2), m_player->Get2DPosition().y);
-		}
-		
-		if (m_standbyTime > 5) {
-			m_PStatusBar->Update(deltaTime,m_player);
-			m_EStatusBar->Update(deltaTime, m_enemy);
-
-			auto matchList = m_gameBoard->GetPieceIndexMatchedList();
-			if (matchList.empty()) {
-				SetPhase(Phase::BEGIN_PHASE);
-				if (!m_gameBoard->HasAnAvailableMove()) {
-					m_gameBoard->Init();
+				auto matchList = m_gameBoard->GetPieceIndexMatchedList();
+				if (matchList.empty()) {
+					SetPhase(Phase::BEGIN_PHASE);
+					if (!m_gameBoard->HasAnAvailableMove()) {
+						m_gameBoard->Init();
+					}
+					m_currentTurn = !m_currentTurn;
 				}
-				m_currentTurn = !m_currentTurn;
-			}
-			else {
-				SetPhase(Phase::DESTROY_PHASE);
+				else {
+					SetPhase(Phase::DESTROY_PHASE);
+				}
 				m_standbyTime = 0;
 			}
-		}
+		
 		break;
 	}
-	}
+}
+
 
 	//m_gameBoard->Update(deltaTime);
+	m_PStatusBar->Update(deltaTime,m_player);
+	m_EStatusBar->Update(deltaTime, m_enemy);
+	m_player->Attack(m_enemy, deltaTime);
+	m_enemy->Attack(m_player, deltaTime);
 	m_player->Update(deltaTime);
 	m_enemy->Update(deltaTime);
 
@@ -153,6 +158,7 @@ void GameField::Draw() {
 
 void GameField::SetPhase(Phase phase) {
 	m_phase = phase;
+	std::cout << "Phase: " << static_cast<int>(phase)<<std::endl;
 }
 GameField::Phase GameField::getPhase() {
 	return m_phase;
@@ -190,7 +196,6 @@ void GameField::HandleClick(float _x, float _y) {
 				else if (m_click.empty()) {
 					m_click.push_back({ curRow,curCol });
 					m_gameBoard->m_selected_piece->Set2DPosition(curCol * Pi_size+Pi_size/2 + GB_posX, curRow * Pi_size+Pi_size/2 + GB_posY);
-					std::cout << m_gameBoard->m_selected_piece->Get2DPosition().x << " va " << m_gameBoard->m_selected_piece->Get2DPosition().y << std::endl;
 				}
 			}
 	}
@@ -216,8 +221,7 @@ void GameField::Calculate(std::vector<int> pieceList,bool isPlayer) {
 		spell = (m_enemy->GetCurrentMana() < spell ? m_enemy->GetCurrentMana() : spell);
 		m_player->GainMana(spell);
 		m_enemy->LostMana(spell);
-		int attack= pieceList[static_cast<int>(PieceType::Sword)];
-		m_enemy->TakeDamage(10*attack);
+
 	}
 	else {
 		int hp = pieceList[static_cast<int>(PieceType::HP)];
@@ -231,7 +235,5 @@ void GameField::Calculate(std::vector<int> pieceList,bool isPlayer) {
 		int spell = pieceList[static_cast<int>(PieceType::Spell)];
 		m_enemy->GainMana(spell);
 		m_player->LostMana(spell);
-		int attack = pieceList[static_cast<int>(PieceType::Sword)];
-		m_player->TakeDamage(10*attack);
 	}
 }
