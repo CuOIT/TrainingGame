@@ -1,5 +1,7 @@
 #include "GSMenu.h"
 #include "Camera.h"
+#include "SaveData.h"
+
 GSMenu::GSMenu() : GameStateBase(StateType::STATE_MENU), 
 	m_background(nullptr), m_listButton(std::list<std::shared_ptr<GameButton>>{}), m_listText(std::list<std::shared_ptr<Text>>{})
 {
@@ -24,19 +26,37 @@ void GSMenu::Init()
 	m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
 
 	// bg button
-	// new game
+	// continue
 	texture = ResourceManagers::GetInstance()->GetTexture("bg_btn.tga");
 	std::shared_ptr<GameButton> button = std::make_shared<GameButton>(model, shader, texture);
 	button->Set2DPosition(Globals::screenWidth / 2.0f, Globals::screenHeight / 2.0f - 150.0f);
 	button->SetSize(300, 100);
+	if (!SaveData::GetInstance()->IsNewGame())
+	{
+		button->SetOnClick([this]() {
+			GameStateMachine::GetInstance()->ChangeState(StateType::STATE_LEVEL);
+			});	
+	}
+	else
+	{
+		button->SetOnClick([this]() {
+			});
+	}
+	m_listButton.push_back(button);
+
+	// new game
+	button = std::make_shared<GameButton>(model, shader, texture);
+	button->Set2DPosition(Globals::screenWidth / 2.0f, Globals::screenHeight / 2.0f);
+	button->SetSize(300, 100);
 	button->SetOnClick([this]() {
-		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
+		SaveData::GetInstance()->ClearDataFolder();
+		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_LEVEL);
 		});
 	m_listButton.push_back(button);
 
 	// guide
 	button = std::make_shared<GameButton>(model, shader, texture);
-	button->Set2DPosition(Globals::screenWidth / 2.0f, Globals::screenHeight / 2.0f);
+	button->Set2DPosition(Globals::screenWidth / 2.0f, Globals::screenHeight / 2.0f + 150.0f);
 	button->SetSize(300, 100);
 	button->SetOnClick([this]() {
 		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_GUIDE);
@@ -45,7 +65,7 @@ void GSMenu::Init()
 
 	// exit
 	button = std::make_shared<GameButton>(model, shader, texture);
-	button->Set2DPosition(Globals::screenWidth / 2.0f, Globals::screenHeight / 2.0f + 150.0f);
+	button->Set2DPosition(Globals::screenWidth / 2.0f, Globals::screenHeight / 2.0f + 300.0f);
 	button->SetSize(300, 100);
 	button->SetOnClick([]() {
 		exit(0);
@@ -55,16 +75,20 @@ void GSMenu::Init()
 	// text for btn
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Woodlook-nvyP.ttf");
-	std::shared_ptr<Text> text = std::make_shared<Text>(shader, font, "NEW GAME", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 1.2f);
+	std::shared_ptr<Text> text = std::make_shared<Text>(shader, font, "CONTINUE", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 1.2f);
 	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 80.0f, Globals::screenHeight / 2.0f - 145.0f));
+	m_listText.push_back(text);
+
+	text = std::make_shared<Text>(shader, font, "NEW GAME", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 1.2f);
+	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 80.0f, Globals::screenHeight / 2.0f + 5.0f));
 	m_listText.push_back(text);
 	
 	text = std::make_shared<Text>(shader, font, "GUIDE", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 1.8f);
-	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 70.0f, Globals::screenHeight / 2.0f + 15.0f));
+	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 70.0f, Globals::screenHeight / 2.0f + 160.0f));
 	m_listText.push_back(text);
 
 	text = std::make_shared<Text>(shader, font, "EXIT", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 1.8f);
-	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 50.0f, Globals::screenHeight / 2.0f + 160.0f));
+	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 50.0f, Globals::screenHeight / 2.0f + 310.0f));
 	m_listText.push_back(text);
 
 	// game title

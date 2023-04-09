@@ -11,6 +11,7 @@ enum class StateType
 	STATE_INTRO,
 	STATE_MENU,
 	STATE_GUIDE,
+	STATE_LEVEL,
 	STATE_PLAY
 };
 
