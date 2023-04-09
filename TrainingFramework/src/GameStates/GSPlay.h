@@ -47,6 +47,6 @@ private:
 	std::shared_ptr<Entity> m_enemy;
 	std::shared_ptr<PauseMenu> m_pauseMenu;
 	bool m_isPause = false;
-	
+	int m_currentLevel = 1;
 };
 

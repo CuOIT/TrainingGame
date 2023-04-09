@@ -18,13 +18,13 @@ void PauseMenu::Init(GSPlay *gs)
 	// bg pause
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
-	auto texture = ResourceManagers::GetInstance()->GetTexture("bg_pause.tga");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("bg_menu.tga");
 	m_bgPause = std::make_shared<Sprite2D>(model, shader, texture);
 	m_bgPause->Set2DPosition((float)Globals::screenWidth / 2.0f, (float)Globals::screenHeight / 2.0f);
 	m_bgPause->SetSize(400.0f, 200.0f);
 
 	// pause header
-	texture = ResourceManagers::GetInstance()->GetTexture("pause.tga");
+	texture = ResourceManagers::GetInstance()->GetTexture("header.tga");
 	m_pauseHeader = std::make_shared<Sprite2D>(model, shader, texture);
 	m_pauseHeader->Set2DPosition((float)Globals::screenWidth / 2.0f, (float)Globals::screenHeight / 2.0f - 70.0f);
 	m_pauseHeader->SetSize(250.0f, 75.0f);
