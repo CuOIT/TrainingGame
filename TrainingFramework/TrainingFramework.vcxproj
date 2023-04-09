@@ -168,6 +168,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>libEGL.lib;libGLESv2.lib;WinMM.Lib;soloud_static_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -351,6 +352,7 @@
     <ClCompile Include="src\GameObject\GameBoard.cpp" />
     <ClCompile Include="src\GameObject\GameButton.cpp" />
     <ClCompile Include="src\GameObject\GameField.cpp" />
+    <ClCompile Include="src\GameObject\Level.cpp" />
     <ClCompile Include="src\GameObject\PauseMenu.cpp" />
     <ClCompile Include="src\GameObject\Piece.cpp" />
     <ClCompile Include="src\GameObject\Player.cpp" />
@@ -367,6 +369,7 @@
     <ClCompile Include="src\GameStates\GameStateMachine.cpp" />
     <ClCompile Include="src\GameStates\GSGuide.cpp" />
     <ClCompile Include="src\GameStates\GSIntro.cpp" />
+    <ClCompile Include="src\GameStates\GSLevel.cpp" />
     <ClCompile Include="src\GameStates\GSMenu.cpp" />
     <ClCompile Include="src\GameStates\GSPlay.cpp" />
     <ClCompile Include="src\TrainingFramework.cpp" />
@@ -383,6 +386,7 @@
     <ClInclude Include="src\GameObject\GameBoard.h" />
     <ClInclude Include="src\GameObject\GameButton.h" />
     <ClInclude Include="src\GameObject\GameField.h" />
+    <ClInclude Include="src\GameObject\Level.h" />
     <ClInclude Include="src\GameObject\PauseMenu.h" />
     <ClInclude Include="src\GameObject\Piece.h" />
     <ClInclude Include="src\GameObject\Player.h" />
@@ -399,6 +403,7 @@
     <ClInclude Include="src\GameStates\GameStateMachine.h" />
     <ClInclude Include="src\GameStates\GSGuide.h" />
     <ClInclude Include="src\GameStates\GSIntro.h" />
+    <ClInclude Include="src\GameStates\GSLevel.h" />
     <ClInclude Include="src\GameStates\GSMenu.h" />
     <ClInclude Include="src\GameStates\GSPlay.h" />
   </ItemGroup>
