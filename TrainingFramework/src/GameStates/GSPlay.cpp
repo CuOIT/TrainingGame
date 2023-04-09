@@ -15,11 +15,12 @@
 #include "Player.h"
 #include"Entity.h"
 #include <Windows.h>
-
+#include "Level.h"
 
 GSPlay::GSPlay()
 {
 	m_KeyPress = 0;
+	m_currentLevel = Level::GetInstance()->GetSelectedLevel();
 }
 
 
@@ -34,6 +35,7 @@ void GSPlay::Init()
 	int screenWidth = GetSystemMetrics(SM_CXSCREEN);
 	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 	std::cout << "Screen resolution: " << screenWidth << "x" << screenHeight << std::endl;
+	std::cout << "current level: " << m_currentLevel << std::endl;
 
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto texture = ResourceManagers::GetInstance()->GetTexture("background.tga");
