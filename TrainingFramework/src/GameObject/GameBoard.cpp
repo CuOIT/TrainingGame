@@ -6,7 +6,7 @@
 #include <queue>
 #include <set>
 
-GameBoard::GameBoard():m_standbyTime(0),m_moveSpeed(300) {
+GameBoard::GameBoard():m_standbyTime(0),m_moveSpeed(350) {
 	Init();
 };
 

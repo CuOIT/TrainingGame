@@ -7,8 +7,6 @@
 #include<queue>
 #include "ResourceManagers.h"
 
-int speed = 350;
-int a = 200;
 #define  PLAYER_TURN  true
 #define  ENEMY_TURN false
 //GameField::GameField() {};
@@ -23,6 +21,12 @@ inline void GameField::Init(std::shared_ptr<Player> player, std::shared_ptr<Enti
 	this->m_player = player;
 	this->m_enemy = enemy;
 	this->m_currentTurn = PLAYER_TURN;
+	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
+	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("currentTurn.tga");
+	m_currentTurnPoint = std::make_shared<Sprite2D>(model,shader, texture);
+	m_currentTurnPoint->Set2DPosition(player->Get2DPosition().x, player->Get2DPosition().y-100);
+	m_currentTurnPoint->SetSize(100, 100);
 	this->m_PStatusBar = std::make_shared<StatusBar>(player->GetMaxHp(), player->GetMaxMana(), true);
 	this->m_EStatusBar = std::make_shared<StatusBar>(enemy->GetMaxHp(), enemy->GetMaxMana(), false);
 	while (!m_turn.empty()) m_turn.pop();
@@ -31,7 +35,7 @@ inline void GameField::Init(std::shared_ptr<Player> player, std::shared_ptr<Enti
 
 inline void GameField::BotMove() {
 	auto moveList = m_gameBoard->GetAvailableMoveList();
-	auto move = moveList[0];
+	auto move = moveList[moveList.size()-1];
 	m_gameBoard->SwapTwoSelectedPiece(move[0], move[1], move[2], move[3]);
 	std::pair<int, int> firstClick = { move[0],move[1] };
 	m_click.push_back(firstClick);
@@ -45,11 +49,19 @@ void GameField::Update(float deltaTime) {
 	switch (m_phase) {
 	case Phase::BEGIN_PHASE:
 	{
-		if (m_currentTurn == PLAYER_TURN)
-			m_player->TakeDamageOfPoison();
-		else
-			m_enemy->TakeDamageOfPoison();
-		SetPhase(Phase::BASE_PHASE);
+		m_standbyTime += deltaTime;
+	if (m_standbyTime > 1) {
+			if (m_currentTurn == PLAYER_TURN)
+				m_player->TakeDamageOfPoison();
+			else
+				m_enemy->TakeDamageOfPoison();
+			m_standbyTime = 0;
+			SetPhase(Phase::BASE_PHASE);
+	}
+	//else if (m_standbyTime > 2) {
+	//	m_standbyTime = 0;
+	//	  }
+	break;
 	}
 	case Phase::BASE_PHASE:
 	{
@@ -58,8 +70,8 @@ void GameField::Update(float deltaTime) {
 			m_standbyTime += deltaTime;
 			if (m_standbyTime > 1.7f) {
 				BotMove();
-				m_enemy->SetAttackNum(10);
-				m_enemy->SetIsAttack(true);
+				//m_enemy->SetAttackNum(250);
+				//m_enemy->SetIsAttack(true);
 				SetPhase(Phase::SWAP_PHASE);
 				m_standbyTime = 0;
 			}
@@ -115,11 +127,12 @@ void GameField::Update(float deltaTime) {
 		break;
 	}
 	case Phase::REFILL_PHASE:
-	{
-		if (m_gameBoard->IsRefilling()) {
+	{	
+		m_standbyTime += deltaTime;
+		if (m_gameBoard->IsRefilling() ) {
 			m_gameBoard->RefillPositionGameBoard(deltaTime);
 		}else{
-
+			if ( true) {
 				auto matchList = m_gameBoard->GetPieceIndexMatchedList();
 				if (matchList.empty()) {
 					SetPhase(Phase::BEGIN_PHASE);
@@ -133,11 +146,15 @@ void GameField::Update(float deltaTime) {
 				}
 				m_standbyTime = 0;
 			}
+				}
+
 		
 		break;
 	}
 }
 
+	if (m_currentTurn) m_currentTurnPoint->Set2DPosition(m_player->Get2DPosition().x, m_player->Get2DPosition().y-100);
+	else m_currentTurnPoint->Set2DPosition(m_enemy->Get2DPosition().x,m_enemy->Get2DPosition().y-100);
 
 	//m_gameBoard->Update(deltaTime);
 	m_PStatusBar->Update(deltaTime,m_player);
@@ -154,6 +171,7 @@ void GameField::Draw() {
 	m_player->Draw();
 	m_PStatusBar->Draw();
 	m_EStatusBar->Draw();
+	m_currentTurnPoint->Draw();
 }
 
 void GameField::SetPhase(Phase phase) {

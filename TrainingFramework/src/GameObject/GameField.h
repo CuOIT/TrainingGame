@@ -30,6 +30,7 @@ public:
 	
 private:
 	bool								m_currentTurn;
+	std::shared_ptr<Sprite2D>			m_currentTurnPoint;
 	Phase								m_phase;
 	float								m_standbyTime;
 	std::vector<std::pair<int, int>>	m_click;
