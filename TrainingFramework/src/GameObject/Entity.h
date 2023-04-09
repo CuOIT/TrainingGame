@@ -38,15 +38,9 @@ public:
 	int			GetCurrentHp();
 	int			GetCurrentMana();
 	void		Attack(std::shared_ptr<Entity> e, float deltaTime);
-	bool		IsAttacking() {
-		return m_isAttacking;
-	};
-	void		SetIsAttack(bool attack) {
-			m_isAttacking = attack;
-	}
-	void		SetAttackNum(int attackNum) {
-		m_attackNum = attackNum;
-	}
+	bool		IsAttacking();
+	void		SetIsAttack(bool attack);
+	void		SetAttackNum(int attackNum);
 	bool		IsAlive();
 
 	void		SetMaxHp(int maxHp);

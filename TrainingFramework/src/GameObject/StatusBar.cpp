@@ -93,10 +93,10 @@ void StatusBar::SetPoison(int poison) {
 
 }
 void StatusBar::Update(float deltaTime, std::shared_ptr<Entity> entity) {
-	if (m_hp > entity->GetCurrentHp()) {
+	if (m_hp > entity->GetCurrentHp() && entity->GetCurrentHp()>0) {
 		entity->SetTexture(ResourceManagers::GetInstance()->GetTexture("warrior1_hurt.tga"));
 	}
-	else {
+	else if(entity->IsAlive()) {
 		entity->SetTexture(ResourceManagers::GetInstance()->GetTexture("warrior1_idle.tga"));
 	}
 	this->SetHp(entity->GetCurrentHp());
@@ -109,10 +109,9 @@ void StatusBar::Draw() {
 	m_hpBar->Draw();
 	m_manaBar->Draw();
 	if (m_shield > 0) {
-		if (m_shield % 5<2)
+		//if (m_shield % 5<2)
 		m_shieldStt->Draw();
 		m_shieldText->Draw();
-		std::cout << m_shield;
 	}
 	if (m_poison > 0) {
 		m_poisonStt->Draw();

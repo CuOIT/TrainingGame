@@ -16,15 +16,25 @@ Entity::~Entity()
 {
 
 }
+bool	Entity::IsAttacking() {
+	return m_isAttacking;
+};
+void	Entity::SetIsAttack(bool attack) {
+	m_isAttacking = attack;
+}
+void	Entity::SetAttackNum(int attackNum) {
+	m_attackNum = attackNum;
+}
 void Entity::Update(float deltaTime) {
 	m_currentTime += deltaTime;
 	if (m_currentTime >= m_frameTime)
 	{
 		m_currentFrame++;
 		if (m_currentFrame >= m_numFrames) {
-			if (IsAlive())
+			if (!IsAlive()) {
+				m_currentFrame = m_numFrames - 1;
+			}else
 				m_currentFrame = 0;
-			else m_currentFrame = m_numFrames - 1;
 		}
 		m_currentTime -= m_frameTime;
 	}
@@ -33,8 +43,8 @@ void Entity::Attack(std::shared_ptr<Entity> e,float deltaTime) {
 	if (m_attackNum>0) {
 		if (m_isAttacking) {
 			MoveTo(e->Get2DPosition().x, deltaTime);
-			if (abs(Get2DPosition().x - e->Get2DPosition().x) < 20) SetTexture(ResourceManagers::GetInstance()->GetTexture("warrior1_attack.tga"));
-			if (Get2DPosition().x == e->Get2DPosition().x) {
+			if (abs(Get2DPosition().x - e->Get2DPosition().x) < 50) SetTexture(ResourceManagers::GetInstance()->GetTexture("warrior1_attack.tga"));
+			if (abs(Get2DPosition().x - e->Get2DPosition().x)< 20) {
 				e->TakeDamage(m_attack*m_attackNum);
 				 SetTexture(ResourceManagers::GetInstance()->GetTexture("warrior1_idle.tga"));
 				m_isAttacking = false;
@@ -48,13 +58,12 @@ void Entity::Attack(std::shared_ptr<Entity> e,float deltaTime) {
 	
 }
 bool Entity::MoveTo(float x, float deltaTime) {
-	int s = (x - Get2DPosition().x) * deltaTime * 2;
+	int s = (x - Get2DPosition().x) * deltaTime * 3;
 	if (abs(s) < 1) {
-
-	if ((x - Get2DPosition().x) * deltaTime * 2>0) s = 1;
+	if ((x - Get2DPosition().x)>0) s = 1;
 	else s = -1;
 	}
-	Set2DPosition((int)(Get2DPosition().x + s), GetPosition().y);
+	Set2DPosition((int)(Get2DPosition().x + s), Get2DPosition().y);
 	if (abs(Get2DPosition().x - x)< 2) {
 		Set2DPosition(x, GetPosition().y);
 		return true;
@@ -136,6 +145,9 @@ bool Entity::IsAlive()
 void Entity::SetIsAlive(bool isAlive)
 {
 	m_isAlive = isAlive;
+	m_currentFrame = 0;
+	SetTexture(ResourceManagers::GetInstance()->GetTexture("warrior1_dead.tga"));
+
 }
 
 int Entity::GetPoison() {
@@ -199,7 +211,7 @@ void Entity::Heal(int hp)
 	SetHp(curHp > m_maxHp ? m_maxHp : curHp);
 }
 void Entity::GainMana(int mana) {
-	int curMana = m_curMana + 10 * mana;
+	int curMana = m_curMana + mana;
 	SetMana(curMana > m_maxMana ? m_maxMana : curMana);
 }
 void Entity::LostMana(int mana) {
