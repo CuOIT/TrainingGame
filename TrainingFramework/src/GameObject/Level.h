@@ -19,6 +19,7 @@ public:
 	~Level();
 	void Init();
 	void Draw();
+	void Update(float deltaTime);
 	void HandleTouchEvents(float x, float y, bool bIsPressed);
 	
 	void SetSelectedLevel(int level) { m_currentLevel = level; };

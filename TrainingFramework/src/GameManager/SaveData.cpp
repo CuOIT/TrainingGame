@@ -39,11 +39,9 @@ void SaveData::SaveLevel(int numPassedlevel)
 
 	if (fp != NULL)
 	{
-		fprintf(fp, "%s %d", "Level Passed:", numPassedlevel);
+		fprintf(fp, "%s %d", "LevelPassed:", numPassedlevel);
 		fclose(fp);
 	}
-	
-	
 }
 
 int SaveData::LoadLevel()
@@ -52,14 +50,14 @@ int SaveData::LoadLevel()
 	std::string filePath = m_DataPath + "Level.txt";
 	fp = fopen(filePath.c_str(), "r");
 	int numPassedLevel = 0;
-	char sTmp[10];
+	char sTmp[20];
 	if (fp == NULL)
 		return -1;
 	else
 	{
-		fscanf(fp, "%s %d", sTmp, &numPassedLevel);
+		int success = fscanf(fp, "%s %d", sTmp, &numPassedLevel);
 		fclose(fp);
-		std::printf("%d\n", numPassedLevel);
+		std::printf("%s %d\n", sTmp, numPassedLevel);
 	}
 	return numPassedLevel;
 }
