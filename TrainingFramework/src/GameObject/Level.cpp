@@ -45,11 +45,11 @@ void Level::Init()
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Woodlook-nvyP.ttf");
 
 	// btn
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 5; i++)
 	{
-		for (int j = 0; j < 4; j++)
+		for (int j = 0; j < 3; j++)
 		{
-			int curLevel = i * 4 + j + 1;
+			int curLevel = i *3 + j + 1;
 			shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 			std::shared_ptr<GameButton> button;
 			if (curLevel <= m_numPassedLevel + 1)
@@ -69,13 +69,13 @@ void Level::Init()
 
 					});
 			}
-			button->Set2DPosition(3 * Globals::screenWidth / 4-80 + j * 85.0f, 250 + i * 90.0f);
+			button->Set2DPosition(3 * Globals::screenWidth / 4-80 + j * 85.0f, 270 + i * 60.0f);
 			button->SetSize(50, 50);
 			m_listButton.push_back(button);
 
 			shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 			std::shared_ptr<Text> text = std::make_shared<Text>(shader, font, std::to_string(curLevel), Vector4(0.0f, 0.0f, 0.0f, 1.0f), 0.9f);
-			text->Set2DPosition(3 * Globals::screenWidth / 4-85 + j * 85.0f, 255 + i * 90.0f);
+			text->Set2DPosition(3 * Globals::screenWidth / 4-85 + j * 85.0f, 275 + i * 60.0f);
 			m_listText.push_back(text);
 		}
 	}
