@@ -96,11 +96,11 @@ void StatusBar::Update(float deltaTime, std::shared_ptr<Entity> entity) {
 	if (entity->IsAlive()) {
 
 		if (m_hp > entity->GetCurrentHp()) {
-			entity->SetTexture(ResourceManagers::GetInstance()->GetTexture("warrior1_hurt.tga"));
+			entity->SetTexture(ResourceManagers::GetInstance()->GetTexture(entity->GetName()+"_hurt.tga"));
 		}
 		else if(entity->GetAttackNum()==0)
 		{
-			entity->SetTexture(ResourceManagers::GetInstance()->GetTexture("warrior1_idle.tga"));
+			entity->SetTexture(ResourceManagers::GetInstance()->GetTexture(entity->GetName()+"_idle.tga"));
 		}
 	}
 	this->SetHp(entity->GetCurrentHp());
