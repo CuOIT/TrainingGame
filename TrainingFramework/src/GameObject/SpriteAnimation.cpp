@@ -129,6 +129,11 @@ void SpriteAnimation::SetRotation(Vector3 rotation)
 	CalculateWorldMatrix();
 }
 
+//void	SpriteAnimation::SetTexture(std::shared_ptr<Texture> texture) {
+//	m_currentFrame = 0;
+//	m_pTexture = texture;
+//};
+
 Vector2 SpriteAnimation::Get2DPosition()
 {
 	return Vector2(m_position.x, m_position.y);

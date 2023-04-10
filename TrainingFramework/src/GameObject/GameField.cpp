@@ -7,8 +7,6 @@
 #include<queue>
 #include "ResourceManagers.h"
 
-int speed = 350;
-int a = 200;
 #define  PLAYER_TURN  true
 #define  ENEMY_TURN false
 //GameField::GameField() {};
@@ -23,6 +21,12 @@ inline void GameField::Init(std::shared_ptr<Player> player, std::shared_ptr<Enti
 	this->m_player = player;
 	this->m_enemy = enemy;
 	this->m_currentTurn = PLAYER_TURN;
+	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
+	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("turnPoint.tga");
+	m_turnPoint = std::make_shared<Sprite2D>(model, shader, texture);
+	m_turnPoint->Set2DPosition(m_player->Get2DPosition().x, m_player->Get2DPosition().y-130);
+	m_turnPoint->SetSize(75, 75);
 	this->m_PStatusBar = std::make_shared<StatusBar>(player->GetMaxHp(), player->GetMaxMana(), true);
 	this->m_EStatusBar = std::make_shared<StatusBar>(enemy->GetMaxHp(), enemy->GetMaxMana(), false);
 	while (!m_turn.empty()) m_turn.pop();
@@ -57,9 +61,8 @@ void GameField::Update(float deltaTime) {
 		if (m_currentTurn == ENEMY_TURN) {
 			m_standbyTime += deltaTime;
 			if (m_standbyTime > 1.7f) {
+				if(m_enemy->IsAlive())
 				BotMove();
-				m_enemy->SetAttackNum(10);
-				m_enemy->SetIsAttack(true);
 				SetPhase(Phase::SWAP_PHASE);
 				m_standbyTime = 0;
 			}
@@ -103,7 +106,7 @@ void GameField::Update(float deltaTime) {
 		m_gameBoard->RefillGameBoard();//this function will set refilling=true;
 		if (m_pieceList[static_cast<int>(PieceType::Sword)] > 0) {
 			if (m_currentTurn == PLAYER_TURN) {
-				 m_player->SetAttackNum(m_pieceList[static_cast<int>(PieceType::Sword)]);
+				 m_player->SetAttackNum(10*m_pieceList[static_cast<int>(PieceType::Sword)]);
 				 m_player->SetIsAttack(true);
 			}
 			else {
@@ -121,15 +124,18 @@ void GameField::Update(float deltaTime) {
 		}else{
 
 				auto matchList = m_gameBoard->GetPieceIndexMatchedList();
-				if (matchList.empty()) {
+				if (!matchList.empty()) {
+					SetPhase(Phase::DESTROY_PHASE);
+				}
+				else {
+					if (m_player->GetAttackNum() == 0 && m_enemy->GetAttackNum() == 0) {
+
 					SetPhase(Phase::BEGIN_PHASE);
 					if (!m_gameBoard->HasAnAvailableMove()) {
 						m_gameBoard->Init();
 					}
 					m_currentTurn = !m_currentTurn;
-				}
-				else {
-					SetPhase(Phase::DESTROY_PHASE);
+					}
 				}
 				m_standbyTime = 0;
 			}
@@ -139,14 +145,27 @@ void GameField::Update(float deltaTime) {
 }
 
 
-	//m_gameBoard->Update(deltaTime);
-	m_PStatusBar->Update(deltaTime,m_player);
-	m_EStatusBar->Update(deltaTime, m_enemy);
-	m_player->Attack(m_enemy, deltaTime);
-	m_enemy->Attack(m_player, deltaTime);
+	if (m_currentTurn == PLAYER_TURN) {
+		m_turnPoint->Set2DPosition(m_player->Get2DPosition().x, m_player->Get2DPosition().y - 100);
+	}
+	else {
+		m_turnPoint->Set2DPosition(m_enemy->Get2DPosition().x, m_enemy->Get2DPosition().y - 100);
+
+	}
+	if (!m_player->IsAlive() || !m_enemy->IsAlive()) {
+		m_standbyTime += deltaTime;
+		if(m_standbyTime>=1.5)
+			SetPhase(Phase::END_PHASE);
+	}
+	
+	if(m_player->GetAttackNum()>0)
+		m_player->Attack(m_enemy, deltaTime);
+	if(m_enemy->GetAttackNum()>0)
+		m_enemy->Attack(m_player, deltaTime);
 	m_player->Update(deltaTime);
 	m_enemy->Update(deltaTime);
-
+	m_PStatusBar->Update(deltaTime,m_player);
+	m_EStatusBar->Update(deltaTime, m_enemy);
 }
 void GameField::Draw() {
 	m_gameBoard->Draw();
@@ -154,6 +173,7 @@ void GameField::Draw() {
 	m_player->Draw();
 	m_PStatusBar->Draw();
 	m_EStatusBar->Draw();
+	m_turnPoint->Draw();
 }
 
 void GameField::SetPhase(Phase phase) {
@@ -167,7 +187,7 @@ void GameField::HandleClick(float _x, float _y) {
 	if(m_currentTurn==PLAYER_TURN){
 
 		//std::cout << _x << " va " << _y<<std::endl;
-		if (m_phase == Phase::BASE_PHASE)
+		if (m_phase == Phase::BASE_PHASE && m_player->IsAlive())
 			if (GB_posX <= _x && _x <= GB_posX + GB_width
 				&& GB_posY <= _y && _y <= GB_posY + GB_height) {
 				int curRow = (int)(_y - GB_posY) / Pi_size;
@@ -208,31 +228,27 @@ void GameField::Calculate(std::vector<int> pieceList,bool isPlayer) {
 		Shield 3 ,
 		Spell 4,
 		Sword 5 ,*/
-	if (isPlayer) {
-		int hp = pieceList[static_cast<int>(PieceType::HP)];
-		m_player->Heal(hp);
-		int mana= pieceList[static_cast<int>(PieceType::Mana)];
-		m_player->GainMana(mana);
-		int poison= pieceList[static_cast<int>(PieceType::Poison)];
-		m_enemy->Poisoned(poison);
+		int hp = 10*pieceList[static_cast<int>(PieceType::HP)];
+		int mana= 10*pieceList[static_cast<int>(PieceType::Mana)];
+		int poison= 5*pieceList[static_cast<int>(PieceType::Poison)];
 		int shield= 10*pieceList[static_cast<int>(PieceType::Shield)];
+		int spell= 10*pieceList[static_cast<int>(PieceType::Spell)];
+	if (isPlayer) {
+		m_player->Heal(hp);
+		m_player->GainMana(mana);
+		m_enemy->Poisoned(poison);
 		m_player->SetDefense(shield+m_player->GetDefense());
-		int spell= pieceList[static_cast<int>(PieceType::Spell)];
 		spell = (m_enemy->GetCurrentMana() < spell ? m_enemy->GetCurrentMana() : spell);
 		m_player->GainMana(spell);
 		m_enemy->LostMana(spell);
 
 	}
 	else {
-		int hp = pieceList[static_cast<int>(PieceType::HP)];
 		m_enemy->Heal(hp);
-		int mana = pieceList[static_cast<int>(PieceType::Mana)];
 		m_enemy->GainMana(mana);
-		int poison = pieceList[static_cast<int>(PieceType::Poison)];
 		m_player->Poisoned(poison);
-		int shield = 10*pieceList[static_cast<int>(PieceType::Shield)];
 		m_enemy->SetDefense(shield + m_enemy->GetDefense());
-		int spell = pieceList[static_cast<int>(PieceType::Spell)];
+		spell = (m_player->GetCurrentMana() < spell ? m_player->GetCurrentMana() : spell);
 		m_enemy->GainMana(spell);
 		m_player->LostMana(spell);
 	}

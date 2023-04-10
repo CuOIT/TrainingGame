@@ -11,6 +11,7 @@ class GameField {
 		SWAP_PHASE,
 		DESTROY_PHASE,
 		REFILL_PHASE,
+		END_PHASE
 	};
 public:
 
@@ -30,6 +31,7 @@ public:
 	
 private:
 	bool								m_currentTurn;
+	std::shared_ptr<Sprite2D>			m_turnPoint;
 	Phase								m_phase;
 	float								m_standbyTime;
 	std::vector<std::pair<int, int>>	m_click;
