@@ -130,6 +130,7 @@ void GSLevel::Update(float deltaTime)
 	{
 		it->Update(deltaTime);
 	}
+	m_level->Update(deltaTime);
 }
 
 void GSLevel::Draw()

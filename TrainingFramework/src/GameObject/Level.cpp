@@ -14,16 +14,6 @@ Level::~Level()
 
 void Level::Init()
 {
-	if (SaveData::GetInstance()->IsNewGame())
-	{
-		SaveData::GetInstance()->SaveLevel(0);
-	}
-	else
-	{
-		m_numPassedLevel = SaveData::GetInstance()->LoadLevel();
-		std::cout << "Loaded!" << std::endl;
-	}
-
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 
@@ -99,6 +89,22 @@ void Level::Draw()
 	for (auto it : m_listText)
 	{
 		it->Draw();
+	}
+}
+
+void Level::Update(float deltaTime) 
+{
+	if (SaveData::GetInstance()->IsNewGame())
+	{
+		SaveData::GetInstance()->SaveLevel(0);
+	}
+	else
+	{
+		m_numPassedLevel = SaveData::GetInstance()->LoadLevel();
+	}
+	for (auto it : m_listButton)
+	{
+		it->Update(deltaTime);
 	}
 }
 
