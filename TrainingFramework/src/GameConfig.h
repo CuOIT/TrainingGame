@@ -26,26 +26,38 @@ public:
 	static int Globals::scale;
 };
 //class GameBoard:
-#define GB_frameWidth 450
-#define GB_frameHeight 450
-#define GB_width 400
-#define GB_height 400
-#define GB_posX 200
-#define GB_posY 200
+#define GB_frameWidth 360
+#define GB_frameHeight 360
+#define GB_width 320
+#define GB_height 320
+#define GB_posX 140
+#define GB_posY 100
 
 //class Piece
-#define Pi_size 50
+#define Pi_size 40
 
 //class StatusBar
 #define SB_posX 20
-#define SB_posY 910
-#define SB_width 320
+#define SB_posY 700
+#define SB_width 240
 #define SB_height 80
-#define SB_maxBarWidth 180
+#define SB_maxBarWidth 135
 #define SB_barHeight 10
 #define SB_posXOfBar (int)SB_posX+5*SB_width/16
-#define SB_posYOfHpBar (int)SB_posY+3*SB_height/20 
+#define SB_posYOfHpBar (int)SB_posY+4*SB_height/20 
 #define SB_posYOfManaBar (int)SB_posY+9*SB_height/20 
+#define SB_effectSize 30
+
+//class GameField
+#define GF_posXOfPlayer 100
+#define GF_posYOfPlayer 550
+#define GF_playerWidth 200
+#define GF_playerHeight 200
+
+//class PauseMenu
+#define PM_width 150
+#define PM_height 150
+
 
 // define value
 #define PI 3.14f

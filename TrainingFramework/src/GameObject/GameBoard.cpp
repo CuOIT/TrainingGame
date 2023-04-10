@@ -6,7 +6,7 @@
 #include <queue>
 #include <set>
 
-GameBoard::GameBoard():m_standbyTime(0),m_moveSpeed(300) {
+GameBoard::GameBoard():m_standbyTime(0),m_moveSpeed(350) {
 	Init();
 };
 
@@ -50,16 +50,17 @@ void GameBoard::Init() {
 					colCheck = (pre3 == pre4 ? pre3 : -1);
 				}
 				int ran = rand() % 6;
+				int rowCheck = -1;
 				if (j > 1) {
 					int pre1 = static_cast<int>(line[j - 1]->GetType());
 					int pre2 = static_cast<int>(line[j - 2]->GetType());
-					int rowCheck = (pre1 == pre2?pre1:-1);
+					rowCheck = (pre1 == pre2?pre1:-1);
 
 
-					while (ran == rowCheck || ran == colCheck) ran = rand() % 6;
 
 
 				}
+					while (ran == rowCheck || ran == colCheck) ran = rand() % 6;
 				PieceType type = static_cast<PieceType>(ran);
 				std::shared_ptr<Piece> p = std::make_shared<Piece>(i, j, type);
 				p->Set2DPosition(GB_posX + j * Pi_size + Pi_size/2,GB_posY + i * Pi_size + Pi_size/2);
@@ -92,8 +93,6 @@ void GameBoard::ChangePositionOfTwoPiece(int lastRow, int lastCol, int curRow, i
 	else {
 		int dx = (lastCol - curCol > 0 ? 1 : (lastCol - curCol == 0 ? 0 : -1)) * (int)(m_moveSpeed * deltaTime);
 		int dy = (lastRow - curRow > 0 ? 1 : (lastRow - curRow == 0 ? 0 : -1)) * (int)(m_moveSpeed * deltaTime);
-		std::cout << "dy: "<<dy<<std::endl;
-		std::cout << "delta:" << abs(lastPiece->Get2DPosition().x - last_trueX + lastPiece->Get2DPosition().y - last_trueY)<< std::endl;
 		lastPiece->Set2DPosition(lastPiece->Get2DPosition().x + dx , lastPiece->Get2DPosition().y + dy );
 		curPiece->Set2DPosition(curPiece->Get2DPosition().x - dx, curPiece->Get2DPosition().y - dy);
 
@@ -260,7 +259,6 @@ std::set<std::pair<int,int>> GameBoard::GetPieceIndexMatchedList() {
 	std::set<std::pair<int, int>> matchListIndex;
 	for (auto iter : matchingListOfBoard) {
 		matchListIndex.insert({ iter->GetRow(),iter->GetCol() });
-		std::cout << iter->GetRow() << " va " << iter->GetCol() << std::endl;
 	}
 	return matchListIndex;
 }

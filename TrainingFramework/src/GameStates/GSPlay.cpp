@@ -58,22 +58,23 @@ void GSPlay::Init()
 
 	//animation
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
-	texture = ResourceManagers::GetInstance()->GetTexture("warrior3_auto_x24.tga");
-	std::shared_ptr<Player> player = std::make_shared<Player>(model,shader,texture,8,6,5,0.05f,"Player",200,200,2,0);
-	player->Set2DPosition(100, 700);
-	player->SetSize(250, 250);
-	std::shared_ptr<Entity> enermy = std::make_shared<Entity>(model, shader, texture, 8, 6, 4, 0.05f, "Enemy", 200, 200, 2, 0);
-	enermy->Set2DPosition(600, 700);
-	enermy->SetSize(-250, 250);
+	texture = ResourceManagers::GetInstance()->GetTexture("warrior1_idle.tga");
+	std::shared_ptr<Player> player = std::make_shared<Player>(model, shader, texture, 6, 1, 0, 0.1f, "warrior1", 200, 200, 10, 0);
+	player->Set2DPosition(GF_posXOfPlayer, GF_posYOfPlayer);
+	player->SetSize(GF_playerWidth, GF_playerHeight);
+	texture = ResourceManagers::GetInstance()->GetTexture("warrior1_idle.tga");
+	std::shared_ptr<Entity> enermy = std::make_shared<Entity>(model, shader, texture, 6, 1, 0, 0.1f, "warrior2", 200, 200, 10, 0);
+	enermy->Set2DPosition(Globals::screenWidth - GF_posXOfPlayer, GF_posYOfPlayer);
+	enermy->SetSize(-GF_playerWidth, GF_playerHeight);
 	m_gameField = std::make_shared<GameField>(player, enermy);
-	
+
 	m_KeyPress = 0;
 
 	std::string name = "gsPlay_sound.wav";
 	ResourceManagers::GetInstance()->PlaySound(name, true);
 
 	std::cout << "GSPlay Init" << std::endl;
-	
+
 }
 
 void GSPlay::Exit()
@@ -129,13 +130,13 @@ void GSPlay::HandleKeyEvents(int key, bool bIsPressed)//Insert more case if you 
 			m_KeyPress |= 1;
 			break;
 		case KEY_MOVE_BACKWARD://Key 'S' was pressed
-			m_KeyPress |= 1<<1;
+			m_KeyPress |= 1 << 1;
 			break;
 		case KEY_MOVE_RIGHT://Key 'D' was pressed
-			m_KeyPress |= 1<<2;
+			m_KeyPress |= 1 << 2;
 			break;
 		case KEY_MOVE_FORWARD://Key 'W' was pressed
-			m_KeyPress |= 1<<3;
+			m_KeyPress |= 1 << 3;
 			break;
 		default:
 			break;
@@ -167,18 +168,18 @@ void GSPlay::HandleKeyEvents(int key, bool bIsPressed)//Insert more case if you 
 void GSPlay::HandleTouchEvents(float x, float y, bool bIsPressed)
 {
 	if (bIsPressed == false && m_isPause == false) {
-	m_gameField->HandleClick(x, y);
-	std::cout << "Handle Click" << std::endl;
+		m_gameField->HandleClick(x, y);
+		std::cout << "Handle Click" << std::endl;
 	}
 
-	if(m_isPause)
+	if (m_isPause)
 	{
 		m_pauseMenu->HandleTouchEvents(x, y, bIsPressed);
 	}
 
 	for (auto button : m_listButton)
 	{
-		if(button->HandleTouchEvents(x, y, bIsPressed))
+		if (button->HandleTouchEvents(x, y, bIsPressed))
 		{
 			break;
 		}
@@ -208,7 +209,7 @@ void GSPlay::Update(float deltaTime)
 	{
 		m_pauseMenu->Update(deltaTime);
 	}
-	
+
 
 	//Update animation list
 	/*for (auto it : m_listAnimation)
@@ -222,7 +223,7 @@ void GSPlay::Draw()
 	//Render background
 	m_background->Draw();
 	m_gameField->Draw();
-	
+
 	if (m_isPause)
 	{
 		m_pauseMenu->Draw();
