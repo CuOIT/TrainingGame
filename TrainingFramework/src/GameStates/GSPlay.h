@@ -17,6 +17,7 @@ class GSPlay :
 {
 public:
 	GSPlay();
+
 	~GSPlay();
 
 	void	Init() override;

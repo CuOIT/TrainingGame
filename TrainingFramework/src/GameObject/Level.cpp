@@ -26,16 +26,16 @@ void Level::Init()
 	// bg
 	auto texture = ResourceManagers::GetInstance()->GetTexture("bg_menu.tga");
 	std::shared_ptr<Sprite2D> sprite = std::make_shared<Sprite2D>(model, shader, texture);
-	sprite->Set2DPosition(Globals::screenWidth / 2.0f + 150.0f, Globals::screenHeight / 2.0f);
-	sprite->SetSize(Globals::screenWidth / 2.0 - 40, Globals::screenHeight / 2);
+	sprite->Set2DPosition(3*Globals::screenWidth / 4, Globals::screenHeight / 2.0f);
+	sprite->SetSize(Globals::screenWidth / 2.0 - 30, Globals::screenHeight / 2);
 	m_listSprite2D.push_back(sprite);
 
 	// header
 	texture = ResourceManagers::GetInstance()->GetTexture("header.tga");
 	sprite = std::make_shared<Sprite2D>(model, shader, texture);
 	sprite = std::make_shared<Sprite2D>(model, shader, texture);
-	sprite->Set2DPosition((float)Globals::screenWidth / 2.0f + 150.0f, (float)Globals::screenHeight / 2.0f - 180.0f);
-	sprite->SetSize(220.0f, 70.0f);
+	sprite->Set2DPosition(3 * Globals::screenWidth / 4, Globals::screenHeight / 2.0f - 220.0f);
+	sprite->SetSize(250.0f, 75.0f);
 	m_listSprite2D.push_back(sprite);
 
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Woodlook-nvyP.ttf");

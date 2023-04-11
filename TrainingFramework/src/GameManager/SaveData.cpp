@@ -75,7 +75,7 @@ int SaveData::LoadLevel()
 	std::string filePath = m_DataPath + "Level.txt";
 	fp = fopen(filePath.c_str(), "r");
 	int numPassedLevel = 0;
-	char sTmp[20];
+	char sTmp[100];
 	if (fp == NULL)
 		this->Init(std::string("Level.txt"));
 	else
