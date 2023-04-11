@@ -190,6 +190,7 @@ void GSPlay::HandleTouchEvents(float x, float y, bool bIsPressed)
 void GSPlay::HandleMouseMoveEvents(float x, float y)
 {
 	//Code to handle mouse event
+	m_gameField->HandleMouseMoveEvents( x,  y);
 
 }
 

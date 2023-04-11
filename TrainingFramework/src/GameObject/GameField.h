@@ -1,9 +1,12 @@
 #pragma once
 #include"Entity.h"
+#include"GameButton.h"
 #include"Player.h"
+#include"Text.h"
 #include"GameBoard.h"
 #include"StatusBar.h"
 #include<queue>
+
 class GameField {
 	enum class Phase {
 		BEGIN_PHASE,
@@ -21,6 +24,7 @@ public:
 	void Init(std::shared_ptr<Player> player, std::shared_ptr<Entity> enermy);
 
 	void HandleClick(float x, float y);
+	void HandleMouseMoveEvents(float x, float y);
 	void Update(float deltaTime);
 
 	void								Calculate(std::vector<int> pieceList,bool isPlayer);
@@ -34,6 +38,12 @@ private:
 	std::shared_ptr<Sprite2D>			m_turnPoint;
 	Phase								m_phase;
 	float								m_standbyTime;
+	std::shared_ptr<Sprite2D>			m_boardMenu;
+	std::shared_ptr<Sprite2D>			m_info;
+	std::list<std::shared_ptr<Text>>	m_infoText;
+
+
+	std::list<std::shared_ptr<Sprite2D>>			m_skillButtonList;
 	std::vector<std::pair<int, int>>	m_click;
 	std::vector<int>				m_pieceList;
 	std::shared_ptr<Player>				m_player;
