@@ -45,9 +45,9 @@ void SaveData::Init(std::string& fileName)
 	}
 	else if (fileName == "Player.txt")
 	{
-		fprintf(fp, "%s %s\n", "Name:", "Player");
+		fprintf(fp, "%s %s\n", "Name:", "warrior2");
 		fprintf(fp, "%s %d\n", "MaxHP:", 200);
-		fprintf(fp, "%s %d\n", "MaxMP:", 100);
+		fprintf(fp, "%s %d\n", "MaxMP:", 200);
 		fprintf(fp, "%s %d\n", "Attack:", 5);
 		fprintf(fp, "%s %d\n", "Defense:", 0);
 		std::printf("%s\n", "Init Player!");
@@ -59,11 +59,14 @@ void SaveData::SaveLevel(int numPassedlevel)
 {
 	FILE* fp = NULL;
 	std::string filePath = m_DataPath + "Level.txt";
-	fp = fopen(filePath.c_str(), "w");
+	fp = fopen(filePath.c_str(), "w+");
 
 	if (fp != NULL)
 	{
-		fprintf(fp, "%s %d", "LevelPassed:", numPassedlevel);
+		if (this->LoadLevel() < numPassedlevel)
+		{
+			fprintf(fp, "%s %d", "LevelPassed:", numPassedlevel);
+		}
 		fclose(fp);
 		std::printf("%s\n", "Save Level!");
 	}
@@ -82,7 +85,7 @@ int SaveData::LoadLevel()
 	{
 		int success = fscanf(fp, "%s %d", sTmp, &numPassedLevel);
 		fclose(fp);
-		std::printf("%s %d\n", sTmp, numPassedLevel);
+		std::printf("%s %d\n", "LevelPassed:", numPassedLevel);
 	}
 	return numPassedLevel;
 }
@@ -138,4 +141,38 @@ std::shared_ptr<Player> SaveData::LoadPlayer()
 	newPlayer->SetDefense(defense);
 	return newPlayer;
 }
+
+std::shared_ptr<Entity> SaveData::LoadEnemy()
+{
+	FILE* fp = NULL;
+	std::string filePath = "..\\Data\\Enemy.txt";
+	fp = fopen(filePath.c_str(), "r");
+
+	char name[20] = { 0 };
+	int maxHP = 0;
+	int maxMP = 0;
+	int attack = 0;
+	int defense = 0;
+	int index = 0;
+
+	if (fp != NULL)
+	{
+		int level = this->LoadLevel();
+		do
+		{
+			int success = fscanf(fp, "%*d %s %d %d %d %d", name, &maxHP, &maxMP, &attack, &defense);
+			std::cout << name << "\n";
+			index++;
+		} while (index < level);
+		fclose(fp);
+	}
+	std::shared_ptr<Entity> enemy = std::make_shared<Entity>();
+	enemy->SetName(name);
+	enemy->SetMaxHp(maxHP);
+	enemy->SetMaxMana(maxMP);
+	enemy->SetAttack(attack);
+	enemy->SetDefense(defense);
+	return enemy;
+}
+
 	

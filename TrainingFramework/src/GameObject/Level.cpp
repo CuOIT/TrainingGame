@@ -5,6 +5,7 @@
 
 Level::Level() : m_level(0)
 {
+	m_numPassedLevel = SaveData::GetInstance()->LoadLevel();
 	Init();
 }
 
@@ -34,8 +35,8 @@ void Level::Init()
 	texture = ResourceManagers::GetInstance()->GetTexture("header.tga");
 	sprite = std::make_shared<Sprite2D>(model, shader, texture);
 	sprite = std::make_shared<Sprite2D>(model, shader, texture);
-	sprite->Set2DPosition(3 * Globals::screenWidth / 4, Globals::screenHeight / 2.0f - 220.0f);
-	sprite->SetSize(250.0f, 75.0f);
+	sprite->Set2DPosition(3 * Globals::screenWidth / 4, Globals::screenHeight / 2.0f - 180.0f);
+	sprite->SetSize(220.0f, 70.0f);
 	m_listSprite2D.push_back(sprite);
 
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Woodlook-nvyP.ttf");
@@ -103,6 +104,31 @@ void Level::Draw()
 void Level::Update(float deltaTime) 
 {
 	m_numPassedLevel = SaveData::GetInstance()->LoadLevel();
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			int curLevel = i * 3 + j + 1;
+			if (curLevel <= m_numPassedLevel + 1)
+			{
+				auto texture = ResourceManagers::GetInstance()->GetTexture("btn_level.tga");
+				m_listButton[curLevel - 1]->SetTexture(texture);
+				m_listButton[curLevel - 1]->SetOnClick([this, curLevel]() {
+					GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
+					this->SetSelectedLevel(curLevel);
+					});
+			}
+			else
+			{
+				auto texture = ResourceManagers::GetInstance()->GetTexture("btn_level_unclear.tga");
+				m_listButton[curLevel - 1]->SetTexture(texture);
+				m_listButton[curLevel - 1]->SetOnClick([]() {
+
+					});
+			}
+		}
+	}
 
 	for (auto it : m_listButton)
 	{

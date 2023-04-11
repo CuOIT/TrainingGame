@@ -1,5 +1,6 @@
 #include"Entity.h"
 #include"Player.h"
+#include "Level.h"
 #include"GameBoard.h"
 #include"GameField.h"
 #include"Entity.h"	
@@ -182,8 +183,18 @@ void GameField::Update(float deltaTime) {
 				m_standbyTime = 0;
 			}
 				}
-
-		
+		break;
+	}
+	case Phase::END_PHASE:
+	{
+		if (!m_enemy->IsAlive())
+		{
+			Level::GetInstance()->SetNumPassedLevel(Level::GetInstance()->GetNumPassedLevel() + 1);
+			Level::GetInstance()->SetIsPlayerWin(true);
+		}
+		else
+			Level::GetInstance()->SetIsPlayerWin(false);
+		Level::GetInstance()->SetIsEndGame(true);
 		break;
 	}
 }
