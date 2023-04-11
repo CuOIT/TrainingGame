@@ -21,6 +21,7 @@ public:
 	void		Draw() final;
 	void		Update(GLfloat deltatime) override;
 
+	//void		SetTexture(std::shared_ptr<Texture> texture);
 	void		Set2DPosition(GLfloat x, GLfloat y);
 	void		SetRotation(Vector3 rotation);
 

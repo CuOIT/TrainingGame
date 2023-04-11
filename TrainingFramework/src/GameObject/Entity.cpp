@@ -6,6 +6,7 @@ Entity::Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std
 	: SpriteAnimation(model, shader, texture, numFrames, numActions, currentAction, frameTime)
 	, m_name(name), m_maxHp(maxHp), m_maxMana(maxMana), m_curHp(maxHp), m_curMana(0)
 	, m_attack(attack), m_defense(defense), m_isAlive(true) {
+	m_attackNum = 0;
 	m_poisonList.push_back(0);
 	m_poisonList.push_back(0);
 	m_poisonList.push_back(0);
@@ -45,14 +46,17 @@ void Entity::Update(float deltaTime) {
 		m_currentTime -= m_frameTime;
 	}
 }
+int Entity::GetAttackNum() {
+	return m_attackNum;
+}
 void Entity::Attack(std::shared_ptr<Entity> e,float deltaTime) {
 	if (m_attackNum>0) {
 		if (m_isAttacking) {
 			MoveTo(e->Get2DPosition().x, deltaTime);
-			if (abs(Get2DPosition().x - e->Get2DPosition().x) < 50) SetTexture(ResourceManagers::GetInstance()->GetTexture("warrior1_attack.tga"));
-			if (abs(Get2DPosition().x - e->Get2DPosition().x)< 20) {
+			if (abs(Get2DPosition().x - e->Get2DPosition().x) < 20) SetTexture(ResourceManagers::GetInstance()->GetTexture(m_name+"_attack.tga"));
+			if (Get2DPosition().x == e->Get2DPosition().x) {
 				e->TakeDamage(m_attack*m_attackNum);
-				 SetTexture(ResourceManagers::GetInstance()->GetTexture("warrior1_idle.tga"));
+				 SetTexture(ResourceManagers::GetInstance()->GetTexture(m_name+"_idle.tga"));
 				m_isAttacking = false;
 			}
 		}
@@ -110,6 +114,16 @@ void Entity::SetAttack(int attack)
 		m_attack = 1;
 }
 
+void Entity::SetIsAlive(bool alive) {
+	m_isAlive = alive;
+	if (!alive) {
+		SetTexture(ResourceManagers::GetInstance()->GetTexture(m_name+"_dead.tga"));
+		m_currentFrame = 0;
+	}
+
+
+}
+
 int	Entity::GetDefense()
 {
 	return m_defense;
@@ -148,14 +162,6 @@ bool Entity::IsAlive()
 	return m_isAlive;
 }
 
-void Entity::SetIsAlive(bool isAlive)
-{
-	m_isAlive = isAlive;
-	m_currentFrame = 0;
-	SetTexture(ResourceManagers::GetInstance()->GetTexture("warrior1_dead.tga"));
-
-}
-
 int Entity::GetPoison() {
 	int poison = 0;
 	for (auto x : m_poisonList) {
@@ -182,7 +188,8 @@ void Entity::TakeDamage(int damage)
 		if (curHp <= 0)
 		{
 			SetHp(0);
-			SetIsAlive(false);
+			if (IsAlive())
+				SetIsAlive(false);
 		}
 		else
 			SetHp(curHp);
@@ -197,13 +204,13 @@ void Entity::TakeDamageOfPoison()
 	for (auto x : m_poisonList) {
 		poison += x;
 	}
-	poison *= 10;
 	std::cout << this->GetName() << " take POISON : " << poison << std::endl;
 	int curHp = m_curHp - poison;
 	if (curHp <= 0)
 	{
 		SetHp(0);
-		SetIsAlive(false);
+		if(IsAlive())
+			SetIsAlive(false);
 	}
 	else
 		SetHp(curHp);

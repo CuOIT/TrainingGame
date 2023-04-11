@@ -40,18 +40,25 @@ public:
 	int			GetCurrentHp();
 	int			GetCurrentMana();
 	void		Attack(std::shared_ptr<Entity> e, float deltaTime);
-	bool		IsAttacking();
-	void		SetIsAttack(bool attack);
-	void		SetAttackNum(int attackNum);
+	bool		IsAttacking() {
+		return m_isAttacking;
+	};
+	void		SetIsAttack(bool attack) {
+			m_isAttacking = attack;
+	}
+	void		SetIsAlive(bool alive);
+	void		SetAttackNum(int attackNum) {
+		m_attackNum = attackNum;
+	}
 	bool		IsAlive();
 
+	int			GetAttackNum();
 	void		SetMaxHp(int maxHp);
 	void		SetMaxMana(int maxMana);
 	void 		SetHp(int hp);
 	void 		SetMana(int mana);
 	void 		SetAttack(int attack);
 	void		SetDefense(int defense);
-	void		SetIsAlive(bool isAlive);
 	void		SetName(std::string name);
 	int			GetPoison();
 

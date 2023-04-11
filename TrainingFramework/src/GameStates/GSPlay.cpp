@@ -59,15 +59,15 @@ void GSPlay::Init()
 
 	//animation
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
-	texture = ResourceManagers::GetInstance()->GetTexture("warrior1_idle.tga");
-	std::shared_ptr<Player> player = std::make_shared<Player>(model, shader, texture, 6, 1, 0, 0.1f, "warrior1", 200, 200, 10, 0);
+	std::shared_ptr<Player> player = std::make_shared<Player>(model, shader, texture, 6, 1, 0, 0.1f, "warrior2", 200, 200, 10, 0);
+	player->SetTexture(ResourceManagers::GetInstance()->GetTexture(player->GetName()+"_idle.tga"));
 	player->Set2DPosition(GF_posXOfPlayer, GF_posYOfPlayer);
 	player->SetSize(GF_playerWidth, GF_playerHeight);
-	texture = ResourceManagers::GetInstance()->GetTexture("warrior1_idle.tga");
-	std::shared_ptr<Entity> enermy = std::make_shared<Entity>(model, shader, texture, 6, 1, 0, 0.1f, "warrior2", 200, 200, 10, 0);
-	enermy->Set2DPosition(Globals::screenWidth - GF_posXOfPlayer, GF_posYOfPlayer);
-	enermy->SetSize(-GF_playerWidth, GF_playerHeight);
-	m_gameField = std::make_shared<GameField>(player, enermy);
+	std::shared_ptr<Entity> enemy = std::make_shared<Entity>(model, shader, texture, 6, 1, 0, 0.1f, "warrior3", 200, 200, 10, 0);
+	enemy->SetTexture(ResourceManagers::GetInstance()->GetTexture(enemy->GetName() + "_idle.tga"));
+	enemy->Set2DPosition(Globals::screenWidth - GF_posXOfPlayer, GF_posYOfPlayer);
+	enemy->SetSize(-GF_playerWidth, GF_playerHeight);
+	m_gameField = std::make_shared<GameField>(player, enemy);
 
 	m_KeyPress = 0;
 
@@ -190,6 +190,7 @@ void GSPlay::HandleTouchEvents(float x, float y, bool bIsPressed)
 void GSPlay::HandleMouseMoveEvents(float x, float y)
 {
 	//Code to handle mouse event
+	m_gameField->HandleMouseMoveEvents( x,  y);
 
 }
 
