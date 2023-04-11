@@ -55,6 +55,7 @@ void GSLevel::Pause()
 
 void GSLevel::Resume()
 {
+	m_isUpdateLevel = true;
 }
 
 void GSLevel::HandleEvents()
@@ -95,6 +96,7 @@ void GSLevel::Update(float deltaTime)
 	if (m_isUpdateLevel)
 	{
 		m_level->Update(deltaTime);
+		std::cout << "Update level!" << "\n";
 		m_isUpdateLevel = false;
 	}
 }

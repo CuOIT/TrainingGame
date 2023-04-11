@@ -2,6 +2,7 @@
 #include "ResourceManagers.h"
 #include "SaveData.h"
 #include "GameStates/GameStateMachine.h"
+#include "Player.h"
 
 PlayerManager::PlayerManager()
 {
@@ -38,7 +39,7 @@ void PlayerManager::Init()
 	// header
 	texture = ResourceManagers::GetInstance()->GetTexture("header.tga");
 	sprite = std::make_shared<Sprite2D>(model, shader, texture);
-	sprite->Set2DPosition((float)Globals::screenWidth / 2.0f - 150.0f, (float)Globals::screenHeight / 2.0f - 180.0f);
+	sprite->Set2DPosition(Globals::screenWidth / 4, Globals::screenHeight / 2.0f - 180.0f);
 	sprite->SetSize(220.0f, 70.0f);
 	m_listSprite2D.push_back(sprite);
 
@@ -58,7 +59,7 @@ void PlayerManager::Init()
 	m_listText.push_back(text);
 
 	text = std::make_shared<Text>(shader, font, std::to_string(maxHP), Vector4(50.0f, 30.0f, 0.0f, 1.0f), 1.0f);
-	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 200.0f, Globals::screenHeight / 2.0f + 100.0f));
+	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 180.0f, Globals::screenHeight / 2.0f + 100.0f));
 	m_listText.push_back(text);
 
 	text = std::make_shared<Text>(shader, font, "MP: ", Vector4(50.0f, 30.0f, 0.0f, 1.0f), 1.0f);
@@ -66,13 +67,13 @@ void PlayerManager::Init()
 	m_listText.push_back(text);
 
 	text = std::make_shared<Text>(shader, font, std::to_string(maxMP), Vector4(50.0f, 30.0f, 0.0f, 1.0f), 1.0f);
-	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 200.0f, Globals::screenHeight / 2.0f + 130.0f));
+	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 180.0f, Globals::screenHeight / 2.0f + 130.0f));
 	m_listText.push_back(text);
 	
 	// animation
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
-	texture = ResourceManagers::GetInstance()->GetTexture("warrior3_auto_x24.tga");
-	player = std::make_shared<Player>(model, shader, texture, 8, 6, 4, 0.05f, name, maxHP, maxMP, attack, defense);
+	player = std::make_shared<Player>(model, shader, texture, 6, 1, 0, 0.1f, name, maxHP, maxMP, attack, defense);
+	player->SetTexture(ResourceManagers::GetInstance()->GetTexture(name + "_idle.tga"));
 	player->Set2DPosition(Globals::screenWidth / 2.0f - 150.0f, Globals::screenHeight / 2.0f - 50.0f);
 	player->SetSize(200, 200);
 	m_listAnimation.push_back(player);

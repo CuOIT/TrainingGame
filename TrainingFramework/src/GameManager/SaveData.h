@@ -19,6 +19,8 @@ public:
 	void SavePlayer(std::shared_ptr<Player> player);
 	std::shared_ptr<Player> LoadPlayer();
 
+	std::shared_ptr<Entity> LoadEnemy();
+
 	bool IsNewGame();
 	void SetIsNewGame(bool isNewGame) { m_isNewGame = isNewGame; };
 	bool GetIsNewGame() { return m_isNewGame; };

@@ -5,6 +5,7 @@
 #include"Player.h"
 #include"Entity.h"
 #include "PauseMenu.h"
+#include "EndGameMenu.h"
 
 class Sprite2D;
 class Sprite3D;
@@ -47,6 +48,7 @@ private:
 	std::shared_ptr<Entity> m_player;
 	std::shared_ptr<Entity> m_enemy;
 	std::shared_ptr<PauseMenu> m_pauseMenu;
+	std::shared_ptr<EndGameMenu>		m_endGameMenu;
 	bool m_isPause = false;
 	int m_currentLevel = 1;
 };

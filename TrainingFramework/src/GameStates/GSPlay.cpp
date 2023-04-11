@@ -16,6 +16,8 @@
 #include"Entity.h"
 #include <Windows.h>
 #include "Level.h"
+#include "SaveData.h"
+#include "EndGameMenu.h"
 
 GSPlay::GSPlay()
 {
@@ -32,6 +34,8 @@ GSPlay::~GSPlay()
 void GSPlay::Init()
 {
 	m_currentLevel = Level::GetInstance()->GetSelectedLevel();
+	std::shared_ptr<Player> player = SaveData::GetInstance()->LoadPlayer();
+	std::shared_ptr<Entity> enemy = SaveData::GetInstance()->LoadEnemy();
 
 	int screenWidth = GetSystemMetrics(SM_CXSCREEN);
 	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
@@ -58,21 +62,34 @@ void GSPlay::Init()
 	m_listButton.push_back(button);
 
 	//animation
+	std::string name = player->GetName();
+	int maxHP = player->GetMaxHp();
+	int maxMP = player->GetMaxMana();
+	int attack = player->GetAttack();
+	int defense = player->GetDefense();
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
-	std::shared_ptr<Player> player = std::make_shared<Player>(model, shader, texture, 6, 1, 0, 0.1f, "warrior2", 200, 200, 10, 0);
-	player->SetTexture(ResourceManagers::GetInstance()->GetTexture(player->GetName()+"_idle.tga"));
+	player = std::make_shared<Player>(model, shader, texture, 6, 1, 0, 0.1f, name, maxHP, maxMP, attack, defense);
+	player->SetTexture(ResourceManagers::GetInstance()->GetTexture(name + "_idle.tga"));
 	player->Set2DPosition(GF_posXOfPlayer, GF_posYOfPlayer);
 	player->SetSize(GF_playerWidth, GF_playerHeight);
-	std::shared_ptr<Entity> enemy = std::make_shared<Entity>(model, shader, texture, 6, 1, 0, 0.1f, "warrior3", 200, 200, 10, 0);
-	enemy->SetTexture(ResourceManagers::GetInstance()->GetTexture(enemy->GetName() + "_idle.tga"));
+
+	name = enemy->GetName();
+	maxHP = enemy->GetMaxHp();
+	maxMP = enemy->GetMaxMana();
+	attack = enemy->GetAttack();
+	defense = enemy->GetDefense();
+	enemy = std::make_shared<Entity>(model, shader, texture, 6, 1, 0, 0.1f, name, maxHP, maxMP, attack, defense);
+	enemy->SetTexture(ResourceManagers::GetInstance()->GetTexture(name + "_idle.tga"));
 	enemy->Set2DPosition(Globals::screenWidth - GF_posXOfPlayer, GF_posYOfPlayer);
 	enemy->SetSize(-GF_playerWidth, GF_playerHeight);
+
 	m_gameField = std::make_shared<GameField>(player, enemy);
+	m_endGameMenu = std::make_shared<EndGameMenu>();
 
 	m_KeyPress = 0;
 
-	std::string name = "gsPlay_sound.wav";
-	ResourceManagers::GetInstance()->PlaySound(name, true);
+	std::string soundName = "gsPlay_sound.wav";
+	ResourceManagers::GetInstance()->PlaySound(soundName, true);
 
 	std::cout << "GSPlay Init" << std::endl;
 
@@ -82,8 +99,9 @@ void GSPlay::Exit()
 
 {
 	std::cout << "Exit" << std::endl;
-	std::string name = "gsPlay_sound.wav";
-	ResourceManagers::GetInstance()->StopSound(name);
+	SaveData::GetInstance()->SaveLevel(m_currentLevel - 1);
+	std::string soundName = "gsPlay_sound.wav";
+	ResourceManagers::GetInstance()->StopSound(soundName);
 }
 
 
@@ -178,6 +196,11 @@ void GSPlay::HandleTouchEvents(float x, float y, bool bIsPressed)
 		m_pauseMenu->HandleTouchEvents(x, y, bIsPressed);
 	}
 
+	if (Level::GetInstance()->GetIsEndGame())
+	{
+		m_endGameMenu->HandleTouchEvents(x, y, bIsPressed);
+	}
+
 	for (auto button : m_listButton)
 	{
 		if (button->HandleTouchEvents(x, y, bIsPressed))
@@ -198,9 +221,15 @@ void GSPlay::Update(float deltaTime)
 {
 	if (!m_isPause)
 	{
-		m_gameField->Update(deltaTime);
-		HandleEvents();
-
+		if (!Level::GetInstance()->GetIsEndGame())
+		{
+			m_gameField->Update(deltaTime);
+			HandleEvents();
+		}
+		else
+		{
+			m_endGameMenu->Update(deltaTime);
+		}
 		//Update button list
 		for (auto it : m_listButton)
 		{
@@ -229,6 +258,10 @@ void GSPlay::Draw()
 	if (m_isPause)
 	{
 		m_pauseMenu->Draw();
+	}
+	if (Level::GetInstance()->GetIsEndGame())
+	{
+		m_endGameMenu->Draw();
 	}
 
 	//Render button list

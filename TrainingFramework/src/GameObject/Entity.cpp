@@ -23,15 +23,7 @@ Entity::~Entity()
 {
 
 }
-bool	Entity::IsAttacking() {
-	return m_isAttacking;
-};
-void	Entity::SetIsAttack(bool attack) {
-	m_isAttacking = attack;
-}
-void	Entity::SetAttackNum(int attackNum) {
-	m_attackNum = attackNum;
-}
+
 void Entity::Update(float deltaTime) {
 	m_currentTime += deltaTime;
 	if (m_currentTime >= m_frameTime)
