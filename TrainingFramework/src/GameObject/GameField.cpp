@@ -15,20 +15,62 @@ GameField::GameField(std::shared_ptr<Player> player, std::shared_ptr<Entity> ene
 	Init(player, enermy);
 };
 inline void GameField::Init(std::shared_ptr<Player> player, std::shared_ptr<Entity> enemy) {
-	this->m_gameBoard = std::make_shared<GameBoard>();
-	this->m_phase = Phase::BASE_PHASE;
-	this->m_standbyTime = 0;
-	this->m_player = player;
-	this->m_enemy = enemy;
-	this->m_currentTurn = PLAYER_TURN;
+	m_gameBoard = std::make_shared<GameBoard>();
+	m_phase = Phase::BASE_PHASE;
+	m_standbyTime = 0;
+	m_player = player;
+	m_enemy = enemy;
+	m_currentTurn = PLAYER_TURN;
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 	auto texture = ResourceManagers::GetInstance()->GetTexture("turnPoint.tga");
 	m_turnPoint = std::make_shared<Sprite2D>(model, shader, texture);
 	m_turnPoint->Set2DPosition(m_player->Get2DPosition().x, m_player->Get2DPosition().y-130);
 	m_turnPoint->SetSize(75, 75);
-	this->m_PStatusBar = std::make_shared<StatusBar>(player->GetMaxHp(), player->GetMaxMana(), true);
-	this->m_EStatusBar = std::make_shared<StatusBar>(enemy->GetMaxHp(), enemy->GetMaxMana(), false);
+
+	//Skill
+
+	texture= ResourceManagers::GetInstance()->GetTexture("board_menu.tga");
+	m_boardMenu = std::make_shared<Sprite2D>(model, shader, texture);
+	m_boardMenu->Set2DPosition(-80, 300);
+	m_boardMenu->SetSize(300, 250);
+
+	texture = ResourceManagers::GetInstance()->GetTexture("bg_info.tga");
+	m_info= std::make_shared<Sprite2D>(model, shader, texture);
+
+	//m_skillButtonList.push_back(boardMenu);
+	//skill1
+	texture = ResourceManagers::GetInstance()->GetTexture("skill11.tga");
+	std::shared_ptr<GameButton> button = std::make_shared<GameButton>(model, shader, texture);
+	button->SetName("skill1");
+	button->Set2DPosition(20, 240);
+	button->SetSize(50, 50);
+	button->SetOnClick([this]() {
+		});
+	m_skillButtonList.push_back(button);
+	//skill2
+	texture = ResourceManagers::GetInstance()->GetTexture("skill12.tga");
+	button = std::make_shared<GameButton>(model, shader, texture);
+	button->SetName("skill2");
+	button->Set2DPosition(20, 300);
+	button->SetSize(50, 50);
+	button->SetOnClick([this]() {
+		});
+	m_skillButtonList.push_back(button);
+	//skill3
+	texture = ResourceManagers::GetInstance()->GetTexture("skill13.tga");
+	button = std::make_shared<GameButton>(model, shader, texture);
+	button->SetName("skill3");
+	button->Set2DPosition(20, 360);
+	button->SetSize(50, 50);
+	button->SetOnClick([this]() {
+		});
+	m_skillButtonList.push_back(button);
+
+	//m_infoText = std::make_shared<Text>(shader, font, "", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
+
+	m_PStatusBar = std::make_shared<StatusBar>(player->GetMaxHp(), player->GetMaxMana(), true);
+	m_EStatusBar = std::make_shared<StatusBar>(enemy->GetMaxHp(), enemy->GetMaxMana(), false);
 	while (!m_turn.empty()) m_turn.pop();
 	m_turn.push(PLAYER_TURN);	
 };
@@ -174,6 +216,13 @@ void GameField::Draw() {
 	m_PStatusBar->Draw();
 	m_EStatusBar->Draw();
 	m_turnPoint->Draw();
+	m_boardMenu->Draw();
+	for (auto it : m_skillButtonList) {
+		it->Draw();
+	}
+	m_info->Draw();
+	for(auto it:m_infoText)
+		it->Draw();
 }
 
 void GameField::SetPhase(Phase phase) {
@@ -220,6 +269,53 @@ void GameField::HandleClick(float _x, float _y) {
 			}
 	}
 }
+void GameField::HandleMouseMoveEvents(float x, float y) {
+	m_info->SetSize(0, 0);
+	m_infoText.clear();
+	for (auto it : m_skillButtonList) {
+		if ((it->Get2DPosition().x - it->GetScale().x / 2.0f <= x) && (x <= it->Get2DPosition().x + it->GetScale().x / 2.0f)
+			&& (it->Get2DPosition().y - it->GetScale().y / 2.0f <= y) && (y <= it->Get2DPosition().y + it->GetScale().y / 2.0f))
+		{
+			// The button is being pressed down
+			m_info->SetSize(200, 100);
+			m_info->Set2DPosition(it->Get2DPosition().x + 100, it->Get2DPosition().y - 50);
+			int x = it->Get2DPosition().x + 10;
+			int y = it->Get2DPosition().y - 80;
+			if (it->GetName() == "skill1") {
+				auto font = ResourceManagers::GetInstance()->GetFont("Alkatra-VariableFont_wght.ttf");
+				auto shader = ResourceManagers::GetInstance()->GetShader("TextShader");
+				auto text = std::make_shared<Text>(shader, font, "Mana Cost: 50", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
+				text->Set2DPosition(x, y);
+				m_infoText.push_back(text);
+				auto text2 = std::make_shared<Text>(shader, font, "Take Damage 50 for enemy", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
+				text2->Set2DPosition(x, y+10);
+				m_infoText.push_back(text2);
+
+
+			}
+			else if (it->GetName() == "skill2") {
+				auto font = ResourceManagers::GetInstance()->GetFont("Alkatra-VariableFont_wght.ttf");
+				auto shader = ResourceManagers::GetInstance()->GetShader("TextShader");
+				auto text = std::make_shared<Text>(shader, font, "Mana Cost: 100", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
+				text->Set2DPosition(x, y);
+				m_infoText.push_back(text);
+				auto text2 = std::make_shared<Text>(shader, font, "Convert 50% current hp of enemy to yours", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
+				text2->Set2DPosition(x, y + 10);
+				m_infoText.push_back(text2);
+			}
+			else if (it->GetName() == "skill3") {
+				auto font = ResourceManagers::GetInstance()->GetFont("Alkatra-VariableFont_wght.ttf");
+				auto shader = ResourceManagers::GetInstance()->GetShader("TextShader");
+				auto text = std::make_shared<Text>(shader, font, "Mana Cost: 200", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
+				text->Set2DPosition(x, y);
+				m_infoText.push_back(text);
+				auto text2 = std::make_shared<Text>(shader, font, "Destroy all sword piece on the board", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
+				text2->Set2DPosition(x, y + 10);
+				m_infoText.push_back(text2);
+			}
+		}
+	}
+};
 
 void GameField::Calculate(std::vector<int> pieceList,bool isPlayer) {
 		/*HP 0,
