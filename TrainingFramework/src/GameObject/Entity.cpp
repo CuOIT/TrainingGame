@@ -12,6 +12,12 @@ Entity::Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std
 	m_isAttacking = false;
 
 };
+
+Entity::Entity()
+{
+
+}
+
 Entity::~Entity()
 {
 

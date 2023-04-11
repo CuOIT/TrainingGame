@@ -6,6 +6,11 @@
 #include "Texture.h"
 #include "Application.h"
 
+SpriteAnimation::SpriteAnimation()
+{
+
+}
+
 SpriteAnimation::SpriteAnimation(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime)
 	: BaseObject(-1, model, shader, texture), m_iWidth(100), m_iHeight(50)
 {

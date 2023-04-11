@@ -35,6 +35,7 @@ void GSMenu::Init()
 	{
 		button->SetOnClick([this]() {
 			GameStateMachine::GetInstance()->ChangeState(StateType::STATE_LEVEL);
+			SaveData::GetInstance()->SetIsNewGame(false);
 			});	
 	}
 	else
@@ -50,6 +51,7 @@ void GSMenu::Init()
 	button->SetSize(300, 100);
 	button->SetOnClick([this]() {
 		SaveData::GetInstance()->ClearDataFolder();
+		SaveData::GetInstance()->SetIsNewGame(true);
 		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_LEVEL);
 		});
 	m_listButton.push_back(button);
