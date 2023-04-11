@@ -32,6 +32,7 @@ GSPlay::~GSPlay()
 void GSPlay::Init()
 {
 	m_currentLevel = Level::GetInstance()->GetSelectedLevel();
+
 	int screenWidth = GetSystemMetrics(SM_CXSCREEN);
 	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 	std::cout << "Screen resolution: " << screenWidth << "x" << screenHeight << std::endl;

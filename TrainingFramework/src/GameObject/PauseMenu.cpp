@@ -47,7 +47,7 @@ void PauseMenu::Init(GSPlay *gs)
 		m_isPlaySound = true;
 		});
 	// home
-	texture = ResourceManagers::GetInstance()->GetTexture("btn_home.tga");
+	texture = ResourceManagers::GetInstance()->GetTexture("btn_back.tga");
 	std::shared_ptr<GameButton> button = std::make_shared<GameButton>(model, shader, texture);
 	button->Set2DPosition((float)Globals::screenWidth / 2.0f - 45.0f, (float)Globals::screenHeight / 2.0f + 25.0f);
 	button->SetSize(60.0f, 60.0f);

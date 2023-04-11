@@ -1,0 +1,5 @@
+Name: Player
+MaxHP: 200
+MaxMP: 100
+Attack: 10
+Defense: 0

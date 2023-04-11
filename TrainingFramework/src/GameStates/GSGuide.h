@@ -2,6 +2,9 @@
 #include "GameStateBase.h"
 #include "GameButton.h"
 
+class Texture;
+class Shader;
+
 class GSGuide :
 	public GameStateBase
 {
