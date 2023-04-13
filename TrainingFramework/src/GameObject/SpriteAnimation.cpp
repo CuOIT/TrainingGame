@@ -21,6 +21,7 @@ SpriteAnimation::SpriteAnimation(std::shared_ptr<Model> model, std::shared_ptr<S
 	m_currentAction = 0;
 	m_currentTime = 0.0f;
 	m_currentAction = currentAction;
+	m_isLooped = true;
 	Init();
 }
 
@@ -115,8 +116,12 @@ void SpriteAnimation::Update(GLfloat deltatime)
 	if (m_currentTime >= m_frameTime)
 	{
 		m_currentFrame++;
-		if (m_currentFrame >= m_numFrames)
+		if (m_currentFrame >= m_numFrames) {
+			if (!m_isLooped) {
+				SetTexture(m_lastTexture,true);
+			}
 			m_currentFrame = 0;
+		}
 		m_currentTime -= m_frameTime;
 	}
 }
@@ -134,10 +139,16 @@ void SpriteAnimation::SetRotation(Vector3 rotation)
 	CalculateWorldMatrix();
 }
 
-//void	SpriteAnimation::SetTexture(std::shared_ptr<Texture> texture) {
-//	m_currentFrame = 0;
-//	m_pTexture = texture;
-//};
+void	SpriteAnimation::SetLoop(bool isLooped) {
+	m_isLooped = isLooped;
+}
+
+void	SpriteAnimation::SetTexture(std::shared_ptr<Texture> texture,bool isLooped) {
+	m_currentFrame = 0;
+	m_lastTexture = m_pTexture;
+	m_pTexture = texture;
+	m_isLooped = isLooped;
+};
 
 Vector2 SpriteAnimation::Get2DPosition()
 {

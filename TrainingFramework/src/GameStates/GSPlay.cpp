@@ -69,7 +69,7 @@ void GSPlay::Init()
 	int defense = player->GetDefense();
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
 	player = std::make_shared<Player>(model, shader, texture, 6, 1, 0, 0.1f, name, maxHP, maxMP, attack, defense);
-	player->SetTexture(ResourceManagers::GetInstance()->GetTexture(name + "_idle.tga"));
+	player->SetTexture(ResourceManagers::GetInstance()->GetTexture(name + "_idle.tga"),true);
 	player->Set2DPosition(GF_posXOfPlayer, GF_posYOfPlayer);
 	player->SetSize(GF_playerWidth, GF_playerHeight);
 
@@ -79,7 +79,7 @@ void GSPlay::Init()
 	attack = enemy->GetAttack();
 	defense = enemy->GetDefense();
 	enemy = std::make_shared<Entity>(model, shader, texture, 6, 1, 0, 0.1f, name, maxHP, maxMP, attack, defense);
-	enemy->SetTexture(ResourceManagers::GetInstance()->GetTexture(name + "_idle.tga"));
+	enemy->SetTexture(ResourceManagers::GetInstance()->GetTexture(name + "_idle.tga"),true);
 	enemy->Set2DPosition(Globals::screenWidth - GF_posXOfPlayer, GF_posYOfPlayer);
 	enemy->SetSize(-GF_playerWidth, GF_playerHeight);
 

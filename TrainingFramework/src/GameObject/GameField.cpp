@@ -133,23 +133,13 @@ void GameField::Update(float deltaTime) {
 		auto matchList = m_gameBoard->GetPieceIndexMatchedList();
 		m_gameBoard->m_selected_piece->Set2DPosition(-200, -200);
 		m_gameBoard->m_selected_piece2->Set2DPosition(-200, -200);
-		//Calculate Damage;
 		m_pieceList = m_gameBoard->GetPieceTypeMatchedList(matchList);
 		Calculate(m_pieceList, m_currentTurn);
-		//for (auto x : pieceList) {
-		//	std::cout << x << " ";
-		//}
-		//std::cout << std::endl;
-		//std::cout << "PLayer: " << m_player->GetCurrentHp() << " / "<<m_player->GetMaxHp()<<std::endl;
-		//std::cout << "PLayer: " << m_player->GetCurrentMana() << " / " << m_player->GetMaxMana()<<std::endl;
-
-		//std::cout << "Enemy: " << m_enemy->GetCurrentHp() << " / " << m_enemy->GetMaxHp() << std::endl;
-		//std::cout << "Enemy: " << m_enemy->GetCurrentMana() << " / " << m_enemy->GetMaxMana() << std::endl;
 		m_gameBoard->DestroyPieces(matchList);
-		m_gameBoard->RefillGameBoard();//this function will set refilling=true;
+		m_gameBoard->RefillGameBoard();
 		if (m_pieceList[static_cast<int>(PieceType::Sword)] > 0) {
 			if (m_currentTurn == PLAYER_TURN) {
-				 m_player->SetAttackNum(10*m_pieceList[static_cast<int>(PieceType::Sword)]);
+				 m_player->SetAttackNum(m_pieceList[static_cast<int>(PieceType::Sword)]);
 				 m_player->SetIsAttack(true);
 			}
 			else {
@@ -220,12 +210,14 @@ void GameField::Update(float deltaTime) {
 	m_player->Update(deltaTime);
 	m_enemy->Update(deltaTime);
 	m_PStatusBar->Update(deltaTime,m_player);
+
 	m_EStatusBar->Update(deltaTime, m_enemy);
 }
 void GameField::Draw() {
 	m_gameBoard->Draw();
 	m_enemy->Draw();
 	m_player->Draw();
+
 	m_PStatusBar->Draw();
 	m_EStatusBar->Draw();
 	m_turnPoint->Draw();

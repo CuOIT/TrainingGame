@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseObject.h"
+#include"Texture.h"
 class SpriteAnimation : public BaseObject
 {
 protected:
@@ -11,6 +12,8 @@ protected:
 	GLfloat			m_currentTime;
 	GLint			m_numActions;
 	GLint			m_currentAction;//index from 0 to m_numActions-1
+	std::shared_ptr<Texture>	m_lastTexture;
+	bool			m_isLooped;
 
 public:
 	SpriteAnimation();
@@ -21,7 +24,8 @@ public:
 	void		Draw() final;
 	void		Update(GLfloat deltatime) override;
 
-	//void		SetTexture(std::shared_ptr<Texture> texture);
+	void		SetLoop(bool isLooped);
+	void		SetTexture(std::shared_ptr<Texture> texture,bool isLooped);
 	void		Set2DPosition(GLfloat x, GLfloat y);
 	void		SetRotation(Vector3 rotation);
 
