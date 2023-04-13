@@ -53,6 +53,13 @@ void Entity::Update(float deltaTime) {
 		Attack(deltaTime);
 	}
 }
+bool		Entity::IsFreeze() {
+	return m_isFreeze;
+};
+void		Entity::SetFreeze(bool isFreeze) {
+	m_isFreeze = isFreeze;
+};
+
 int Entity::GetAttackNum() {
 	return m_attackNum;
 }

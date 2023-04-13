@@ -16,6 +16,7 @@ protected:
 	bool			m_isAttacking;
 	int				m_attackNum;
 	std::list<int>	m_poisonList;//stored poison in 3 round;
+	bool			m_isFreeze;
 	std::shared_ptr<Entity> m_opponent;
 
 
@@ -48,6 +49,8 @@ public:
 	void		SetIsAlive(bool alive);
 	void		SetAttackNum(int attackNum);
 	bool		IsAlive();
+	bool		IsFreeze();
+	void		SetFreeze(bool);
 
 	int			GetAttackNum();
 	void		SetMaxHp(int maxHp);

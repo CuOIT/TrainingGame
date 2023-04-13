@@ -12,8 +12,8 @@
 #define  ENEMY_TURN false
 //GameField::GameField() {};
 GameField::~GameField() {};
-GameField::GameField(std::shared_ptr<Player> player, std::shared_ptr<Entity> enermy) {
-	Init(player, enermy);
+GameField::GameField(std::shared_ptr<Player> player, std::shared_ptr<Entity> enemy) {
+	Init(player, enemy);
 };
 inline void GameField::Init(std::shared_ptr<Player> player, std::shared_ptr<Entity> enemy) {
 	m_gameBoard = std::make_shared<GameBoard>();
@@ -48,7 +48,13 @@ inline void GameField::Init(std::shared_ptr<Player> player, std::shared_ptr<Enti
 	button->SetName("skill1");
 	button->Set2DPosition(20, 240);
 	button->SetSize(50, 50);
-	button->SetOnClick([this]() {
+	button->SetOnClick([player]() {
+		if (player->GetCurrentMana() >= 5) {
+
+		player->LostMana(5);
+		player->Heal(player->GetCurrentHp() / 2);
+		std::cout << "USE 1" << std::endl;
+		}
 		});
 	m_skillButtonList.push_back(button);
 	//skill2
@@ -57,7 +63,15 @@ inline void GameField::Init(std::shared_ptr<Player> player, std::shared_ptr<Enti
 	button->SetName("skill2");
 	button->Set2DPosition(20, 300);
 	button->SetSize(50, 50);
-	button->SetOnClick([this]() {
+	button->SetOnClick([player,enemy]() {
+		if (player->GetCurrentMana()>= 10) {
+			player->LostMana(10);
+			int hp = enemy->GetCurrentHp();
+			enemy->SetHp(hp / 2);
+			player->Heal(hp / 2);
+			std::cout << "USE 2" << std::endl;
+		}
+		std::cout << player->GetCurrentMana();
 		});
 	m_skillButtonList.push_back(button);
 	//skill3
@@ -66,7 +80,16 @@ inline void GameField::Init(std::shared_ptr<Player> player, std::shared_ptr<Enti
 	button->SetName("skill3");
 	button->Set2DPosition(20, 360);
 	button->SetSize(50, 50);
-	button->SetOnClick([this]() {
+	std::shared_ptr gb = m_gameBoard;
+	button->SetOnClick([player,gb,this]() {
+		if (player->GetCurrentMana() >= 15) {
+			player->LostMana(15);
+			std::set < std::pair<int, int>> destroyList;
+			destroyList = gb->GetPieceIndexType(5);//SWORD
+			gb->SetDestroyList(destroyList);
+			this->SetPhase(Phase::DESTROY_PHASE);
+			std::cout << "USE 3" << std::endl;
+		}
 		});
 	m_skillButtonList.push_back(button);
 
@@ -125,6 +148,8 @@ void GameField::Update(float deltaTime) {
 			m_gameBoard->ChangePositionOfTwoPiece(lastRow, lastCol, curRow, curCol, deltaTime);
 		}
 		else {
+			auto matchList = m_gameBoard->GetPieceIndexMatchedList();
+			m_gameBoard->SetDestroyList(matchList);
 			SetPhase(Phase::DESTROY_PHASE);
 		}
 		break;
@@ -132,12 +157,12 @@ void GameField::Update(float deltaTime) {
 	case Phase::DESTROY_PHASE:
 	{
 		m_click.clear();
-		auto matchList = m_gameBoard->GetPieceIndexMatchedList();
+		auto destroyList = m_gameBoard->GetDestroyList();
 		m_gameBoard->m_selected_piece->Set2DPosition(-200, -200);
 		m_gameBoard->m_selected_piece2->Set2DPosition(-200, -200);
-		m_pieceList = m_gameBoard->GetPieceTypeMatchedList(matchList);
+		m_pieceList = m_gameBoard->GetPieceTypeMatchedList(destroyList);
 		Calculate(m_pieceList, m_currentTurn);
-		m_gameBoard->DestroyPieces(matchList);
+		m_gameBoard->DestroyPieces(destroyList);
 		m_gameBoard->RefillGameBoard();
 		if (m_pieceList[static_cast<int>(PieceType::Sword)] > 0) {
 			if (m_currentTurn == PLAYER_TURN) {
@@ -160,6 +185,8 @@ void GameField::Update(float deltaTime) {
 			if ( true) {
 				auto matchList = m_gameBoard->GetPieceIndexMatchedList();
 				if (!matchList.empty()) {
+					auto matchList = m_gameBoard->GetPieceIndexMatchedList();
+					m_gameBoard->SetDestroyList(matchList);
 					SetPhase(Phase::DESTROY_PHASE);
 				}
 				else {
@@ -234,13 +261,20 @@ void GameField::SetPhase(Phase phase) {
 GameField::Phase GameField::getPhase() {
 	return m_phase;
 }
-void GameField::HandleClick(float _x, float _y) {
+void GameField::HandleClick(float _x, float _y,bool isPressed) {
 	if(m_currentTurn==PLAYER_TURN){
 
 		//std::cout << _x << " va " << _y<<std::endl;
 		if (m_phase == Phase::BASE_PHASE && m_player->IsAlive())
+			for (auto btnSkill : m_skillButtonList) {
+				if (btnSkill->HandleTouchEvents(_x, _y, isPressed)) {
+
+				std::cout << btnSkill->GetName();
+				break;
+				}
+			}
 			if (GB_posX <= _x && _x <= GB_posX + GB_width
-				&& GB_posY <= _y && _y <= GB_posY + GB_height) {
+				&& GB_posY <= _y && _y <= GB_posY + GB_height && !isPressed) {
 				int curRow = (int)(_y - GB_posY) / Pi_size;
 				int curCol = (int)(_x - GB_posX) / Pi_size;
 				if (m_click.size() == 1) {

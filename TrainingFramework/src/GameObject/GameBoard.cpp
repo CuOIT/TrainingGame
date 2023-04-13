@@ -263,6 +263,25 @@ std::set<std::pair<int,int>> GameBoard::GetPieceIndexMatchedList() {
 	return matchListIndex;
 }
 
+void	GameBoard::SetDestroyList(std::set<std::pair<int, int>> list) {
+	m_destroyList = list;
+};
+
+std::set<std::pair<int, int>> GameBoard::GetDestroyList() {
+	return m_destroyList;
+}
+std::set<std::pair<int, int>>	GameBoard::GetPieceIndexType(int type) {
+	std::set<std::pair<int, int>> list;
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			if (static_cast<int>(m_board[i][j]->GetType()) == type) {
+				list.insert({ i,j });
+			}
+		}
+	}
+	return list;
+};
+
 std::vector<int> GameBoard::GetPieceTypeMatchedList(std::set<std::pair<int, int>> matchList) {
 	int n = static_cast<int>(PieceType::COUNT);
 	std::vector<int> res(n);

@@ -23,7 +23,7 @@ public:
 	GameField(std::shared_ptr<Player> player, std::shared_ptr<Entity> enermy);
 	void Init(std::shared_ptr<Player> player, std::shared_ptr<Entity> enermy);
 
-	void HandleClick(float x, float y);
+	void HandleClick(float x, float y,bool isPressed);
 	void HandleMouseMoveEvents(float x, float y);
 	void Update(float deltaTime);
 
@@ -43,7 +43,7 @@ private:
 	std::list<std::shared_ptr<Text>>	m_infoText;
 
 
-	std::list<std::shared_ptr<Sprite2D>>			m_skillButtonList;
+	std::list<std::shared_ptr<GameButton>>			m_skillButtonList;
 	std::vector<std::pair<int, int>>	m_click;
 	std::vector<int>				m_pieceList;
 	std::shared_ptr<Player>				m_player;
