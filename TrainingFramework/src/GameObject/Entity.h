@@ -4,6 +4,7 @@
 class Entity : public SpriteAnimation
 {
 protected:
+	float			m_standbyTime;
 	int				m_maxHp;
 	int				m_maxMana;
 	int				m_attack;
@@ -41,7 +42,7 @@ public:
 	std::string GetName();
 	int			GetCurrentHp();
 	int			GetCurrentMana();
-	void		Attack(std::shared_ptr<Entity> e, float deltaTime);
+	void		Attack( float deltaTime);
 	bool		IsAttacking();
 	void		SetIsAttack(bool attack);
 	void		SetIsAlive(bool alive);
@@ -56,6 +57,7 @@ public:
 	void 		SetAttack(int attack);
 	void		SetDefense(int defense);
 	void		SetName(std::string name);
+	void		SetOpponent(std::shared_ptr<Entity> op);
 	int			GetPoison();
 
 	void		TakeDamage(int damage);

@@ -118,7 +118,8 @@ void SpriteAnimation::Update(GLfloat deltatime)
 		m_currentFrame++;
 		if (m_currentFrame >= m_numFrames) {
 			if (!m_isLooped) {
-				SetTexture(m_lastTexture,true);
+				if (m_lastTexture == nullptr) Set2DPosition(-999, -999);
+				else SetTexture(m_lastTexture,true);
 			}
 			m_currentFrame = 0;
 		}
@@ -150,6 +151,9 @@ void	SpriteAnimation::SetTexture(std::shared_ptr<Texture> texture,bool isLooped)
 	m_isLooped = isLooped;
 };
 
+void SpriteAnimation::SetLastTexture(std::shared_ptr<Texture> texture) {
+	m_lastTexture = texture;
+}
 Vector2 SpriteAnimation::Get2DPosition()
 {
 	return Vector2(m_position.x, m_position.y);
