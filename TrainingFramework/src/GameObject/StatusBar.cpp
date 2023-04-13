@@ -3,6 +3,7 @@
 #include"StatusBar.h"
 #include"Font.h"
 #include"ResourceManagers.h"
+#include"SpriteAnimation.h"
 StatusBar::StatusBar(int maxHp, int maxMana, bool isPlayer) :m_maxHp(maxHp), m_maxMana(maxMana), m_hp(maxHp), m_mana(0), m_shield(0), m_poison(0), m_isPlayer(isPlayer) {
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
@@ -11,7 +12,7 @@ StatusBar::StatusBar(int maxHp, int maxMana, bool isPlayer) :m_maxHp(maxHp), m_m
 	texture = ResourceManagers::GetInstance()->GetTexture("hp_bar.tga");
 	m_hpBar = std::make_shared<Sprite2D>(model, shader, texture);
 	m_hpBar->SetSize(SB_maxBarWidth, SB_barHeight);
-	;	texture = ResourceManagers::GetInstance()->GetTexture("mana_bar.tga");
+	texture = ResourceManagers::GetInstance()->GetTexture("mana_bar.tga");
 	m_manaBar = std::make_shared<Sprite2D>(model, shader, texture);
 	m_manaBar->SetSize(0,0);
 	texture = ResourceManagers::GetInstance()->GetTexture("piece_shield.tga");
@@ -21,6 +22,10 @@ StatusBar::StatusBar(int maxHp, int maxMana, bool isPlayer) :m_maxHp(maxHp), m_m
 	m_poisonStt = std::make_shared<Sprite2D>(model, shader, texture);
 	m_poisonStt->SetSize(SB_effectSize, SB_effectSize);
 
+	shader= ResourceManagers::GetInstance()->GetShader("Animation");
+	texture = ResourceManagers::GetInstance()->GetTexture("thunder.tga");
+	m_effect= std::make_shared<SpriteAnimation>(model, shader, texture,13,1,0,0.1f);
+	m_effect->SetSize(100, 100);
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Alkatra-VariableFont_wght.ttf");
 	m_shieldText = std::make_shared<Text>(shader, font, "", Vector4(0.95f, 0.98f,0.98f, 1.0f), 0.5f);
@@ -96,13 +101,15 @@ void StatusBar::Update(float deltaTime, std::shared_ptr<Entity> entity) {
 	if (entity->IsAlive()) {
 
 		if (m_hp > entity->GetCurrentHp()) {
-			entity->SetTexture(ResourceManagers::GetInstance()->GetTexture(entity->GetName()+"_hurt.tga"));
+			entity->SetTexture(ResourceManagers::GetInstance()->GetTexture(entity->GetName()+"_hurt.tga"),false);
 		}
 		else if(entity->GetAttackNum()==0)
 		{
-			entity->SetTexture(ResourceManagers::GetInstance()->GetTexture(entity->GetName()+"_idle.tga"));
+			entity->SetTexture(ResourceManagers::GetInstance()->GetTexture(entity->GetName()+"_idle.tga"),true);
 		}
 	}
+	m_effect->Update(deltaTime);
+	m_effect->Set2DPosition(entity->Get2DPosition().x, entity->Get2DPosition().y+50);
 	this->SetHp(entity->GetCurrentHp());
 	this->SetMana(entity->GetCurrentMana());
 	this->SetShiled(entity->GetDefense());
@@ -112,6 +119,7 @@ void StatusBar::Draw() {
 	m_statusBarBG->Draw();
 	m_hpBar->Draw();
 	m_manaBar->Draw();
+	m_effect->Draw();
 	if (m_shield > 0) {
 		m_shieldStt->Draw();
 		m_shieldText->Draw();

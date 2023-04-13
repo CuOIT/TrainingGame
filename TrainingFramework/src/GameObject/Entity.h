@@ -15,6 +15,8 @@ protected:
 	bool			m_isAttacking;
 	int				m_attackNum;
 	std::list<int>	m_poisonList;//stored poison in 3 round;
+	std::shared_ptr<Entity> m_opponent;
+
 
 	std::string	m_name;
 
@@ -40,16 +42,10 @@ public:
 	int			GetCurrentHp();
 	int			GetCurrentMana();
 	void		Attack(std::shared_ptr<Entity> e, float deltaTime);
-	bool		IsAttacking() {
-		return m_isAttacking;
-	};
-	void		SetIsAttack(bool attack) {
-			m_isAttacking = attack;
-	}
+	bool		IsAttacking();
+	void		SetIsAttack(bool attack);
 	void		SetIsAlive(bool alive);
-	void		SetAttackNum(int attackNum) {
-		m_attackNum = attackNum;
-	}
+	void		SetAttackNum(int attackNum);
 	bool		IsAlive();
 
 	int			GetAttackNum();

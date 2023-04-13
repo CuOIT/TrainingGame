@@ -73,7 +73,7 @@ void PlayerManager::Init()
 	// animation
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
 	player = std::make_shared<Player>(model, shader, texture, 6, 1, 0, 0.1f, name, maxHP, maxMP, attack, defense);
-	player->SetTexture(ResourceManagers::GetInstance()->GetTexture(name + "_idle.tga"));
+	player->SetTexture(ResourceManagers::GetInstance()->GetTexture(name + "_idle.tga"),true);
 	player->Set2DPosition(Globals::screenWidth / 2.0f - 150.0f, Globals::screenHeight / 2.0f - 50.0f);
 	player->SetSize(200, 200);
 	m_listAnimation.push_back(player);

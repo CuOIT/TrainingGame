@@ -3,6 +3,7 @@
 #include"Entity.h"
 #include"Font.h"
 #include"Text.h"
+#include"SpriteAnimation.h"
 class StatusBar {
 	//#define w
 public:
@@ -21,6 +22,8 @@ private:
 	std::shared_ptr<Sprite2D> m_statusBarBG;
 	std::shared_ptr<Sprite2D> m_hpBar;
 	std::shared_ptr<Sprite2D> m_manaBar;
+	std::shared_ptr<SpriteAnimation> m_effect;
+
 	std::shared_ptr<Sprite2D> m_poisonStt;
 	std::shared_ptr<Sprite2D> m_shieldStt;
 	std::shared_ptr<Text> m_shieldText;

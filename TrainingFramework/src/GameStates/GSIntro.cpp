@@ -18,7 +18,11 @@ void GSIntro::Init()
 
 	m_logo = std::make_shared<Sprite2D>(model, shader, texture);
 	m_logo->Set2DPosition((float)Globals::screenWidth / 2, (float)Globals::screenHeight / 2);
-	m_logo->SetSize(Globals::screenWidth, Globals::screenHeight);
+	m_logo->SetSize(Globals::screenWidth, Globals::screenWidth);
+	texture = ResourceManagers::GetInstance()->GetTexture("bg_intro.tga");
+	m_bg = std::make_shared<Sprite2D>(model, shader, texture);
+	m_bg->Set2DPosition((float)Globals::screenWidth / 2, (float)Globals::screenHeight / 2);
+	m_bg->SetSize(Globals::screenWidth, Globals::screenHeight);
 }
 
 void GSIntro::Exit()
@@ -63,5 +67,6 @@ void GSIntro::Update(float deltaTime)
 
 void GSIntro::Draw()
 {
+	m_bg->Draw();
 	m_logo->Draw();
 }
