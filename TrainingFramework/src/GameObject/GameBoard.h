@@ -10,6 +10,7 @@ private:
 	std::shared_ptr<Sprite2D>			m_frame;
 	std::shared_ptr<Sprite2D>			m_background;
 	std::vector<std::pair<int,int>>		m_click;
+	std::set<std::pair<int, int>>		m_destroyList;
 	int									m_moveSpeed;
 	bool								m_isSwapping;
 	bool								m_isRefilling;
@@ -38,7 +39,11 @@ public:
 	void							SwapTwoSelectedPiece(int lastRow, int lastCol, int curRow, int curCol);  //Swap 2 piece
 	void							ChangePositionOfTwoPiece(int lastRow, int lastCol, int curRow, int curCol,float deltaTime);
 
+	void							SetDestroyList(std::set<std::pair<int, int>>list);
+	std::set<std::pair<int, int>>	GetDestroyList();
 	std::set<std::pair<int, int>>	GetPieceIndexMatchedList();
+	std::set<std::pair<int, int>>	GetPieceIndexType(int type);
+
 	std::vector<int>				GetPieceTypeMatchedList(std::set<std::pair<int, int>> pieceIndexMatchedList);
 
 	void							DestroyPieces(std::set<std::pair<int, int>> pieceIndexMatchedList); //Destroy pieces that match together

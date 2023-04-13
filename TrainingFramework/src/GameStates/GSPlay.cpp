@@ -186,14 +186,15 @@ void GSPlay::HandleKeyEvents(int key, bool bIsPressed)//Insert more case if you 
 //Handle button event
 void GSPlay::HandleTouchEvents(float x, float y, bool bIsPressed)
 {
-	if (bIsPressed == false && m_isPause == false) {
-		m_gameField->HandleClick(x, y);
-		std::cout << "Handle Click" << std::endl;
-	}
+
 
 	if (m_isPause)
 	{
 		m_pauseMenu->HandleTouchEvents(x, y, bIsPressed);
+	}
+	else {
+
+		m_gameField->HandleClick(x, y,bIsPressed);
 	}
 
 	if (Level::GetInstance()->GetIsEndGame())
