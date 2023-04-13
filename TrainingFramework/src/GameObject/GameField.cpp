@@ -21,6 +21,8 @@ inline void GameField::Init(std::shared_ptr<Player> player, std::shared_ptr<Enti
 	m_standbyTime = 0;
 	m_player = player;
 	m_enemy = enemy;
+	m_player->SetOpponent(enemy);
+	m_enemy->SetOpponent(player);
 	m_currentTurn = PLAYER_TURN;
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
@@ -202,11 +204,6 @@ void GameField::Update(float deltaTime) {
 		if(m_standbyTime>=1.5)
 			SetPhase(Phase::END_PHASE);
 	}
-	
-	if(m_player->GetAttackNum()>0)
-		m_player->Attack(m_enemy, deltaTime);
-	if(m_enemy->GetAttackNum()>0)
-		m_enemy->Attack(m_player, deltaTime);
 	m_player->Update(deltaTime);
 	m_enemy->Update(deltaTime);
 	m_PStatusBar->Update(deltaTime,m_player);

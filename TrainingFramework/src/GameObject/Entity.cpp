@@ -7,6 +7,7 @@ Entity::Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std
 	, m_name(name), m_maxHp(maxHp), m_maxMana(maxMana), m_curHp(maxHp), m_curMana(0)
 	, m_attack(attack), m_defense(defense), m_isAlive(true) {
 	m_attackNum = 0;
+	m_standbyTime = 0;
 	m_poisonList.push_back(0);
 	m_poisonList.push_back(0);
 	m_poisonList.push_back(0);
@@ -35,39 +36,45 @@ void		Entity::SetAttackNum(int attackNum) {
 	m_attackNum = attackNum;
 }
 void Entity::Update(float deltaTime) {
-	m_currentTime += deltaTime;
-	if (m_currentTime >= m_frameTime)
-	{
-		m_currentFrame++;
-		if (m_currentFrame >= m_numFrames) {
-			if (!IsAlive()) {
-				m_currentFrame = m_numFrames - 1;
-			}else
-				m_currentFrame = 0;
-		}
-		m_currentTime -= m_frameTime;
+	SpriteAnimation::Update(deltaTime);
+	//m_currentTime += deltaTime;
+	//if (m_currentTime >= m_frameTime)
+	//{
+	//	m_currentFrame++;
+	//	if (m_currentFrame >= m_numFrames) {
+	//		if (!IsAlive()) {
+	//			m_currentFrame = m_numFrames - 1;
+	//		}else
+	//			m_currentFrame = 0;
+	//	}
+	//	m_currentTime -= m_frameTime;
+	//}
+	if (m_attackNum > 0) {
+		Attack(deltaTime);
 	}
 }
 int Entity::GetAttackNum() {
 	return m_attackNum;
 }
-void Entity::Attack(std::shared_ptr<Entity> e,float deltaTime) {
-	if (m_attackNum>0) {
+void Entity::Attack(float deltaTime) {
 		if (m_isAttacking) {
-			MoveTo(e->Get2DPosition().x, deltaTime);
-			if (abs(Get2DPosition().x - e->Get2DPosition().x) < 20) {
-			/*if (Get2DPosition().x == e->Get2DPosition().x) {*/
-				SetTexture(ResourceManagers::GetInstance()->GetTexture(m_name + "_attack.tga"),false);
-				e->TakeDamage(m_attack*m_attackNum);
+			MoveTo(m_opponent->Get2DPosition().x, deltaTime);
+			if (abs(Get2DPosition().x - m_opponent->Get2DPosition().x) <50) {
+				if(m_standbyTime==0) 
+					SetTexture(ResourceManagers::GetInstance()->GetTexture(m_name + "_attack.tga"), false);
+				m_standbyTime += deltaTime;
+				if (m_standbyTime > 0.29) {
+					m_opponent->TakeDamage(m_attack*m_attackNum);
+					m_isAttacking = false;
+					m_standbyTime = 0;
+				}
 				 //SetTexture(ResourceManagers::GetInstance()->GetTexture(m_name+"_idle.tga"));
-				m_isAttacking = false;
 			}
 		}
-		else {
-			MoveTo(Globals::screenWidth - e->Get2DPosition().x, deltaTime);
+		else if(m_isLooped==true) {
+			MoveTo(Globals::screenWidth - m_opponent->Get2DPosition().x, deltaTime);
 		}
-		if (Get2DPosition().x == Globals::screenWidth - e->Get2DPosition().x) m_attackNum = 0;
-	}
+		if (Get2DPosition().x == Globals::screenWidth - m_opponent->Get2DPosition().x) m_attackNum = 0;
 	
 }
 bool Entity::MoveTo(float x, float deltaTime) {
@@ -121,6 +128,7 @@ void Entity::SetIsAlive(bool alive) {
 	m_isAlive = alive;
 	if (!alive) {
 		SetTexture(ResourceManagers::GetInstance()->GetTexture(m_name+"_dead.tga"),false);
+		SetLastTexture(ResourceManagers::GetInstance()->GetTexture(m_name + "_dead2.tga"));
 	}
 
 
@@ -180,6 +188,9 @@ void Entity::SetName(std::string name)
 {
 	m_name = name;
 }
+void Entity::SetOpponent(std::shared_ptr<Entity> op) {
+	m_opponent = op;
+};
 
 void Entity::TakeDamage(int damage)
 {
