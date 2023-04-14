@@ -13,7 +13,7 @@ private:
 	bool m_isPlayerWin = true;
 	std::list<std::shared_ptr<Sprite2D>>		m_listSprite2D;
 	std::list<std::shared_ptr<Text>>			m_listText;
-	std::vector<std::shared_ptr<GameButton>>		m_listButton;
+	std::vector<std::shared_ptr<GameButton>>	m_listButton;
 	int m_numPassedLevel = 0;
 	int m_currentLevel = 1;
 public:
@@ -26,8 +26,6 @@ public:
 	
 	void SetSelectedLevel(int level) { m_currentLevel = level; };
 	int GetSelectedLevel() { return m_currentLevel; };
-	void SetNumPassedLevel(int level) { m_numPassedLevel = level; };
-	int GetNumPassedLevel() { return m_numPassedLevel; };
 	void SetIsEndGame(bool isEndGame) { m_isEndGame = isEndGame; };
 	bool GetIsEndGame() { return m_isEndGame; };
 	bool GetIsPlayerWin() { return m_isPlayerWin; };

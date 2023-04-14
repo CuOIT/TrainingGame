@@ -33,7 +33,6 @@ void GSLevel::Init()
 	button->SetSize(60.0f, 60.0f);
 	button->SetOnClick([this]() {
 		GameStateMachine::GetInstance()->PopState();
-		SaveData::GetInstance()->SaveLevel(Level::GetInstance()->GetNumPassedLevel());
 		SaveData::GetInstance()->SetIsNewGame(false);
 		});
 	m_listButton.push_back(button);

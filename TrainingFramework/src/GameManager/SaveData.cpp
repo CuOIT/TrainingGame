@@ -63,7 +63,7 @@ void SaveData::SaveLevel(int numPassedlevel)
 
 	if (fp != NULL)
 	{
-		if (this->LoadLevel() < numPassedlevel)
+		if (this->LoadLevel() < numPassedlevel + 1)
 		{
 			fprintf(fp, "%s %d", "LevelPassed:", numPassedlevel);
 		}

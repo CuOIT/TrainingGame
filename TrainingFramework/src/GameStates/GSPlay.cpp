@@ -99,7 +99,6 @@ void GSPlay::Exit()
 
 {
 	std::cout << "Exit" << std::endl;
-	SaveData::GetInstance()->SaveLevel(m_currentLevel - 1);
 	std::string soundName = "gsPlay_sound.wav";
 	ResourceManagers::GetInstance()->StopSound(soundName);
 }

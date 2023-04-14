@@ -189,7 +189,6 @@ void GameField::Update(float deltaTime) {
 	{
 		if (!m_enemy->IsAlive())
 		{
-			Level::GetInstance()->SetNumPassedLevel(Level::GetInstance()->GetNumPassedLevel() + 1);
 			Level::GetInstance()->SetIsPlayerWin(true);
 		}
 		else

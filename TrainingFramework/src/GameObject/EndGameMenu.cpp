@@ -3,6 +3,7 @@
 #include "ResourceManagers.h"
 #include "GameStates/GSPlay.h"
 #include "Level.h"
+#include "SaveData.h"
 
 EndGameMenu::EndGameMenu() : Sprite2D()
 {
@@ -17,6 +18,7 @@ EndGameMenu::~EndGameMenu()
 
 void EndGameMenu::Init()
 {
+	Level::GetInstance()->SetIsEndGame(false);
 	// bg
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
@@ -39,7 +41,6 @@ void EndGameMenu::Init()
 	button->SetSize(60.0f, 60.0f);
 	;	button->SetOnClick([this]() {
 		GameStateMachine::GetInstance()->PopState();
-		Level::GetInstance()->SetIsEndGame(false);
 		});
 	m_listButton.push_back(button);
 	// restart
@@ -50,6 +51,10 @@ void EndGameMenu::Init()
 	button->SetOnClick([this]() {
 		GameStateMachine::GetInstance()->PopState();
 		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
+		if (m_isPlayerWin)
+		{
+			SaveData::GetInstance()->SaveLevel(Level::GetInstance()->GetSelectedLevel());
+		}
 		});
 	m_listButton.push_back(button);
 	// next level
@@ -63,7 +68,7 @@ void EndGameMenu::Init()
 			//EndGameMenu::SetSize(0, 0);
 			GameStateMachine::GetInstance()->PopState();
 			GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
-			Level::GetInstance()->SetIsEndGame(false);
+			SaveData::GetInstance()->SaveLevel(Level::GetInstance()->GetSelectedLevel());
 			Level::GetInstance()->SetSelectedLevel(Level::GetInstance()->GetSelectedLevel() + 1);
 			});
 		m_listButton.push_back(button);
