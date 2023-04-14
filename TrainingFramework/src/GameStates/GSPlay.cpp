@@ -18,6 +18,7 @@
 #include "Level.h"
 #include "SaveData.h"
 #include "EndGameMenu.h"
+#include "PlayerManager.h"
 
 GSPlay::GSPlay()
 {
@@ -34,7 +35,7 @@ GSPlay::~GSPlay()
 void GSPlay::Init()
 {
 	m_currentLevel = Level::GetInstance()->GetSelectedLevel();
-	std::shared_ptr<Player> player = SaveData::GetInstance()->LoadPlayer();
+	std::shared_ptr<Player> player = PlayerManager::GetInstance()->GetSelectedPlayer();
 	std::shared_ptr<Entity> enemy = SaveData::GetInstance()->LoadEnemy();
 
 	int screenWidth = GetSystemMetrics(SM_CXSCREEN);

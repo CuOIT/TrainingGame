@@ -41,6 +41,10 @@ void EndGameMenu::Init()
 	button->SetSize(60.0f, 60.0f);
 	;	button->SetOnClick([this]() {
 		GameStateMachine::GetInstance()->PopState();
+		if (m_isPlayerWin)
+		{
+			SaveData::GetInstance()->SaveLevel(Level::GetInstance()->GetSelectedLevel());
+		}
 		});
 	m_listButton.push_back(button);
 	// restart

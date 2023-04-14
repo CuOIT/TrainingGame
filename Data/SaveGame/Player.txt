@@ -1,5 +1,4 @@
-Name: warrior2
-MaxHP: 200
-MaxMP: 200
-Attack: 5
-Defense: 0
+warrior1/200/200/5/0
+warrior2/200/200/5/0
+warrior3/200/200/5/0
+

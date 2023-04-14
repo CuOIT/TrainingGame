@@ -20,12 +20,13 @@ void PlayerManager::Init()
 		std::string fileName = "Player.txt";
 		SaveData::GetInstance()->Init(fileName);
 	}
-	std::shared_ptr<Player> player = SaveData::GetInstance()->LoadPlayer();
-	std::string name = player->GetName();
-	int maxHP = player->GetMaxHp();
-	int maxMP = player->GetMaxMana();
-	int attack = player->GetAttack();
-	int defense = player->GetDefense();
+	m_listPlayer = SaveData::GetInstance()->LoadPlayer();
+	m_selectedPlayer = m_listPlayer.front();
+	std::string name = m_selectedPlayer->GetName();
+	int maxHP = m_selectedPlayer->GetMaxHp();
+	int maxMP = m_selectedPlayer->GetMaxMana();
+	int attack = m_selectedPlayer->GetAttack();
+	int defense = m_selectedPlayer->GetDefense();
 
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
@@ -42,6 +43,33 @@ void PlayerManager::Init()
 	sprite->Set2DPosition(Globals::screenWidth / 4, Globals::screenHeight / 2.0f - 180.0f);
 	sprite->SetSize(220.0f, 70.0f);
 	m_listSprite2D.push_back(sprite);
+
+	// btn
+	// back
+	texture = ResourceManagers::GetInstance()->GetTexture("btn_back.tga");
+	std::shared_ptr<GameButton> button = std::make_shared<GameButton>(model, shader, texture);
+	button->Set2DPosition(Globals::screenWidth / 2.0f - 280.0f, Globals::screenHeight / 2.0f);
+	button->SetSize(50, 50);
+	button->SetOnClick([this]() {
+		m_listPlayer.insert(m_listPlayer.begin(), m_listPlayer.back());
+		m_listPlayer.pop_back();
+		m_selectedPlayer = m_listPlayer.front();
+		m_isSwitchPlayer = true;
+		});
+	m_listButton.push_back(button);
+
+	// next
+	texture = ResourceManagers::GetInstance()->GetTexture("btn_resume.tga");
+	button = std::make_shared<GameButton>(model, shader, texture);
+	button->Set2DPosition(Globals::screenWidth / 2.0f - 20.0f, Globals::screenHeight / 2.0f);
+	button->SetSize(50, 50);
+	button->SetOnClick([this]() {
+		m_listPlayer.push_back(m_selectedPlayer);
+		m_listPlayer.erase(m_listPlayer.begin());
+		m_selectedPlayer = m_listPlayer.front();
+		m_isSwitchPlayer = true;
+		});
+	m_listButton.push_back(button);
 
 	// text
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
@@ -72,15 +100,17 @@ void PlayerManager::Init()
 	
 	// animation
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
-	player = std::make_shared<Player>(model, shader, texture, 6, 1, 0, 0.1f, name, maxHP, maxMP, attack, defense);
-	player->SetTexture(ResourceManagers::GetInstance()->GetTexture(name + "_idle.tga"));
-	player->Set2DPosition(Globals::screenWidth / 2.0f - 150.0f, Globals::screenHeight / 2.0f - 50.0f);
-	player->SetSize(200, 200);
-	m_listAnimation.push_back(player);
+	m_selectedPlayer = std::make_shared<Player>(model, shader, texture, 6, 1, 0, 0.1f, name, maxHP, maxMP, attack, defense);
+	m_selectedPlayer->SetTexture(ResourceManagers::GetInstance()->GetTexture(name + "_idle.tga"));
+	m_selectedPlayer->Set2DPosition(Globals::screenWidth / 2.0f - 150.0f, Globals::screenHeight / 2.0f - 40.0f);
+	m_selectedPlayer->SetSize(200, 200);
+	m_listAnimation.push_back(m_selectedPlayer);
 }
 
 void PlayerManager::Draw()
 {
+	//m_selectedPlayer->Draw();
+	
 	for (auto it : m_listSprite2D)
 	{
 		it->Draw();
@@ -101,6 +131,16 @@ void PlayerManager::Draw()
 
 void PlayerManager::Update(float deltaTime)
 {
+	m_selectedPlayer->Update(deltaTime);
+	if (m_isSwitchPlayer)
+	{
+		m_listText[1]->SetText(m_selectedPlayer->GetName());
+		m_listText[3]->SetText(std::to_string(m_selectedPlayer->GetMaxHp()));
+		m_listText[5]->SetText(std::to_string(m_selectedPlayer->GetMaxMana()));
+		m_listAnimation[0]->SetTexture(ResourceManagers::GetInstance()->GetTexture(m_selectedPlayer->GetName() + "_idle.tga"));
+		m_isSwitchPlayer = false;
+	}
+
 	for (auto it : m_listAnimation)
 	{
 		it->Update(deltaTime);
@@ -109,6 +149,10 @@ void PlayerManager::Update(float deltaTime)
 	{
 		it->Update(deltaTime);
 	}
+	/*for (auto it : m_listText)
+	{
+		it->Update(deltaTime);
+	}*/
 }
 
 void PlayerManager::HandleTouchEvents(float x, float y, bool bIsPressed)

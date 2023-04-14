@@ -17,7 +17,7 @@ public:
 	int LoadLevel();
 
 	void SavePlayer(std::shared_ptr<Player> player);
-	std::shared_ptr<Player> LoadPlayer();
+	std::vector<std::shared_ptr<Player>> LoadPlayer();
 
 	std::shared_ptr<Entity> LoadEnemy();
 

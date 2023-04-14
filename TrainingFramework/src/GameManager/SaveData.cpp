@@ -45,11 +45,9 @@ void SaveData::Init(std::string& fileName)
 	}
 	else if (fileName == "Player.txt")
 	{
-		fprintf(fp, "%s %s\n", "Name:", "warrior2");
-		fprintf(fp, "%s %d\n", "MaxHP:", 200);
-		fprintf(fp, "%s %d\n", "MaxMP:", 200);
-		fprintf(fp, "%s %d\n", "Attack:", 5);
-		fprintf(fp, "%s %d\n", "Defense:", 0);
+		fprintf(fp, "%s\n", "warrior1/200/200/5/0");
+		fprintf(fp, "%s\n", "warrior2/200/200/5/0");
+		fprintf(fp, "%s\n", "warrior3/200/200/5/0");
 		std::printf("%s\n", "Init Player!");
 	}
 	fclose(fp);
@@ -109,37 +107,36 @@ void SaveData::SavePlayer(std::shared_ptr<Player> player)
 	}
 }
 
-std::shared_ptr<Player> SaveData::LoadPlayer()
+std::vector<std::shared_ptr<Player>> SaveData::LoadPlayer()
 {
 	FILE* fp = NULL;
 	std::string filePath = m_DataPath + "Player.txt";
 	fp = fopen(filePath.c_str(), "r");
 
-	char sTmp[20];
 	char name[20] = { 0 };
 	int maxHP = 0;
 	int maxMP = 0;
 	int attack = 0;
 	int defense = 0;
+	int success = 0;
+
+	std::vector<std::shared_ptr<Player>> listPlayer;
 
 	if (fp == NULL)
 		this->Init(std::string("Player.txt"));
 	else
 	{
-		int success = fscanf(fp, "%s %s", sTmp, name);
-		success = fscanf(fp, "%s %d", sTmp, &maxHP);
-		success = fscanf(fp, "%s %d", sTmp, &maxMP);
-		success = fscanf(fp, "%s %d", sTmp, &attack);
-		success = fscanf(fp, "%s %d", sTmp, &defense);
+		for (int i = 0; i < 3; i++)
+		{
+			success = fscanf(fp, "%[^/]/%d/%d/%d/%d\n", name, &maxHP, &maxMP, &attack, &defense);
+			std::shared_ptr<Player> player = std::make_shared<Player>(name, maxHP, maxMP, attack, defense);
+			listPlayer.push_back(player);
+		} 
+		
 		fclose(fp);
 	}
-	std::shared_ptr<Player> newPlayer = std::make_shared<Player>();
-	newPlayer->SetName(name);
-	newPlayer->SetMaxHp(maxHP);
-	newPlayer->SetMaxMana(maxMP);
-	newPlayer->SetAttack(attack);
-	newPlayer->SetDefense(defense);
-	return newPlayer;
+	
+	return listPlayer;
 }
 
 std::shared_ptr<Entity> SaveData::LoadEnemy()
@@ -160,10 +157,9 @@ std::shared_ptr<Entity> SaveData::LoadEnemy()
 		int level = this->LoadLevel();
 		do
 		{
-			int success = fscanf(fp, "%*d %s %d %d %d %d", name, &maxHP, &maxMP, &attack, &defense);
-			std::cout << name << "\n";
+			int success = fscanf(fp, "%*d/%[^/]/%d/%d/%d/%d", name, &maxHP, &maxMP, &attack, &defense);
 			index++;
-		} while (index < level);
+		} while (index == level);
 		fclose(fp);
 	}
 	std::shared_ptr<Entity> enemy = std::make_shared<Entity>();
@@ -172,6 +168,7 @@ std::shared_ptr<Entity> SaveData::LoadEnemy()
 	enemy->SetMaxMana(maxMP);
 	enemy->SetAttack(attack);
 	enemy->SetDefense(defense);
+
 	return enemy;
 }
 

@@ -77,6 +77,7 @@ void GSLevel::HandleTouchEvents(float x, float y, bool bIsPressed)
 		}
 	}
 	m_level->HandleTouchEvents(x, y, bIsPressed);
+	m_playerManager->HandleTouchEvents(x, y, bIsPressed);
 }
 
 void GSLevel::HandleMouseMoveEvents(float x, float y)
