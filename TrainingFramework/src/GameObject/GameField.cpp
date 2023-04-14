@@ -12,21 +12,28 @@
 #define  ENEMY_TURN false
 //GameField::GameField() {};
 GameField::~GameField() {};
-GameField::GameField(std::shared_ptr<Player> player, std::shared_ptr<Entity> enemy) {
+GameField::GameField(std::shared_ptr<Entity> player, std::shared_ptr<Entity> enemy) {
 	Init(player, enemy);
 };
-inline void GameField::Init(std::shared_ptr<Player> player, std::shared_ptr<Entity> enemy) {
+inline void GameField::Init(std::shared_ptr<Entity> player, std::shared_ptr<Entity> enemy) {
 	m_gameBoard = std::make_shared<GameBoard>();
 	m_phase = Phase::BASE_PHASE;
 	m_standbyTime = 0;
 	m_player = player;
-	m_enemy = enemy;
+	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
+	auto shader = ResourceManagers::GetInstance()->GetShader("Animation");
+	auto texture = ResourceManagers::GetInstance()->GetTexture(enemy->GetName()+"_idle.tga");
+	m_enemy = std::make_shared<Entity>(model, shader, texture, 6, 1, 0, 0.1f, "warrior2", enemy->GetMaxHp(), enemy->GetMaxMana(), enemy->GetAttack(), enemy->GetDefense());
 	m_player->SetOpponent(enemy);
 	m_enemy->SetOpponent(player);
+	m_player->Set2DPosition(GF_posXOfPlayer, GF_posYOfPlayer);
+	m_player->SetSize(GF_playerWidth, GF_playerHeight);
+
+	m_enemy->Set2DPosition(Globals::screenWidth - GF_posXOfPlayer, GF_posYOfPlayer);
+	m_enemy->SetSize(GF_playerWidth, GF_playerHeight);
+	 shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
+	 texture = ResourceManagers::GetInstance()->GetTexture("turnPoint.tga");
 	m_currentTurn = PLAYER_TURN;
-	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
-	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
-	auto texture = ResourceManagers::GetInstance()->GetTexture("turnPoint.tga");
 	m_turnPoint = std::make_shared<Sprite2D>(model, shader, texture);
 	m_turnPoint->Set2DPosition(m_player->Get2DPosition().x, m_player->Get2DPosition().y-130);
 	m_turnPoint->SetSize(75, 75);
@@ -94,7 +101,6 @@ inline void GameField::Init(std::shared_ptr<Player> player, std::shared_ptr<Enti
 	m_skillButtonList.push_back(button);
 
 	//m_infoText = std::make_shared<Text>(shader, font, "", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
-
 	m_PStatusBar = std::make_shared<StatusBar>(player->GetMaxHp(), player->GetMaxMana(), true);
 	m_EStatusBar = std::make_shared<StatusBar>(enemy->GetMaxHp(), enemy->GetMaxMana(), false);
 	while (!m_turn.empty()) m_turn.pop();

@@ -53,11 +53,25 @@ void Entity::Update(float deltaTime) {
 		Attack(deltaTime);
 	}
 }
-bool		Entity::IsFreeze() {
-	return m_isFreeze;
+bool		Entity::IsFreezed() {
+	return m_isFreezed;
 };
-void		Entity::SetFreeze(bool isFreeze) {
-	m_isFreeze = isFreeze;
+void		Entity::SetFreezed(bool isFreezed) {
+	m_isFreezed= isFreezed;
+};
+
+bool		Entity::IsBurned() {
+	return m_isBurned;
+};
+void		Entity::SetBurned(bool isBurned) {
+	m_isBurned = isBurned;
+};
+
+bool		Entity::IsPoisoned() {
+	return m_isPoisoned;
+};
+void		Entity::SetPoisoned(bool isPoisoned) {
+	m_isPoisoned = isPoisoned;
 };
 
 int Entity::GetAttackNum() {

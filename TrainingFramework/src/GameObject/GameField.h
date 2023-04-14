@@ -20,8 +20,8 @@ public:
 
 	GameField() {};
 	~GameField();
-	GameField(std::shared_ptr<Player> player, std::shared_ptr<Entity> enermy);
-	void Init(std::shared_ptr<Player> player, std::shared_ptr<Entity> enermy);
+	GameField(std::shared_ptr<Entity> player, std::shared_ptr<Entity> enermy);
+	void Init(std::shared_ptr<Entity> player, std::shared_ptr<Entity> enermy);
 
 	void HandleClick(float x, float y,bool isPressed);
 	void HandleMouseMoveEvents(float x, float y);
@@ -46,7 +46,7 @@ private:
 	std::list<std::shared_ptr<GameButton>>			m_skillButtonList;
 	std::vector<std::pair<int, int>>	m_click;
 	std::vector<int>				m_pieceList;
-	std::shared_ptr<Player>				m_player;
+	std::shared_ptr<Entity>				m_player;
 	std::shared_ptr<StatusBar>			m_PStatusBar;
 	std::shared_ptr<StatusBar>			m_EStatusBar;
 	std::shared_ptr<Entity>				m_enemy;

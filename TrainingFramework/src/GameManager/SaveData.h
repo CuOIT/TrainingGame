@@ -16,10 +16,10 @@ public:
 	void SaveLevel(int numPassedlevel);
 	int LoadLevel();
 
-	void SavePlayer(std::shared_ptr<Player> player);
-	std::shared_ptr<Player> LoadPlayer();
+	void SavePlayer(std::shared_ptr<Entity> player);
+	std::shared_ptr<Entity> LoadPlayer();
 
-	std::shared_ptr<Entity> LoadEnemy();
+	std::shared_ptr<Entity> LoadEnemy(int level);
 
 	bool IsNewGame();
 	void SetIsNewGame(bool isNewGame) { m_isNewGame = isNewGame; };

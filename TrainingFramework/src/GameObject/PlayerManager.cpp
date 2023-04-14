@@ -2,7 +2,11 @@
 #include "ResourceManagers.h"
 #include "SaveData.h"
 #include "GameStates/GameStateMachine.h"
-#include "Player.h"
+#include "Entity.h"
+#include"WaterCharacter.h"
+#include"FireCharacter.h"
+#include"WoodCharacter.h"
+
 
 PlayerManager::PlayerManager()
 {
@@ -20,13 +24,12 @@ void PlayerManager::Init()
 		std::string fileName = "Player.txt";
 		SaveData::GetInstance()->Init(fileName);
 	}
-	std::shared_ptr<Player> player = SaveData::GetInstance()->LoadPlayer();
+	std::shared_ptr<Entity> player = SaveData::GetInstance()->LoadPlayer();
 	std::string name = player->GetName();
 	int maxHP = player->GetMaxHp();
 	int maxMP = player->GetMaxMana();
 	int attack = player->GetAttack();
 	int defense = player->GetDefense();
-
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 	// bg for menu
@@ -37,6 +40,31 @@ void PlayerManager::Init()
 	m_listSprite2D.push_back(sprite);
 
 	// header
+	texture = ResourceManagers::GetInstance()->GetTexture("btn_back.tga");
+	std::shared_ptr<GameButton> button = std::make_shared<GameButton>(model, shader, texture);
+	button->Set2DPosition(Globals::screenWidth / 2.0f - 280.0f, Globals::screenHeight / 2.0f);	
+	button->SetSize(50, 50);
+	button->SetOnClick([this]() {
+		m_currentCharacter=(m_currentCharacter+2)%3;
+		m_player = m_listCharacter[m_currentCharacter];
+		std::cout << "BACK" << std::endl;
+
+		});
+	m_listButton.push_back(button);
+
+	// next
+	texture = ResourceManagers::GetInstance()->GetTexture("btn_resume.tga");
+	button = std::make_shared<GameButton>(model, shader, texture);
+	button->Set2DPosition(Globals::screenWidth / 2.0f - 20.0f, Globals::screenHeight / 2.0f);
+	button->SetSize(50, 50);
+	button->SetOnClick([this]() {
+		m_currentCharacter = (m_currentCharacter +1) % 3;
+		m_player = m_listCharacter[m_currentCharacter];
+		std::cout << "NEXT" << std::endl;
+
+
+		});
+	m_listButton.push_back(button);
 	texture = ResourceManagers::GetInstance()->GetTexture("header.tga");
 	sprite = std::make_shared<Sprite2D>(model, shader, texture);
 	sprite->Set2DPosition(Globals::screenWidth / 4, Globals::screenHeight / 2.0f - 180.0f);
@@ -72,20 +100,27 @@ void PlayerManager::Init()
 	
 	// animation
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
-	player = std::make_shared<Player>(model, shader, texture, 6, 1, 0, 0.1f, name, maxHP, maxMP, attack, defense);
-	player->SetTexture(ResourceManagers::GetInstance()->GetTexture(name + "_idle.tga"),true);
-	player->Set2DPosition(Globals::screenWidth / 2.0f - 150.0f, Globals::screenHeight / 2.0f - 50.0f);
-	player->SetSize(200, 200);
-	m_listAnimation.push_back(player);
+	std::shared_ptr<WaterCharacter> wC = std::make_shared<WaterCharacter>(model, shader, texture, 6, 1, 0, 0.1f, "warrior2", maxHP, maxMP, attack, defense);
+	std::shared_ptr<FireCharacter> fC = std::make_shared<FireCharacter>(model, shader, texture, 6, 1, 0, 0.1f, "warrior1", maxHP, maxMP, attack, defense);
+	std::shared_ptr<WoodCharacter> woC = std::make_shared<WoodCharacter>(model, shader, texture, 6, 1, 0, 0.1f, "warrior3", maxHP, maxMP, attack, defense);
+	m_listCharacter.push_back(wC);
+	m_listCharacter.push_back(fC);
+	m_listCharacter.push_back(woC);
+	m_currentCharacter = 0;
+	m_player = m_listCharacter[m_currentCharacter];
+	for (auto x : m_listCharacter) {
+		x->SetTexture(ResourceManagers::GetInstance()->GetTexture(x->GetName() + "_idle.tga"), true);
+		x->Set2DPosition(Globals::screenWidth / 2.0f - 150.0f, Globals::screenHeight / 2.0f - 50.0f);
+		x->SetSize(200, 200);
+		
+	}
 }
-
+std::shared_ptr<Entity>	PlayerManager::GetPlayer() {
+	return m_listCharacter[m_currentCharacter];
+}
 void PlayerManager::Draw()
 {
 	for (auto it : m_listSprite2D)
-	{
-		it->Draw();
-	}
-	for (auto it : m_listAnimation)
 	{
 		it->Draw();
 	}
@@ -97,14 +132,12 @@ void PlayerManager::Draw()
 	{
 		it->Draw();
 	}
+	m_player->Draw();
 }
 
 void PlayerManager::Update(float deltaTime)
 {
-	for (auto it : m_listAnimation)
-	{
-		it->Update(deltaTime);
-	}
+	m_player->Update(deltaTime);
 	for (auto it : m_listButton)
 	{
 		it->Update(deltaTime);

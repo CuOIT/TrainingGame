@@ -54,7 +54,6 @@ void Level::Init()
 				texture = ResourceManagers::GetInstance()->GetTexture("btn_level.tga");
 				button = std::make_shared<GameButton>(model, shader, texture);
 				button->SetOnClick([this, curLevel]() {
-					GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
 					this->SetSelectedLevel(curLevel);
 					});
 			}
@@ -115,7 +114,6 @@ void Level::Update(float deltaTime)
 				auto texture = ResourceManagers::GetInstance()->GetTexture("btn_level.tga");
 				m_listButton[curLevel - 1]->SetTexture(texture);
 				m_listButton[curLevel - 1]->SetOnClick([this, curLevel]() {
-					GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
 					this->SetSelectedLevel(curLevel);
 					});
 			}

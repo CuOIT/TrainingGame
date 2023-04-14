@@ -17,6 +17,8 @@ class GSPlay :
 	public GameStateBase
 {
 public:
+	GSPlay(std::shared_ptr<Entity> p, std::shared_ptr<Entity> e);
+
 	GSPlay();
 
 	~GSPlay();

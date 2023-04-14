@@ -347,6 +347,7 @@
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\GameManager\ResourceManagers.cpp" />
     <ClCompile Include="src\GameManager\SaveData.cpp" />
+    <ClCompile Include="src\GameObject\WoodCharacter.cpp" />
     <ClCompile Include="src\GameObject\EndGameMenu.cpp" />
     <ClCompile Include="src\GameObject\Entity.cpp" />
     <ClCompile Include="src\GameObject\Font.cpp" />
@@ -358,6 +359,7 @@
     <ClCompile Include="src\GameObject\Piece.cpp" />
     <ClCompile Include="src\GameObject\Player.cpp" />
     <ClCompile Include="src\GameObject\PlayerManager.cpp" />
+    <ClCompile Include="src\GameObject\FireCharacter.cpp" />
     <ClCompile Include="src\GameObject\StatusBar.cpp" />
     <ClCompile Include="src\GameObject\Sprite2D.cpp" />
     <ClCompile Include="src\GameObject\Camera.cpp" />
@@ -367,6 +369,7 @@
     <ClCompile Include="src\GameObject\SpriteAnimation.cpp" />
     <ClCompile Include="src\GameObject\Text.cpp" />
     <ClCompile Include="src\GameObject\Texture.cpp" />
+    <ClCompile Include="src\GameObject\WaterCharacter.cpp" />
     <ClCompile Include="src\GameStates\GameStateBase.cpp" />
     <ClCompile Include="src\GameStates\GameStateMachine.cpp" />
     <ClCompile Include="src\GameStates\GSGuide.cpp" />
@@ -385,6 +388,7 @@
     <ClInclude Include="src\GameObject\BaseObject.h" />
     <ClInclude Include="src\GameObject\EndGameMenu.h" />
     <ClInclude Include="src\GameObject\Entity.h" />
+    <ClInclude Include="src\GameObject\FireCharacter.h" />
     <ClInclude Include="src\GameObject\Font.h" />
     <ClInclude Include="src\GameObject\GameBoard.h" />
     <ClInclude Include="src\GameObject\GameButton.h" />
@@ -403,6 +407,8 @@
     <ClInclude Include="src\GameObject\StatusBar.h" />
     <ClInclude Include="src\GameObject\Text.h" />
     <ClInclude Include="src\GameObject\Texture.h" />
+    <ClInclude Include="src\GameObject\WaterCharacter.h" />
+    <ClInclude Include="src\GameObject\WoodCharacter.h" />
     <ClInclude Include="src\GameStates\GameStateBase.h" />
     <ClInclude Include="src\GameStates\GameStateMachine.h" />
     <ClInclude Include="src\GameStates\GSGuide.h" />

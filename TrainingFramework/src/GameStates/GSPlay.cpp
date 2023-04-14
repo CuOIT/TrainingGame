@@ -14,17 +14,20 @@
 #include "GameField.h"
 #include "Player.h"
 #include"Entity.h"
+#include"WaterCharacter.h"
 #include <Windows.h>
 #include "Level.h"
 #include "SaveData.h"
 #include "EndGameMenu.h"
-
+#include"Entity.h"
 GSPlay::GSPlay()
 {
 	m_KeyPress = 0;
 	
 }
-
+GSPlay::GSPlay(std::shared_ptr<Entity> player, std::shared_ptr<Entity> enemy) {
+	m_gameField = std::make_shared<GameField>(player, enemy);
+};
 
 GSPlay::~GSPlay()
 {
@@ -33,14 +36,7 @@ GSPlay::~GSPlay()
 
 void GSPlay::Init()
 {
-	m_currentLevel = Level::GetInstance()->GetSelectedLevel();
-	std::shared_ptr<Player> player = SaveData::GetInstance()->LoadPlayer();
-	std::shared_ptr<Entity> enemy = SaveData::GetInstance()->LoadEnemy();
 
-	int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-	std::cout << "Screen resolution: " << screenWidth << "x" << screenHeight << std::endl;
-	std::cout << "current level: " << m_currentLevel << std::endl;
 
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto texture = ResourceManagers::GetInstance()->GetTexture("background.tga");
@@ -61,29 +57,6 @@ void GSPlay::Init()
 		});
 	m_listButton.push_back(button);
 
-	//animation
-	std::string name = player->GetName();
-	int maxHP = player->GetMaxHp();
-	int maxMP = player->GetMaxMana();
-	int attack = player->GetAttack();
-	int defense = player->GetDefense();
-	shader = ResourceManagers::GetInstance()->GetShader("Animation");
-	player = std::make_shared<Player>(model, shader, texture, 6, 1, 0, 0.1f, name, maxHP, maxMP, attack, defense);
-	player->SetTexture(ResourceManagers::GetInstance()->GetTexture(name + "_idle.tga"),true);
-	player->Set2DPosition(GF_posXOfPlayer, GF_posYOfPlayer);
-	player->SetSize(GF_playerWidth, GF_playerHeight);
-
-	name = enemy->GetName();
-	maxHP = enemy->GetMaxHp();
-	maxMP = enemy->GetMaxMana();
-	attack = enemy->GetAttack();
-	defense = enemy->GetDefense();
-	enemy = std::make_shared<Entity>(model, shader, texture, 6, 1, 0, 0.1f, name, maxHP, maxMP, attack, defense);
-	enemy->SetTexture(ResourceManagers::GetInstance()->GetTexture(name + "_idle.tga"),true);
-	enemy->Set2DPosition(Globals::screenWidth - GF_posXOfPlayer, GF_posYOfPlayer);
-	enemy->SetSize(-GF_playerWidth, GF_playerHeight);
-
-	m_gameField = std::make_shared<GameField>(player, enemy);
 	m_endGameMenu = std::make_shared<EndGameMenu>();
 
 	m_KeyPress = 0;

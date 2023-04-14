@@ -4,6 +4,7 @@
 #include "Level.h"
 #include "SaveData.h"
 #include "PlayerManager.h"
+#include"GSPlay.h"
 
 GSLevel::GSLevel()
 {
@@ -70,6 +71,7 @@ void GSLevel::HandleKeyEvents(int key, bool bIsPressed)
 
 void GSLevel::HandleTouchEvents(float x, float y, bool bIsPressed)
 {
+	m_playerManager->HandleTouchEvents(x, y, bIsPressed);
 	for (auto button : m_listButton)
 	{
 		if (button->HandleTouchEvents(x, y, bIsPressed))
@@ -98,6 +100,10 @@ void GSLevel::Update(float deltaTime)
 		m_level->Update(deltaTime);
 		std::cout << "Update level!" << "\n";
 		m_isUpdateLevel = false;
+	}
+	if (m_level->GetSelectedLevel()) {
+		std::shared_ptr enemy = SaveData::GetInstance()->LoadEnemy(m_level->GetSelectedLevel());
+		GameStateMachine::GetInstance()->ChangeState(std::make_shared<GSPlay>(m_playerManager->GetPlayer(),enemy));
 	}
 }
 

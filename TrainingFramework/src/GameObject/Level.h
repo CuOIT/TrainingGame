@@ -15,7 +15,7 @@ private:
 	std::list<std::shared_ptr<Text>>			m_listText;
 	std::vector<std::shared_ptr<GameButton>>		m_listButton;
 	int m_numPassedLevel = 0;
-	int m_currentLevel = 1;
+	int m_currentLevel = 0;
 public:
 	Level();
 	~Level();

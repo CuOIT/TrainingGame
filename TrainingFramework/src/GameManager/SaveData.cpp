@@ -90,7 +90,7 @@ int SaveData::LoadLevel()
 	return numPassedLevel;
 }
 
-void SaveData::SavePlayer(std::shared_ptr<Player> player)
+void SaveData::SavePlayer(std::shared_ptr<Entity> player)
 {
 	FILE* fp = NULL;
 	std::string filePath = m_DataPath + "Player.txt";
@@ -109,7 +109,7 @@ void SaveData::SavePlayer(std::shared_ptr<Player> player)
 	}
 }
 
-std::shared_ptr<Player> SaveData::LoadPlayer()
+std::shared_ptr<Entity> SaveData::LoadPlayer()
 {
 	FILE* fp = NULL;
 	std::string filePath = m_DataPath + "Player.txt";
@@ -133,7 +133,7 @@ std::shared_ptr<Player> SaveData::LoadPlayer()
 		success = fscanf(fp, "%s %d", sTmp, &defense);
 		fclose(fp);
 	}
-	std::shared_ptr<Player> newPlayer = std::make_shared<Player>();
+	std::shared_ptr<Entity> newPlayer = std::make_shared<Entity>();
 	newPlayer->SetName(name);
 	newPlayer->SetMaxHp(maxHP);
 	newPlayer->SetMaxMana(maxMP);
@@ -142,7 +142,7 @@ std::shared_ptr<Player> SaveData::LoadPlayer()
 	return newPlayer;
 }
 
-std::shared_ptr<Entity> SaveData::LoadEnemy()
+std::shared_ptr<Entity> SaveData::LoadEnemy(int level)
 {
 	FILE* fp = NULL;
 	std::string filePath = "..\\Data\\Enemy.txt";
@@ -157,7 +157,6 @@ std::shared_ptr<Entity> SaveData::LoadEnemy()
 
 	if (fp != NULL)
 	{
-		int level = this->LoadLevel();
 		do
 		{
 			int success = fscanf(fp, "%*d %s %d %d %d %d", name, &maxHP, &maxMP, &attack, &defense);
