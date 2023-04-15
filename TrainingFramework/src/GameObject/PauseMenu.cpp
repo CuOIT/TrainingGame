@@ -60,9 +60,12 @@ void PauseMenu::Init(GSPlay *gs)
 	button = std::make_shared<GameButton>(model, shader, texture);
 	button->Set2DPosition((float)Globals::screenWidth / 2.0f + 30.0f, (float)Globals::screenHeight / 2.0f + 25.0f);
 	button->SetSize(60.0f, 60.0f);
-	button->SetOnClick([this]() {
+	button->SetOnClick([this,gs]() {
 		GameStateMachine::GetInstance()->PopState();
-		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
+		std::shared_ptr<Entity> player = gs->GetPlayer();
+		int currentLevel = gs->GetCurrentLevel();
+
+		GameStateMachine::GetInstance()->ChangeState(std::make_shared<GSPlay>(player,currentLevel));
 		});
 	m_listButton.push_back(button);
 	// resume

@@ -19,18 +19,28 @@ inline void GameField::Init(std::shared_ptr<Entity> player, std::shared_ptr<Enti
 	m_gameBoard = std::make_shared<GameBoard>();
 	m_phase = Phase::BASE_PHASE;
 	m_standbyTime = 0;
+	//std::shared_ptr<Entity> p = std::make_shared<Entity>(*player);
 	m_player = player;
+	m_player->SetIsAlive(true);
+	m_player->SetAttackNum(0);
+	m_player->SetBurned(false);
+	m_player->SetPoisoned(0);
+	m_player->SetFreezed(0);
+	m_player->SetDefense(0);
+	m_player->SetHp(m_player->GetMaxHp());
+	m_player->SetMana(0);
+
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto shader = ResourceManagers::GetInstance()->GetShader("Animation");
 	auto texture = ResourceManagers::GetInstance()->GetTexture(enemy->GetName()+"_idle.tga");
-	m_enemy = std::make_shared<Entity>(model, shader, texture, 6, 1, 0, 0.1f, "warrior2", enemy->GetMaxHp(), enemy->GetMaxMana(), enemy->GetAttack(), enemy->GetDefense());
-	m_player->SetOpponent(enemy);
-	m_enemy->SetOpponent(player);
+	m_enemy = std::make_shared<Entity>(model, shader, texture, 6, 1, 0, 0.1f,enemy->GetName(), enemy->GetMaxHp(), enemy->GetMaxMana(), enemy->GetAttack(), enemy->GetDefense());
+	m_player->SetOpponent(m_enemy);
+	m_enemy->SetOpponent(m_player);
 	m_player->Set2DPosition(GF_posXOfPlayer, GF_posYOfPlayer);
 	m_player->SetSize(GF_playerWidth, GF_playerHeight);
 
 	m_enemy->Set2DPosition(Globals::screenWidth - GF_posXOfPlayer, GF_posYOfPlayer);
-	m_enemy->SetSize(GF_playerWidth, GF_playerHeight);
+	m_enemy->SetSize(-GF_playerWidth, GF_playerHeight);
 	 shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 	 texture = ResourceManagers::GetInstance()->GetTexture("turnPoint.tga");
 	m_currentTurn = PLAYER_TURN;
@@ -50,55 +60,37 @@ inline void GameField::Init(std::shared_ptr<Entity> player, std::shared_ptr<Enti
 
 	//m_skillButtonList.push_back(boardMenu);
 	//skill1
-	texture = ResourceManagers::GetInstance()->GetTexture("skill11.tga");
-	std::shared_ptr<GameButton> button = std::make_shared<GameButton>(model, shader, texture);
-	button->SetName("skill1");
-	button->Set2DPosition(20, 240);
-	button->SetSize(50, 50);
-	button->SetOnClick([player]() {
+	auto skillList = m_player->GetSkillList();
+	skillList[0]->Set2DPosition(20, 240);
+	skillList[0]->SetOnClick([player]() {
 		if (player->GetCurrentMana() >= 5) {
 
-		player->LostMana(5);
-		player->Heal(player->GetCurrentHp() / 2);
+			player->UseSkill1();
 		std::cout << "USE 1" << std::endl;
 		}
 		});
-	m_skillButtonList.push_back(button);
+	m_skillButtonList.push_back(skillList[0]);
 	//skill2
-	texture = ResourceManagers::GetInstance()->GetTexture("skill12.tga");
-	button = std::make_shared<GameButton>(model, shader, texture);
-	button->SetName("skill2");
-	button->Set2DPosition(20, 300);
-	button->SetSize(50, 50);
-	button->SetOnClick([player,enemy]() {
+	skillList[1]->Set2DPosition(20, 300);
+	skillList[1]->SetOnClick([player,enemy]() {
 		if (player->GetCurrentMana()>= 10) {
 			player->LostMana(10);
-			int hp = enemy->GetCurrentHp();
-			enemy->SetHp(hp / 2);
-			player->Heal(hp / 2);
+			player->UseSkill2();
 			std::cout << "USE 2" << std::endl;
 		}
-		std::cout << player->GetCurrentMana();
 		});
-	m_skillButtonList.push_back(button);
+	m_skillButtonList.push_back(skillList[1]);
 	//skill3
-	texture = ResourceManagers::GetInstance()->GetTexture("skill13.tga");
-	button = std::make_shared<GameButton>(model, shader, texture);
-	button->SetName("skill3");
-	button->Set2DPosition(20, 360);
-	button->SetSize(50, 50);
+	skillList[2]->Set2DPosition(20, 360);
 	std::shared_ptr gb = m_gameBoard;
-	button->SetOnClick([player,gb,this]() {
+	skillList[2]->SetOnClick([player,gb,this]() {
 		if (player->GetCurrentMana() >= 15) {
-			player->LostMana(15);
-			std::set < std::pair<int, int>> destroyList;
-			destroyList = gb->GetPieceIndexType(5);//SWORD
-			gb->SetDestroyList(destroyList);
+			player->UseSkill3(gb);
 			this->SetPhase(Phase::DESTROY_PHASE);
 			std::cout << "USE 3" << std::endl;
 		}
 		});
-	m_skillButtonList.push_back(button);
+	m_skillButtonList.push_back(skillList[2]);
 
 	//m_infoText = std::make_shared<Text>(shader, font, "", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
 	m_PStatusBar = std::make_shared<StatusBar>(player->GetMaxHp(), player->GetMaxMana(), true);
@@ -118,6 +110,10 @@ inline void GameField::BotMove() {
 	m_gameBoard->m_selected_piece2->Set2DPosition(GB_posX + Pi_size / 2 + Pi_size * move[3], GB_posY + Pi_size / 2 + Pi_size * move[2]);
 
 	m_click.push_back(secondClick);
+}
+
+GameField::Phase GameField::GetPhase() {
+	return m_phase;
 }
 void GameField::Update(float deltaTime) {
 	switch (m_phase) {
@@ -212,14 +208,12 @@ void GameField::Update(float deltaTime) {
 	}
 	case Phase::END_PHASE:
 	{
-		if (!m_enemy->IsAlive())
+		if (m_player->IsAlive())
 		{
-			Level::GetInstance()->SetNumPassedLevel(Level::GetInstance()->GetNumPassedLevel() + 1);
-			Level::GetInstance()->SetIsPlayerWin(true);
+		
 		}
 		else
-			Level::GetInstance()->SetIsPlayerWin(false);
-		Level::GetInstance()->SetIsEndGame(true);
+			
 		break;
 	}
 }
@@ -262,20 +256,15 @@ void GameField::Draw() {
 
 void GameField::SetPhase(Phase phase) {
 	m_phase = phase;
-	std::cout << "Phase: " << static_cast<int>(phase)<<std::endl;
 }
-GameField::Phase GameField::getPhase() {
-	return m_phase;
-}
+
 void GameField::HandleClick(float _x, float _y,bool isPressed) {
 	if(m_currentTurn==PLAYER_TURN){
 
-		//std::cout << _x << " va " << _y<<std::endl;
 		if (m_phase == Phase::BASE_PHASE && m_player->IsAlive())
 			for (auto btnSkill : m_skillButtonList) {
 				if (btnSkill->HandleTouchEvents(_x, _y, isPressed)) {
 
-				std::cout << btnSkill->GetName();
 				break;
 				}
 			}
@@ -314,7 +303,8 @@ void GameField::HandleClick(float _x, float _y,bool isPressed) {
 void GameField::HandleMouseMoveEvents(float x, float y) {
 	m_info->SetSize(0, 0);
 	m_infoText.clear();
-	for (auto it : m_skillButtonList) {
+	for (int i = 0; i < 3;i++) {
+		auto it = m_skillButtonList[i];
 		if ((it->Get2DPosition().x - it->GetScale().x / 2.0f <= x) && (x <= it->Get2DPosition().x + it->GetScale().x / 2.0f)
 			&& (it->Get2DPosition().y - it->GetScale().y / 2.0f <= y) && (y <= it->Get2DPosition().y + it->GetScale().y / 2.0f))
 		{
@@ -323,38 +313,12 @@ void GameField::HandleMouseMoveEvents(float x, float y) {
 			m_info->Set2DPosition(it->Get2DPosition().x + 100, it->Get2DPosition().y - 50);
 			int x = it->Get2DPosition().x + 10;
 			int y = it->Get2DPosition().y - 80;
-			if (it->GetName() == "skill1") {
-				auto font = ResourceManagers::GetInstance()->GetFont("Alkatra-VariableFont_wght.ttf");
-				auto shader = ResourceManagers::GetInstance()->GetShader("TextShader");
-				auto text = std::make_shared<Text>(shader, font, "Mana Cost: 50", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
-				text->Set2DPosition(x, y);
-				m_infoText.push_back(text);
-				auto text2 = std::make_shared<Text>(shader, font, "Take Damage 50 for enemy", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
-				text2->Set2DPosition(x, y+10);
-				m_infoText.push_back(text2);
+			auto detail = m_player->GetDetailOfSkill(i);
+			for (int j = 0; j < detail.size();j++) {
+					detail[j]->Set2DPosition(x, y+10*j);
+					m_infoText.push_back(detail[j]);
 
-
-			}
-			else if (it->GetName() == "skill2") {
-				auto font = ResourceManagers::GetInstance()->GetFont("Alkatra-VariableFont_wght.ttf");
-				auto shader = ResourceManagers::GetInstance()->GetShader("TextShader");
-				auto text = std::make_shared<Text>(shader, font, "Mana Cost: 100", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
-				text->Set2DPosition(x, y);
-				m_infoText.push_back(text);
-				auto text2 = std::make_shared<Text>(shader, font, "Convert 50% current hp of enemy to yours", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
-				text2->Set2DPosition(x, y + 10);
-				m_infoText.push_back(text2);
-			}
-			else if (it->GetName() == "skill3") {
-				auto font = ResourceManagers::GetInstance()->GetFont("Alkatra-VariableFont_wght.ttf");
-				auto shader = ResourceManagers::GetInstance()->GetShader("TextShader");
-				auto text = std::make_shared<Text>(shader, font, "Mana Cost: 200", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
-				text->Set2DPosition(x, y);
-				m_infoText.push_back(text);
-				auto text2 = std::make_shared<Text>(shader, font, "Destroy all sword piece on the board", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
-				text2->Set2DPosition(x, y + 10);
-				m_infoText.push_back(text2);
-			}
+			}		
 		}
 	}
 };

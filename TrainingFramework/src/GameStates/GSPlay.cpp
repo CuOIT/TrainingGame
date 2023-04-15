@@ -25,8 +25,12 @@ GSPlay::GSPlay()
 	m_KeyPress = 0;
 	
 }
-GSPlay::GSPlay(std::shared_ptr<Entity> player, std::shared_ptr<Entity> enemy) {
-	m_gameField = std::make_shared<GameField>(player, enemy);
+GSPlay::GSPlay(std::shared_ptr<Entity> p,int currentLevel) {
+	m_currentLevel = currentLevel;
+	std::shared_ptr e = SaveData::GetInstance()->LoadEnemy(currentLevel);
+	m_player = p;
+	m_enemy = e;
+	m_gameField = std::make_shared<GameField>(p, e);
 };
 
 GSPlay::~GSPlay()
@@ -57,8 +61,6 @@ void GSPlay::Init()
 		});
 	m_listButton.push_back(button);
 
-	m_endGameMenu = std::make_shared<EndGameMenu>();
-
 	m_KeyPress = 0;
 
 	std::string soundName = "gsPlay_sound.wav";
@@ -71,8 +73,6 @@ void GSPlay::Init()
 void GSPlay::Exit()
 
 {
-	std::cout << "Exit" << std::endl;
-	SaveData::GetInstance()->SaveLevel(m_currentLevel - 1);
 	std::string soundName = "gsPlay_sound.wav";
 	ResourceManagers::GetInstance()->StopSound(soundName);
 }
@@ -170,7 +170,7 @@ void GSPlay::HandleTouchEvents(float x, float y, bool bIsPressed)
 		m_gameField->HandleClick(x, y,bIsPressed);
 	}
 
-	if (Level::GetInstance()->GetIsEndGame())
+	if (m_gameField->GetPhase()==GameField::END_PHASE)
 	{
 		m_endGameMenu->HandleTouchEvents(x, y, bIsPressed);
 	}
@@ -195,15 +195,17 @@ void GSPlay::Update(float deltaTime)
 {
 	if (!m_isPause)
 	{
-		if (!Level::GetInstance()->GetIsEndGame())
-		{
+
 			m_gameField->Update(deltaTime);
 			HandleEvents();
-		}
-		else
-		{
-			m_endGameMenu->Update(deltaTime);
-		}
+			if (m_gameField->GetPhase() == GameField::END_PHASE) {
+				if (m_endGameMenu == nullptr) {
+					if (m_player->IsAlive())
+						SaveData::GetInstance()->SaveLevel(m_currentLevel);
+					std::cout <<"DAY LA MAN: "<< m_currentLevel<<std::endl;
+					m_endGameMenu = std::make_shared<EndGameMenu>(m_player->IsAlive());
+				}
+			}
 		//Update button list
 		for (auto it : m_listButton)
 		{
@@ -223,6 +225,7 @@ void GSPlay::Update(float deltaTime)
 	}*/
 }
 
+
 void GSPlay::Draw()
 {
 	//Render background
@@ -233,8 +236,7 @@ void GSPlay::Draw()
 	{
 		m_pauseMenu->Draw();
 	}
-	if (Level::GetInstance()->GetIsEndGame())
-	{
+	if (m_gameField->GetPhase() == GameField::END_PHASE) {
 		m_endGameMenu->Draw();
 	}
 

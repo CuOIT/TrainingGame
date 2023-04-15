@@ -8,7 +8,8 @@
 #include<queue>
 
 class GameField {
-	enum class Phase {
+public:
+	enum Phase {
 		BEGIN_PHASE,
 		BASE_PHASE,
 		SWAP_PHASE,
@@ -16,7 +17,6 @@ class GameField {
 		REFILL_PHASE,
 		END_PHASE
 	};
-public:
 
 	GameField() {};
 	~GameField();
@@ -29,7 +29,7 @@ public:
 
 	void								Calculate(std::vector<int> pieceList,bool isPlayer);
 	void								SetPhase(Phase phase);
-	Phase								getPhase();
+	Phase								GetPhase();
 	void								BotMove();
 	void Draw();
 	
@@ -40,10 +40,10 @@ private:
 	float								m_standbyTime;
 	std::shared_ptr<Sprite2D>			m_boardMenu;
 	std::shared_ptr<Sprite2D>			m_info;
-	std::list<std::shared_ptr<Text>>	m_infoText;
+	std::vector<std::shared_ptr<Text>>	m_infoText;
 
 
-	std::list<std::shared_ptr<GameButton>>			m_skillButtonList;
+	std::vector<std::shared_ptr<GameButton>>m_skillButtonList;
 	std::vector<std::pair<int, int>>	m_click;
 	std::vector<int>				m_pieceList;
 	std::shared_ptr<Entity>				m_player;

@@ -1,6 +1,8 @@
 #pragma once
 #include"SpriteAnimation.h"
 #include"Sprite2D.h"
+#include"GameButton.h"
+#include"Text.h"
 #include"GameBoard.h"
 class Entity : public SpriteAnimation
 {
@@ -19,6 +21,9 @@ protected:
 	int				m_defense;
 	bool			m_isAttacking;
 	int				m_attackNum;
+
+	std::vector<std::shared_ptr<GameButton>> m_skills;
+	std::vector<std::vector<std::shared_ptr<Text>>>			 m_detailOfSKills;
 	std::shared_ptr<Entity> m_opponent;
 
 	//Effect
@@ -72,7 +77,8 @@ public:
 	std::string GetName();
 	int			GetCurrentHp();
 	int			GetCurrentMana();
-
+	std::vector < std::shared_ptr<GameButton>> GetSkillList();
+	std::vector<std::shared_ptr<Text>> GetDetailOfSkill(int num);
 	bool		MoveTo(float x, float deltaTime);
 	void		Attack(float deltaTime);
 
@@ -90,8 +96,8 @@ public:
 	void		LostMana(int mana);
 	void		Poisoned(int poison);
 
-	  void		UseSkill1();
-	  void		UseSkill2();
-	  void		UseSkill3(std::shared_ptr<GameBoard>);
+	  virtual void		UseSkill1(){};
+	  virtual void		UseSkill2(){};
+	  virtual void		UseSkill3(std::shared_ptr<GameBoard>){};
 
 };

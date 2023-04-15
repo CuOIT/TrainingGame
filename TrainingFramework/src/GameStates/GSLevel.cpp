@@ -8,7 +8,7 @@
 
 GSLevel::GSLevel()
 {
-	m_isUpdateLevel = true;
+	
 }
 
 GSLevel::~GSLevel()
@@ -34,8 +34,6 @@ void GSLevel::Init()
 	button->SetSize(60.0f, 60.0f);
 	button->SetOnClick([this]() {
 		GameStateMachine::GetInstance()->PopState();
-		SaveData::GetInstance()->SaveLevel(Level::GetInstance()->GetNumPassedLevel());
-		SaveData::GetInstance()->SetIsNewGame(false);
 		});
 	m_listButton.push_back(button);
 
@@ -44,6 +42,7 @@ void GSLevel::Init()
 
 	// player
 	m_playerManager = PlayerManager::GetInstance();
+
 }
 
 void GSLevel::Exit()
@@ -56,7 +55,7 @@ void GSLevel::Pause()
 
 void GSLevel::Resume()
 {
-	m_isUpdateLevel = true;
+	m_level->Init();
 }
 
 void GSLevel::HandleEvents()
@@ -84,7 +83,7 @@ void GSLevel::HandleTouchEvents(float x, float y, bool bIsPressed)
 
 void GSLevel::HandleMouseMoveEvents(float x, float y)
 {
-
+		
 }
 
 void GSLevel::Update(float deltaTime)
@@ -95,15 +94,9 @@ void GSLevel::Update(float deltaTime)
 	{
 		it->Update(deltaTime);
 	}
-	if (m_isUpdateLevel)
-	{
-		m_level->Update(deltaTime);
-		std::cout << "Update level!" << "\n";
-		m_isUpdateLevel = false;
-	}
 	if (m_level->GetSelectedLevel()) {
-		std::shared_ptr enemy = SaveData::GetInstance()->LoadEnemy(m_level->GetSelectedLevel());
-		GameStateMachine::GetInstance()->ChangeState(std::make_shared<GSPlay>(m_playerManager->GetPlayer(),enemy));
+		GameStateMachine::GetInstance()->ChangeState(std::make_shared<GSPlay>(m_playerManager->GetPlayer(), m_level->GetSelectedLevel()));
+		m_level->SetSelectedLevel(0);
 	}
 }
 
@@ -112,10 +105,6 @@ void GSLevel::Draw()
 	m_background->Draw();
 	m_level->Draw();
 	m_playerManager->Draw();
-	for (auto it : m_listSprite2D)
-	{
-		it->Draw();
-	}
 	for (auto it : m_listButton)
 	{
 		it->Draw();

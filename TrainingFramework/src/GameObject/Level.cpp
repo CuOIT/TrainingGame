@@ -3,9 +3,8 @@
 #include "SaveData.h"
 #include "GameStates/GameStateMachine.h"
 
-Level::Level() : m_level(0)
+Level::Level()
 {
-	m_numPassedLevel = SaveData::GetInstance()->LoadLevel();
 	Init();
 }
 
@@ -15,12 +14,9 @@ Level::~Level()
 
 void Level::Init()
 {
-	if (SaveData::GetInstance()->GetIsNewGame())
-	{
-		std::string fileName = "Level.txt";
-		SaveData::GetInstance()->Init(fileName);
-	}
+	
 
+	m_numPassedLevel = SaveData::GetInstance()->LoadLevel();
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 
@@ -48,23 +44,16 @@ void Level::Init()
 		{
 			int curLevel = i * 3 + j + 1;
 			shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
-			std::shared_ptr<GameButton> button;
-			if (curLevel <= m_numPassedLevel + 1)
+			texture = ResourceManagers::GetInstance()->GetTexture("btn_level.tga");
+			std::shared_ptr<GameButton> button = std::make_shared<GameButton>(model, shader, texture);
+			if (curLevel > m_numPassedLevel + 1)
 			{
-				texture = ResourceManagers::GetInstance()->GetTexture("btn_level.tga");
-				button = std::make_shared<GameButton>(model, shader, texture);
-				button->SetOnClick([this, curLevel]() {
+				button->SetTexture(ResourceManagers::GetInstance()->GetTexture("btn_level_unclear.tga"));
+			}
+			button->SetOnClick([this, curLevel]() {
+				if(curLevel<=m_numPassedLevel+1)
 					this->SetSelectedLevel(curLevel);
 					});
-			}
-			else
-			{
-				texture = ResourceManagers::GetInstance()->GetTexture("btn_level_unclear.tga");
-				button = std::make_shared<GameButton>(model, shader, texture);
-				button->SetOnClick([]() {
-
-					});
-			}
 			float posX = Globals::screenWidth / 2.0f + 70.0f;
 			float posY = Globals::screenHeight / 2.0f - 100.0f;
 			button->Set2DPosition(posX + j * 75.0f, posY + i * 70.0f);

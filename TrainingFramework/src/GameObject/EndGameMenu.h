@@ -12,14 +12,14 @@ private:
 	std::shared_ptr<Sprite2D>				m_bgMenu;
 	std::shared_ptr<Sprite2D>				m_header;
 	std::vector<std::shared_ptr<Text>>		m_listText;
-	bool m_isPlayerWin = true;
+	bool									m_isWon;
 
 public:
-	EndGameMenu();
+	EndGameMenu(bool);
 	~EndGameMenu();
 
 	void Init();
-	void Update(float deltaTime);
+	//void Update(float deltaTime);
 	void Draw();
 	void HandleTouchEvents(int x, int y, bool isPressed);
 };

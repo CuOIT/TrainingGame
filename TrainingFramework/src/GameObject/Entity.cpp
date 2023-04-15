@@ -1,5 +1,6 @@
 #include "Entity.h"
 #include"ResourceManagers.h"
+#include"GameButton.h"
 Entity::Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture
 	, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime,
 	std::string name, int maxHp, int maxMana, int attack, int defense)
@@ -8,6 +9,17 @@ Entity::Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std
 	, m_attack(attack), m_defense(defense), m_isAlive(true) {
 	m_attackNum = 0;
 	m_standbyTime = 0;
+
+	auto model2 = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
+	auto shader2 = ResourceManagers::GetInstance()->GetShader("TextureShader");
+	auto texture2 = ResourceManagers::GetInstance()->GetTexture("");
+	m_skills.push_back(std::make_shared<GameButton>(model2,shader2,texture2));
+	m_skills.push_back(std::make_shared<GameButton>(model2, shader2, texture2));
+	m_skills.push_back(std::make_shared<GameButton>(model2, shader2, texture2));
+	m_skills[0]->SetSize(50, 50);
+	m_skills[1]->SetSize(50, 50);
+	m_skills[2]->SetSize(50, 50);
+
 	m_poisonList.push_back(0);
 	m_poisonList.push_back(0);
 	m_poisonList.push_back(0);
@@ -77,6 +89,15 @@ void		Entity::SetPoisoned(bool isPoisoned) {
 int Entity::GetAttackNum() {
 	return m_attackNum;
 }
+
+std::vector < std::shared_ptr<GameButton>> Entity::GetSkillList() {
+	return m_skills;
+}
+std::vector<std::shared_ptr<Text>> Entity::GetDetailOfSkill(int num) {
+	return m_detailOfSKills[num];
+};
+
+
 void Entity::Attack(float deltaTime) {
 		if (m_isAttacking) {
 			MoveTo(m_opponent->Get2DPosition().x, deltaTime);
@@ -215,6 +236,7 @@ void Entity::SetOpponent(std::shared_ptr<Entity> op) {
 
 void Entity::TakeDamage(int damage)
 {
+	SetTexture(ResourceManagers::GetInstance()->GetTexture(GetName() + "_hurt.tga"), false);
 	if (damage > m_defense) {
 		m_defense = 0;
 		damage -= m_defense;
@@ -238,13 +260,13 @@ void Entity::TakeDamageOfPoison()
 	for (auto x : m_poisonList) {
 		poison += x;
 	}
-	std::cout << this->GetName() << " take POISON : " << poison << std::endl;
 	int curHp = m_curHp - poison;
 	if (curHp <= 0)
 	{
 		SetHp(0);
 		if(IsAlive())
 			SetIsAlive(false);
+
 	}
 	else
 		SetHp(curHp);

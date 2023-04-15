@@ -17,7 +17,7 @@ class GSPlay :
 	public GameStateBase
 {
 public:
-	GSPlay(std::shared_ptr<Entity> p, std::shared_ptr<Entity> e);
+	GSPlay(std::shared_ptr<Entity> p, int currentLevel);
 
 	GSPlay();
 
@@ -32,6 +32,20 @@ public:
 	void	HandleEvents() override;
 	void	HandleKeyEvents(int key, bool bIsPressed) override;
 	void	HandleTouchEvents(float x, float y, bool bIsPressed) override;
+	std::shared_ptr<Entity> GetPlayer() {
+		return m_player;
+	}
+	std::shared_ptr<Entity> GetEnemy() {
+		return m_enemy;
+	}
+
+	int GetCurrentLevel() {
+		return m_currentLevel;
+	};
+	void SetCurrentLevel(int level) {
+		m_currentLevel = level;
+	};
+
 	void	HandleMouseMoveEvents(float x, float y) override;
 	void	Update(float deltaTime) override;
 	void	Draw() override;
@@ -41,17 +55,15 @@ public:
 	void SetIsPause(bool isPause) { m_isPause = isPause; };
 
 private:
-	std::shared_ptr<GameBoard>	m_gameBoard;
-	std::shared_ptr<GameField>	m_gameField;
-	std::shared_ptr<Sprite2D>	m_background;
+	int										m_currentLevel;
+	std::shared_ptr<Entity>					m_player;
+	std::shared_ptr<Entity>					m_enemy;
+	std::shared_ptr<GameBoard>				m_gameBoard;
+	std::shared_ptr<GameField>				m_gameField;
+	std::shared_ptr<Sprite2D>				m_background;
 	std::list<std::shared_ptr<GameButton>>	m_listButton;
-	std::list<std::shared_ptr<SpriteAnimation>>	m_listAnimation;
-	std::shared_ptr<Piece>	m_piece;
-	std::shared_ptr<Entity> m_player;
-	std::shared_ptr<Entity> m_enemy;
-	std::shared_ptr<PauseMenu> m_pauseMenu;
-	std::shared_ptr<EndGameMenu>		m_endGameMenu;
+	std::shared_ptr<PauseMenu>				m_pauseMenu;
+	std::shared_ptr<EndGameMenu>			m_endGameMenu;
 	bool m_isPause = false;
-	int m_currentLevel = 1;
 };
 

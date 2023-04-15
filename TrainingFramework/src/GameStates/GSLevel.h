@@ -15,15 +15,15 @@ class PlayerManager;
 class GSLevel : public GameStateBase
 {
 private:
+	std::shared_ptr<Sprite2D>					m_info;
+	std::vector<std::shared_ptr<Text>>			m_infoText;
 	std::shared_ptr<Sprite2D>					m_background;
-	std::list<std::shared_ptr<Sprite2D>>		m_listSprite2D;
 	std::list<std::shared_ptr<GameButton>>		m_listButton;
 	std::list<std::shared_ptr<Text>>			m_listText;
 	std::list<std::shared_ptr<SpriteAnimation>>	m_listAnimation;
 	std::shared_ptr<Level>						m_level;
 	std::shared_ptr<PlayerManager>				m_playerManager;
 	
-	bool m_isUpdateLevel;
 
 public:
 	GSLevel();

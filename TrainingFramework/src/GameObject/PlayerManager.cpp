@@ -31,8 +31,14 @@ void PlayerManager::Init()
 	int attack = player->GetAttack();
 	int defense = player->GetDefense();
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
-	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
+	auto shader = ResourceManagers::GetInstance()->GetShader("TextShader");
+	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Woodlook-nvyP.ttf");
+	auto nameTxt = std::make_shared<Text>(shader, font, name, Vector4(50.0f, 30.0f, 0.0f, 1.0f), 1.0f);
+	nameTxt->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 200.0f, Globals::screenHeight / 2.0f - 100.0f));
+	m_listText.push_back(nameTxt);
+
 	// bg for menu
+	shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 	auto texture = ResourceManagers::GetInstance()->GetTexture("bg_menu.tga");
 	std::shared_ptr<Sprite2D> sprite = std::make_shared<Sprite2D>(model, shader, texture);
 	sprite->Set2DPosition(Globals::screenWidth / 2.0f - 150.0f, Globals::screenHeight / 2.0f);
@@ -44,11 +50,10 @@ void PlayerManager::Init()
 	std::shared_ptr<GameButton> button = std::make_shared<GameButton>(model, shader, texture);
 	button->Set2DPosition(Globals::screenWidth / 2.0f - 280.0f, Globals::screenHeight / 2.0f);	
 	button->SetSize(50, 50);
-	button->SetOnClick([this]() {
+	button->SetOnClick([this,nameTxt]() {
 		m_currentCharacter=(m_currentCharacter+2)%3;
 		m_player = m_listCharacter[m_currentCharacter];
-		std::cout << "BACK" << std::endl;
-
+		nameTxt->SetText(m_player->GetName());
 		});
 	m_listButton.push_back(button);
 
@@ -57,10 +62,10 @@ void PlayerManager::Init()
 	button = std::make_shared<GameButton>(model, shader, texture);
 	button->Set2DPosition(Globals::screenWidth / 2.0f - 20.0f, Globals::screenHeight / 2.0f);
 	button->SetSize(50, 50);
-	button->SetOnClick([this]() {
+	button->SetOnClick([this,nameTxt]() {
 		m_currentCharacter = (m_currentCharacter +1) % 3;
 		m_player = m_listCharacter[m_currentCharacter];
-		std::cout << "NEXT" << std::endl;
+		nameTxt->SetText(m_player->GetName());
 
 
 		});
@@ -73,13 +78,8 @@ void PlayerManager::Init()
 
 	// text
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
-	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Woodlook-nvyP.ttf");
 	std::shared_ptr<Text> text = std::make_shared<Text>(shader, font, "PLAYER", Vector4(50.0f, 30.0f, 0.0f, 1.0f), 1.2f);
 	text->Set2DPosition(Vector2((float)Globals::screenWidth / 2.0f - 215.0f, (float)Globals::screenHeight / 2.0f - 172.0f));
-	m_listText.push_back(text);
-
-	text = std::make_shared<Text>(shader, font, name, Vector4(50.0f, 30.0f, 0.0f, 1.0f), 1.0f);
-	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 200.0f, Globals::screenHeight / 2.0f - 100.0f));
 	m_listText.push_back(text);
 
 	text = std::make_shared<Text>(shader, font, "HP: ", Vector4(50.0f, 30.0f, 0.0f, 1.0f), 1.0f);
@@ -116,7 +116,7 @@ void PlayerManager::Init()
 	}
 }
 std::shared_ptr<Entity>	PlayerManager::GetPlayer() {
-	return m_listCharacter[m_currentCharacter];
+	return m_player;
 }
 void PlayerManager::Draw()
 {
