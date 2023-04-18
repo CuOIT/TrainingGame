@@ -15,21 +15,37 @@ StatusBar::StatusBar(int maxHp, int maxMana, bool isPlayer) :m_maxHp(maxHp), m_m
 	texture = ResourceManagers::GetInstance()->GetTexture("mana_bar.tga");
 	m_manaBar = std::make_shared<Sprite2D>(model, shader, texture);
 	m_manaBar->SetSize(0,0);
+	//shield
 	texture = ResourceManagers::GetInstance()->GetTexture("piece_shield.tga");
 	m_shieldStt = std::make_shared<Sprite2D>(model, shader, texture);
 	m_shieldStt->SetSize(SB_effectSize, SB_effectSize);
+	//poison
 	texture = ResourceManagers::GetInstance()->GetTexture("poisonStt.tga");
 	m_poisonStt = std::make_shared<Sprite2D>(model, shader, texture);
 	m_poisonStt->SetSize(SB_effectSize, SB_effectSize);
 
-	shader= ResourceManagers::GetInstance()->GetShader("Animation");
-	texture = ResourceManagers::GetInstance()->GetTexture("thunder.tga");
-	m_effect= std::make_shared<SpriteAnimation>(model, shader, texture,13,1,0,0.1f);
+	//freezed
+	texture = ResourceManagers::GetInstance()->GetTexture("freezed.tga");
+	m_freezedStt = std::make_shared<Sprite2D>(model, shader, texture);
+	m_freezedStt->SetSize(SB_effectSize, SB_effectSize);
+	//burned
+	texture = ResourceManagers::GetInstance()->GetTexture("burned.tga");
+	m_burnedStt = std::make_shared<Sprite2D>(model, shader, texture);
+	m_burnedStt->SetSize(SB_effectSize, SB_effectSize);
+	//muted	
+	texture = ResourceManagers::GetInstance()->GetTexture("muted.tga");
+	m_mutedStt = std::make_shared<Sprite2D>(model, shader, texture);
+	m_mutedStt->SetSize(SB_effectSize, SB_effectSize);
+
 	//m_effect->SetSize(100, 100);
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Alkatra-VariableFont_wght.ttf");
 	m_shieldText = std::make_shared<Text>(shader, font, "", Vector4(0.95f, 0.98f,0.98f, 1.0f), 0.5f);
 	m_poisonText = std::make_shared<Text>(shader, font, "", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
+	m_freezedText = std::make_shared<Text>(shader, font, "", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
+	m_burnedText = std::make_shared<Text>(shader, font, "", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
+	m_mutedText = std::make_shared<Text>(shader, font, "", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
+
 
 
 
@@ -40,6 +56,10 @@ StatusBar::StatusBar(int maxHp, int maxMana, bool isPlayer) :m_maxHp(maxHp), m_m
 		m_manaBar->Set2DPosition(SB_posXOfBar + SB_maxBarWidth / 2, SB_posYOfManaBar + SB_barHeight / 2);
 		m_shieldStt->Set2DPosition(SB_posX + SB_width / 3, SB_posY + 7*SB_height/10 + SB_effectSize/2);
 		m_poisonStt->Set2DPosition(SB_posX + SB_width / 3 + SB_effectSize+2, SB_posY +7* SB_height/10 + SB_effectSize/2);
+		m_freezedStt->Set2DPosition(SB_posX + SB_width / 3+SB_effectSize*2+4, SB_posY + 7 * SB_height / 10 + SB_effectSize / 2);
+		m_burnedStt->Set2DPosition(SB_posX + SB_width / 3 +SB_effectSize*3+6, SB_posY + 7 * SB_height / 10 + SB_effectSize / 2);
+		m_mutedStt->Set2DPosition(SB_posX + SB_width / 3 + SB_effectSize *4+8, SB_posY + 7 * SB_height / 10 + SB_effectSize / 2);
+
 
 		/*m_shieldText->Set2DPosition(SB_posX + SB_width / 3 + SB_effectSize/2, SB_posY + 7 * SB_height / 10 + SB_effectSize);
 		m_poisonText->Set2DPosition(SB_posX + SB_width / 3 +SB_effectSize + SB_effectSize/2, SB_posY + 7 * SB_height / 10 +SB_effectSize);*/
@@ -51,13 +71,21 @@ StatusBar::StatusBar(int maxHp, int maxMana, bool isPlayer) :m_maxHp(maxHp), m_m
 		m_hpBar->Set2DPosition(Globals::screenWidth - (SB_posXOfBar + SB_maxBarWidth / 2), SB_posYOfHpBar + SB_barHeight / 2);
 		m_manaBar->Set2DPosition(Globals::screenWidth - (SB_posXOfBar + SB_maxBarWidth / 2), SB_posYOfManaBar + SB_barHeight / 2);
 		m_shieldStt->Set2DPosition(Globals::screenWidth - (SB_posX + SB_width / 3), SB_posY + 7 * SB_height / 10 + SB_effectSize / 2);
-		m_poisonStt->Set2DPosition(Globals::screenWidth - (SB_posX + SB_width / 3+SB_effectSize), SB_posY + 7 * SB_height / 10 + SB_effectSize / 2);
+		m_poisonStt->Set2DPosition(Globals::screenWidth - (SB_posX + SB_width / 3+SB_effectSize+2), SB_posY + 7 * SB_height / 10 + SB_effectSize / 2);
+		m_freezedStt->Set2DPosition(Globals::screenWidth - (SB_posX + SB_width / 3 + SB_effectSize*2+4), SB_posY + 7 * SB_height / 10 + SB_effectSize / 2);
+		m_burnedStt->Set2DPosition(Globals::screenWidth - (SB_posX + SB_width / 3 + SB_effectSize*3+6), SB_posY + 7 * SB_height / 10 + SB_effectSize / 2);
+		m_mutedStt->Set2DPosition(Globals::screenWidth - (SB_posX + SB_width / 3 + SB_effectSize*4+8), SB_posY + 7 * SB_height / 10 + SB_effectSize / 2);
+
 
 		/*m_shieldText->Set2DPosition(Globals::screenWidth - (SB_posX + SB_width / 3 + SB_effectSize/2), SB_posY + 7 * SB_height / 10 +SB_effectSize);
 		m_poisonText->Set2DPosition(Globals::screenWidth - (SB_posX + SB_width / 3 + +SB_effectSize + SB_effectSize/2), SB_posY + 7 * SB_height / 10 +  SB_effectSize);*/
 	}
 		m_shieldText->Set2DPosition(m_shieldStt->Get2DPosition().x+3, m_shieldStt->Get2DPosition().y+10);
 		m_poisonText->Set2DPosition(m_poisonStt->Get2DPosition().x+3,m_poisonStt->Get2DPosition().y+10);
+		m_freezedText->Set2DPosition(m_freezedStt->Get2DPosition().x + 3, m_freezedStt->Get2DPosition().y + 10);
+		m_burnedText->Set2DPosition(m_burnedStt->Get2DPosition().x + 3, m_burnedStt->Get2DPosition().y + 10);
+		m_mutedText->Set2DPosition(m_mutedStt->Get2DPosition().x + 3, m_mutedStt->Get2DPosition().y + 10);
+
 };
 StatusBar::~StatusBar() {};
 
@@ -100,18 +128,22 @@ void StatusBar::SetPoison(int poison) {
 void StatusBar::Update(float deltaTime, std::shared_ptr<Entity> entity) {
 	if (entity->IsAlive()) {
 	}
-	m_effect->Update(deltaTime);
-	m_effect->Set2DPosition(entity->Get2DPosition().x, entity->Get2DPosition().y+50);
 	this->SetHp(entity->GetCurrentHp());
 	this->SetMana(entity->GetCurrentMana());
 	this->SetShiled(entity->GetDefense());
 	this->SetPoison(entity->GetPoison());
+	if(entity->IsFreezed())
+		m_freezedText->SetText(std::to_string(entity->GetFreezed()));
+	if (entity->IsBurned())
+		m_burnedText->SetText(std::to_string(entity->GetBurned()));
+	if (entity->IsMuted())
+		m_mutedText->SetText(std::to_string(entity->GetMuted()));
+
 }
 void StatusBar::Draw() {
 	m_statusBarBG->Draw();
 	m_hpBar->Draw();
 	m_manaBar->Draw();
-	m_effect->Draw();
 	if (m_shield > 0) {
 		m_shieldStt->Draw();
 		m_shieldText->Draw();
@@ -120,4 +152,15 @@ void StatusBar::Draw() {
 		m_poisonStt->Draw();
 		m_poisonText->Draw();
 	}
+		
+	m_freezedStt->Draw();
+	m_freezedText->Draw();
+
+	m_burnedStt->Draw();
+	m_burnedText->Draw();
+
+	m_mutedStt->Draw();
+	m_mutedText->Draw();
+
+
 }

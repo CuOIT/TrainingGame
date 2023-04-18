@@ -9,7 +9,6 @@ Entity::Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std
 	, m_attack(attack), m_defense(defense), m_isAlive(true) {
 	m_attackNum = 0;
 	m_standbyTime = 0;
-
 	auto model2 = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto shader2 = ResourceManagers::GetInstance()->GetShader("TextureShader");
 	auto texture2 = ResourceManagers::GetInstance()->GetTexture("");
@@ -23,7 +22,14 @@ Entity::Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std
 	m_poisonList.push_back(0);
 	m_poisonList.push_back(0);
 	m_poisonList.push_back(0);
+	m_freezedTurn = 0;
+	m_burnedTurn = 0;
+	m_mutedTurn = 0;
 	m_isAttacking = false;
+
+	shader2 = ResourceManagers::GetInstance()->GetShader("Animation");
+	m_effect = std::make_shared<SpriteAnimation>(model, shader, texture, 12, 1, 0, 0.07f);
+	m_continousEffect = std::make_shared<SpriteAnimation>(model, shader, texture, 20, 1, 0, 0.05f);
 
 };
 
@@ -36,6 +42,10 @@ Entity::~Entity()
 {
 
 }
+int		Entity::GetElement() {
+	return m_element;
+};
+
 
 bool		Entity::IsAttacking() {
 	return m_isAttacking;
@@ -66,24 +76,38 @@ void Entity::Update(float deltaTime) {
 	}
 }
 bool		Entity::IsFreezed() {
-	return m_isFreezed;
+	return m_freezedTurn;
 };
-void		Entity::SetFreezed(bool isFreezed) {
-	m_isFreezed= isFreezed;
+void		Entity::SetFreezed(int freezed) {
+	m_freezedTurn= freezed;
 };
 
 bool		Entity::IsBurned() {
-	return m_isBurned;
+	return m_burnedTurn;
 };
-void		Entity::SetBurned(bool isBurned) {
-	m_isBurned = isBurned;
+void		Entity::SetBurned(int burned) {
+	m_burnedTurn = burned;
 };
 
 bool		Entity::IsPoisoned() {
-	return m_isPoisoned;
+	int p = 0;
+	for (auto x : m_poisonList) {
+		p += x;
+	}
+	return p;
 };
-void		Entity::SetPoisoned(bool isPoisoned) {
-	m_isPoisoned = isPoisoned;
+void	Entity::SetPoisoned(int poison) {
+	for (auto it = m_poisonList.begin(); it != m_poisonList.end(); ++it) {
+		*it = poison;  // update the value of the current element
+
+	}
+}
+bool		Entity::IsMuted() {
+	return m_mutedTurn;
+};
+
+void		Entity::SetMuted(int muted) {
+	m_mutedTurn = muted;
 };
 
 int Entity::GetAttackNum() {
@@ -106,7 +130,14 @@ void Entity::Attack(float deltaTime) {
 					SetTexture(ResourceManagers::GetInstance()->GetTexture(m_name + "_attack.tga"), false);
 				m_standbyTime += deltaTime;
 				if (m_standbyTime > 0.29) {
-					m_opponent->TakeDamage(m_attack*m_attackNum);
+					int damage = m_attack * m_attackNum;
+					if ((GetElement() - m_opponent->GetElement() + 3) % 3 == 1) {
+						damage = 6 * damage / 5;
+					}
+					else if ((GetElement() - m_opponent->GetElement() + 3) % 3 == 2) {
+						damage = 4 * damage / 5;
+					}
+					m_opponent->TakeDamage(damage);
 					m_isAttacking = false;
 					m_standbyTime = 0;
 				}
@@ -254,26 +285,47 @@ void Entity::TakeDamage(int damage)
 		m_defense -= damage;
 	}
 }
-void Entity::TakeDamageOfPoison()
+void Entity::TakeDamageOfEffect()
 {
 	int poison = 0;
 	for (auto x : m_poisonList) {
 		poison += x;
 	}
 	int curHp = m_curHp - poison;
-	if (curHp <= 0)
-	{
-		SetHp(0);
-		if(IsAlive())
-			SetIsAlive(false);
-
-	}
-	else
-		SetHp(curHp);
+	SetHp(curHp);
 	m_poisonList.pop_front();
 	m_poisonList.push_back(0);
-}
+	if (IsBurned()) {
+		int hp = GetMaxHp();
+		int def = GetDefense();
+		TakeDamage(hp/20+def);
+		SetDefense(def);
+		int mana = GetMaxMana();
+		LostMana(mana / 20);
+		m_burnedTurn--;
 
+		if (IsFreezed()) {
+			m_freezedTurn--;
+		}
+		if (IsMuted()) {
+			m_mutedTurn--;
+		}
+	}
+	if (m_curHp < 0) {
+		SetHp(0);
+		if (IsAlive())
+			SetIsAlive(false);
+	}
+}
+int			Entity::GetFreezed() {
+	return m_freezedTurn - 1;
+};
+int		Entity::GetBurned() {
+	return m_burnedTurn;
+}
+int			Entity::GetMuted() {
+	return m_mutedTurn - 1;
+};
 void Entity::Heal(int hp)
 {
 	int curHp = m_curHp + hp;

@@ -158,6 +158,10 @@ Vector2 SpriteAnimation::Get2DPosition()
 {
 	return Vector2(m_position.x, m_position.y);
 }
+void	SpriteAnimation::SetNumFrames(int num) {
+	m_numFrames = num;
+};
+
 
 
 void SpriteAnimation::SetSize(GLint width, GLint height)

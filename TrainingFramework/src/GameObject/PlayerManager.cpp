@@ -102,7 +102,7 @@ void PlayerManager::Init()
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
 	std::shared_ptr<WaterCharacter> wC = std::make_shared<WaterCharacter>(model, shader, texture, 6, 1, 0, 0.1f, "warrior2", maxHP, maxMP, attack, defense);
 	std::shared_ptr<FireCharacter> fC = std::make_shared<FireCharacter>(model, shader, texture, 6, 1, 0, 0.1f, "warrior1", maxHP, maxMP, attack, defense);
-	std::shared_ptr<WoodCharacter> woC = std::make_shared<WoodCharacter>(model, shader, texture, 6, 1, 0, 0.1f, "warrior3", maxHP, maxMP, attack, defense);
+	std::shared_ptr<EarthCharacter> woC = std::make_shared<EarthCharacter>(model, shader, texture, 6, 1, 0, 0.1f, "warrior3", maxHP, maxMP, attack, defense);
 	m_listCharacter.push_back(wC);
 	m_listCharacter.push_back(fC);
 	m_listCharacter.push_back(woC);

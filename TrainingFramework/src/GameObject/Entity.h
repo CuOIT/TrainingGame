@@ -4,11 +4,15 @@
 #include"GameButton.h"
 #include"Text.h"
 #include"GameBoard.h"
+
+#define FIRE 0
+#define WATER 1
+#define EARTH 2
 class Entity : public SpriteAnimation
 {
 protected:
 	//Inherent
-	int				m_type;
+	int				m_element;
 	int				m_maxHp;
 	int				m_maxMana;
 	int				m_attack;
@@ -28,9 +32,12 @@ protected:
 
 	//Effect
 	std::list<int>	m_poisonList;//stored poison in 3 round;
-	bool			m_isPoisoned;
-	bool			m_isFreezed;
-	bool			m_isBurned;
+	int				m_burnedTurn;//number of turns that be burned
+	int				m_freezedTurn;//number of turns that be freezed
+	int				m_mutedTurn;//number of turns that can attack
+	std::shared_ptr<SpriteAnimation> m_effect;
+	std::shared_ptr<SpriteAnimation> m_continousEffect;
+
 
 	//For drawing
 	float			m_standbyTime;
@@ -49,6 +56,7 @@ public:
 
 	void		Update(float deltaTime);
 
+	int			GetElement();
 	void		SetMaxHp(int maxHp);
 	void		SetMaxMana(int maxMana);
 	void		SetIsAttack(bool attack);
@@ -60,15 +68,18 @@ public:
 	void		SetDefense(int defense);
 	void		SetName(std::string name);
 	void		SetOpponent(std::shared_ptr<Entity> op);
-	void		SetFreezed(bool);
-
+	bool		IsFreezed();
+	void		SetFreezed(int);
+	void		SetEffect(std::shared_ptr<SpriteAnimation>){};
+	void		SetContinousEffect(std::shared_ptr<SpriteAnimation>) {};
 
 	bool		IsBurned();
-	void		SetBurned(bool isBurned);
+	void		SetBurned(int);
 
 	bool		IsPoisoned();
-	void		SetPoisoned(bool isPoisoned);
-
+	void		SetPoisoned(int);
+	bool		IsMuted();
+	void		SetMuted(int);
 
 	int			GetMaxHp();
 	int			GetMaxMana();
@@ -77,20 +88,31 @@ public:
 	std::string GetName();
 	int			GetCurrentHp();
 	int			GetCurrentMana();
+	int			GetFreezed();
+	int			GetBurned();
+	int			GetMuted();
 	std::vector < std::shared_ptr<GameButton>> GetSkillList();
 	std::vector<std::shared_ptr<Text>> GetDetailOfSkill(int num);
+	std::shared_ptr<SpriteAnimation> GetEffect() {
+		return m_effect;
+	};
+	std::shared_ptr<SpriteAnimation> GetContinousEffect() {
+		return m_continousEffect;
+	};
+
+
+
 	bool		MoveTo(float x, float deltaTime);
 	void		Attack(float deltaTime);
 
 	bool		IsAttacking();
 	bool		IsAlive();
-	bool		IsFreezed();
 
 	int			GetAttackNum();
 	int			GetPoison();
 
 	void		TakeDamage(int damage);
-	void		TakeDamageOfPoison();
+	void		TakeDamageOfEffect();
 	void		Heal(int hp);
 	void		GainMana(int mana);
 	void		LostMana(int mana);

@@ -26,6 +26,7 @@ public:
 
 	void		SetLoop(bool isLooped);
 	void		SetTexture(std::shared_ptr<Texture> texture,bool isLooped);
+	void		SetNumFrames(int);
 	void		SetLastTexture(std::shared_ptr<Texture> texture);
 	void		Set2DPosition(GLfloat x, GLfloat y);
 	void		SetRotation(Vector3 rotation);

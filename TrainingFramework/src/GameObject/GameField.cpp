@@ -24,7 +24,7 @@ inline void GameField::Init(std::shared_ptr<Entity> player, std::shared_ptr<Enti
 	m_player->SetIsAlive(true);
 	m_player->SetAttackNum(0);
 	m_player->SetBurned(false);
-	m_player->SetPoisoned(0);
+	m_player->SetPoisoned(10);
 	m_player->SetFreezed(0);
 	m_player->SetDefense(0);
 	m_player->SetHp(m_player->GetMaxHp());
@@ -63,8 +63,8 @@ inline void GameField::Init(std::shared_ptr<Entity> player, std::shared_ptr<Enti
 	auto skillList = m_player->GetSkillList();
 	skillList[0]->Set2DPosition(20, 240);
 	skillList[0]->SetOnClick([player]() {
-		if (player->GetCurrentMana() >= 5) {
-
+		if (player->GetCurrentMana() >= 0) {
+			player->LostMana(5);
 			player->UseSkill1();
 		std::cout << "USE 1" << std::endl;
 		}
@@ -73,7 +73,7 @@ inline void GameField::Init(std::shared_ptr<Entity> player, std::shared_ptr<Enti
 	//skill2
 	skillList[1]->Set2DPosition(20, 300);
 	skillList[1]->SetOnClick([player,enemy]() {
-		if (player->GetCurrentMana()>= 10) {
+		if (player->GetCurrentMana()>= 0) {
 			player->LostMana(10);
 			player->UseSkill2();
 			std::cout << "USE 2" << std::endl;
@@ -84,7 +84,7 @@ inline void GameField::Init(std::shared_ptr<Entity> player, std::shared_ptr<Enti
 	skillList[2]->Set2DPosition(20, 360);
 	std::shared_ptr gb = m_gameBoard;
 	skillList[2]->SetOnClick([player,gb,this]() {
-		if (player->GetCurrentMana() >= 15) {
+		if (player->GetCurrentMana() >= 0) {
 			player->UseSkill3(gb);
 			this->SetPhase(Phase::DESTROY_PHASE);
 			std::cout << "USE 3" << std::endl;
@@ -119,11 +119,24 @@ void GameField::Update(float deltaTime) {
 	switch (m_phase) {
 	case Phase::BEGIN_PHASE:
 	{
-		if (m_currentTurn == PLAYER_TURN)
-			m_player->TakeDamageOfPoison();
-		else
-			m_enemy->TakeDamageOfPoison();
+		if (m_currentTurn == PLAYER_TURN) {
+			m_player->TakeDamageOfEffect();
+			if (m_player->IsFreezed()) {
+				m_currentTurn == ENEMY_TURN;
+				SetPhase(Phase::BEGIN_PHASE);
+				break;
+			}
+		}
+		else {
+			m_enemy->TakeDamageOfEffect();
+			if (m_enemy->IsFreezed()) {
+				m_currentTurn = PLAYER_TURN;
+				SetPhase(Phase::BEGIN_PHASE);
+				break;
+			}
+		}
 		SetPhase(Phase::BASE_PHASE);
+		break;
 	}
 	case Phase::BASE_PHASE:
 	{
@@ -167,11 +180,11 @@ void GameField::Update(float deltaTime) {
 		m_gameBoard->DestroyPieces(destroyList);
 		m_gameBoard->RefillGameBoard();
 		if (m_pieceList[static_cast<int>(PieceType::Sword)] > 0) {
-			if (m_currentTurn == PLAYER_TURN) {
+			if (m_currentTurn == PLAYER_TURN && !m_player->IsMuted()) {
 				 m_player->SetAttackNum(m_pieceList[static_cast<int>(PieceType::Sword)]);
 				 m_player->SetIsAttack(true);
 			}
-			else {
+			else if(m_currentTurn == ENEMY_TURN && !m_enemy->IsMuted()) {
 				m_enemy->SetAttackNum(m_pieceList[static_cast<int>(PieceType::Sword)]);
 				m_enemy->SetIsAttack(true);
 			}
@@ -232,7 +245,12 @@ void GameField::Update(float deltaTime) {
 			SetPhase(Phase::END_PHASE);
 	}
 	m_player->Update(deltaTime);
+	m_player->GetEffect()->Update(deltaTime);
+	m_player->GetContinousEffect()->Update(deltaTime);
+
 	m_enemy->Update(deltaTime);
+	m_enemy->GetEffect()->Update(deltaTime);
+	m_enemy->GetContinousEffect()->Update(deltaTime);
 	m_PStatusBar->Update(deltaTime,m_player);
 
 	m_EStatusBar->Update(deltaTime, m_enemy);
@@ -241,7 +259,18 @@ void GameField::Draw() {
 	m_gameBoard->Draw();
 	m_enemy->Draw();
 	m_player->Draw();
-
+	if (m_enemy->GetContinousEffect() != nullptr) {
+		m_enemy->GetContinousEffect()->Draw();	
+	}
+	if (m_player->GetContinousEffect() != nullptr) {
+		m_player->GetContinousEffect()->Draw();
+	}
+	if (m_enemy->GetEffect() != nullptr) {
+		m_enemy->GetEffect()->Draw();
+	}
+	if (m_player->GetEffect() != nullptr) {
+		m_player->GetEffect()->Draw();
+	}
 	m_PStatusBar->Draw();
 	m_EStatusBar->Draw();
 	m_turnPoint->Draw();

@@ -8,8 +8,11 @@ public:
 	
 	FireCharacter();
 	~FireCharacter();
+	void Attack(float);
 	void UseSkill1() override;
 	void UseSkill2() override;
 	void UseSkill3(std::shared_ptr<GameBoard>) override;
+private:
+	bool m_power;
 
 };
