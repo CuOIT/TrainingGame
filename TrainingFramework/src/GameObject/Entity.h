@@ -47,7 +47,6 @@ public:
 
 	Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime,
 		std::string name, int maxHp, int maxMana, int attack, int defense);
-
 	//Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime,
 	//	std::string name, int maxHealth, int maxMana, int attack, int defense, bool isAlive)
 	//	: SpriteAnimation(model, shader, texture,numFrames,numActions,currentAction,frameTime)
@@ -72,7 +71,7 @@ public:
 	void		SetFreezed(int);
 	void		SetEffect(std::shared_ptr<SpriteAnimation>){};
 	void		SetContinousEffect(std::shared_ptr<SpriteAnimation>) {};
-
+	void		SetElement(int element);
 	bool		IsBurned();
 	void		SetBurned(int);
 

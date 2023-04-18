@@ -25,6 +25,11 @@ public:
 	static int Globals::screenHeight;
 	static int Globals::scale;
 };
+
+//class GS_Menu
+#define MN_bgWidth 1422
+#define MN_bgHeight 800
+#define MN_deltaX 822
 //class GameBoard:
 #define GB_frameWidth 360
 #define GB_frameHeight 360

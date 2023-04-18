@@ -202,7 +202,7 @@ void GSPlay::Update(float deltaTime)
 				if (m_endGameMenu == nullptr) {
 					if (m_player->IsAlive())
 						SaveData::GetInstance()->SaveLevel(m_currentLevel);
-					std::cout <<"DAY LA MAN: "<< m_currentLevel<<std::endl;
+					//std::cout <<"DAY LA MAN: "<< m_currentLevel<<std::endl;
 					m_endGameMenu = std::make_shared<EndGameMenu>(m_player->IsAlive());
 				}
 			}

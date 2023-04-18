@@ -155,13 +155,13 @@ std::shared_ptr<Entity> SaveData::LoadEnemy(int level)
 	int attack = 0;
 	int defense = 0;
 	int index = 0;
-
+	int element = 0;
 	if (fp != NULL)
 	{
 		do
 		{
-			int success = fscanf(fp, "%*d %s %d %d %d %d", name, &maxHP, &maxMP, &attack, &defense);
-			std::cout << name << "\n";
+			int success = fscanf(fp, "%*d %s %d %d %d %d ", name, &maxHP, &maxMP, &attack, &defense);
+			std::cout << name << " " << maxHP << " " << maxMP << " " << attack << " " << defense << "\n";
 			index++;
 		} while (index < level);
 		fclose(fp);
@@ -172,6 +172,7 @@ std::shared_ptr<Entity> SaveData::LoadEnemy(int level)
 	enemy->SetMaxMana(maxMP);
 	enemy->SetAttack(attack);
 	enemy->SetDefense(defense);
+	//enemy->SetElement(element);
 	return enemy;
 }
 

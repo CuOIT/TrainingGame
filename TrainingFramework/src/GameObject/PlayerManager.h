@@ -14,8 +14,11 @@ private:
 	std::shared_ptr<Entity>							m_player;
 	std::list<std::shared_ptr<Text>>				m_listText;
 	std::list<std::shared_ptr<GameButton>>			m_listButton;
-	std::vector<std::shared_ptr<Entity>>				m_listCharacter;
+	std::vector<std::shared_ptr<Entity>>			m_listCharacter;
+	std::vector<std::shared_ptr<GameButton>>		m_skillList;
 	int												m_currentCharacter;
+	std::shared_ptr<Sprite2D>			m_info;
+	std::vector<std::shared_ptr<Text>>	m_infoText;
 public:
 	PlayerManager();
 	~PlayerManager();
@@ -23,6 +26,7 @@ public:
 	void Draw();
 	void Update(float deltaTime);
 	void HandleTouchEvents(float x, float y, bool bIsPressed);
+	void HandleMouseMovesEvent(float x, float y);
 	std::shared_ptr<Entity>				GetPlayer();
 
 };

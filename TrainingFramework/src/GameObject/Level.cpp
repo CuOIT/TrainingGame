@@ -35,7 +35,7 @@ void Level::Init()
 	sprite->SetSize(220.0f, 70.0f);
 	m_listSprite2D.push_back(sprite);
 
-	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Woodlook-nvyP.ttf");
+	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("EvilEmpire-4BBVK.ttf");
 
 	// btn
 	for (int i = 0; i < 4; i++)
@@ -69,7 +69,7 @@ void Level::Init()
 	// text
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 	std::shared_ptr<Text> text = std::make_shared<Text>(shader, font, "LEVEL", Vector4(50.0f, 30.0f, 0.0f, 1.0f), 1.2f);
-	text->Set2DPosition(Vector2((float)Globals::screenWidth / 2.0f + 100.0f, (float)Globals::screenHeight / 2.0f - 172.0f));
+	text->Set2DPosition(Vector2((float)Globals::screenWidth / 2.0f + 120.0f, (float)Globals::screenHeight / 2.0f - 172.0f));
 	m_listText.push_back(text);
 }
 

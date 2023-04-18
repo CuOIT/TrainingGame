@@ -14,7 +14,7 @@ void GSGuide::Init()
 	// bg
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
-	auto texture = ResourceManagers::GetInstance()->GetTexture("background.tga");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("guide.tga");
 	m_background = std::make_shared<Sprite2D>(model, shader, texture);
 	m_background->Set2DPosition(Globals::screenWidth / 2.0f, Globals::screenHeight / 2.0f);
 	m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
@@ -30,13 +30,7 @@ void GSGuide::Init()
 		});
 	m_listButton.push_back(button);
 
-	// txt
-	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
-	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Woodlook-nvyP.ttf");
-	std::shared_ptr<Text> text = std::make_shared<Text>(shader, font, "Guide page",
-		Vector4(1.0f, 0.5f, 0.0f, 1.0f), 2.0f);
-	text->Set2DPosition(Vector2(50.0f, 50.0f));
-	m_listText.push_back(text);
+
 }
 
 void GSGuide::Exit()

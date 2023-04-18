@@ -43,22 +43,36 @@ void GSLevel::Init()
 	// player
 	m_playerManager = PlayerManager::GetInstance();
 
+	/*std::string name = "GF_Epic_theme.wav";
+	ResourceManagers::GetInstance()->PlaySound(name, true);*/
+
 }
 
 void GSLevel::Exit()
 {
+	/*std::string name = "GF_Epic_theme.wav";
+	ResourceManagers::GetInstance()->StopSound(name);*/
 }
 
 void GSLevel::Pause()
 {
+	/*std::string name = "GF_Epic_theme.wav";
+	ResourceManagers::GetInstance()->StopSound(name);*/
 }
 
 void GSLevel::Resume()
 {
+	/*std::string name = "GF_Epic_theme.wav";
+	ResourceManagers::GetInstance()->PlaySound(name, true);*/
 	m_level->Init();
 	m_playerManager->GetPlayer()->SetTexture(ResourceManagers::GetInstance()->GetTexture(m_playerManager->GetPlayer()->	GetName() + "_idle.tga"), true);
 	m_playerManager->GetPlayer()->Set2DPosition(Globals::screenWidth / 2.0f - 150.0f, Globals::screenHeight / 2.0f - 50.0f);
 	m_playerManager->GetPlayer()->SetSize(200, 200);
+	auto m_skillList = m_playerManager->GetPlayer()->GetSkillList();
+	for (int i = 0; i < 3; i++) {
+		m_skillList[i]->Set2DPosition(Globals::screenWidth / 6 + 50 * i, 2 * Globals::screenHeight / 3);
+		m_skillList[i]->SetSize(40, 40);
+	}
 }
 
 void GSLevel::HandleEvents()
@@ -86,7 +100,7 @@ void GSLevel::HandleTouchEvents(float x, float y, bool bIsPressed)
 
 void GSLevel::HandleMouseMoveEvents(float x, float y)
 {
-		
+	m_playerManager->HandleMouseMovesEvent(x, y);
 }
 
 void GSLevel::Update(float deltaTime)

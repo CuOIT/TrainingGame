@@ -14,7 +14,9 @@ EarthCharacter::EarthCharacter(std::shared_ptr<Model> model, std::shared_ptr<Sha
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 	auto font = ResourceManagers::GetInstance()->GetFont("Alkatra-VariableFont_wght.ttf");
 	std::vector<std::shared_ptr<Text>> detailOfSkill1;
-	auto text = std::make_shared<Text>(shader, font, "Mana Cost: 50", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
+	auto text = std::make_shared<Text>(shader, font, "POWER SHIELD", Vector4(0.95f, 0.f, 0.f, 1.0f), 0.7f);
+	detailOfSkill1.push_back(text);
+	text = std::make_shared<Text>(shader, font, "Mana Cost: 50", Vector4(0.f, 0.98f, 0.98f, 1.0f), 0.5f);
 	detailOfSkill1.push_back(text);
 	text= std::make_shared<Text>(shader, font, "Increase armor by an amount equivalent to ", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f); 
 	detailOfSkill1.push_back(text);
@@ -25,7 +27,9 @@ EarthCharacter::EarthCharacter(std::shared_ptr<Model> model, std::shared_ptr<Sha
 	//skill2
 	m_skills[1]->SetTexture(ResourceManagers::GetInstance()->GetTexture("earth_skill2.tga"));
 	std::vector<std::shared_ptr<Text>> detailOfSkill2;
-	text = std::make_shared<Text>(shader, font, "Mana Cost: 100", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
+	text = std::make_shared<Text>(shader, font, "SPIRITS LAND", Vector4(0.95f, 0.f, 0.f, 1.0f), 0.7f);
+	detailOfSkill2.push_back(text);
+	text = std::make_shared<Text>(shader, font, "Mana Cost: 100", Vector4(0.f, 0.98f, 0.98f, 1.0f), 0.5f);
 	detailOfSkill2.push_back(text);
 	text = std::make_shared<Text>(shader, font, "Summon the spirits attack the opponent", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
 	detailOfSkill2.push_back(text);
@@ -38,6 +42,8 @@ EarthCharacter::EarthCharacter(std::shared_ptr<Model> model, std::shared_ptr<Sha
 	//skill3
 	m_skills[2]->SetTexture(ResourceManagers::GetInstance()->GetTexture("earth_skill3.tga"));
 	std::vector<std::shared_ptr<Text>> detailOfSkill3;
+	text = std::make_shared<Text>(shader, font, "Mana Cost: 150", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
+	detailOfSkill3.push_back(text);
 	text = std::make_shared<Text>(shader, font, "Mana Cost: 150", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
 	detailOfSkill3.push_back(text);
 	text = std::make_shared<Text>(shader, font, "Destroy all shields in the board.", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);

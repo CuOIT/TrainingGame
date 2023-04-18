@@ -59,7 +59,7 @@ void FireCharacter::UseSkill1() {
 	GetEffect()->Set2DPosition(Get2DPosition().x,Get2DPosition().y + 20);
 	GetEffect()->SetTexture(ResourceManagers::GetInstance()->GetTexture("fire_effect11.tga"), false);
 	GetEffect()->SetLastTexture(nullptr);
-	GetEffect()->SetSize(GF_playerWidth, GF_playerHeight);
+	GetEffect()->SetSize(GF_playerWidth/2, GF_playerHeight/2);
 }
 void FireCharacter::UseSkill2() {
 	m_opponent->SetBurned(3);

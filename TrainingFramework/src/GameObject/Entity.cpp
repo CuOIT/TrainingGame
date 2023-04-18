@@ -7,6 +7,7 @@ Entity::Entity(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std
 	: SpriteAnimation(model, shader, texture, numFrames, numActions, currentAction, frameTime)
 	, m_name(name), m_maxHp(maxHp), m_maxMana(maxMana), m_curHp(maxHp), m_curMana(0)
 	, m_attack(attack), m_defense(defense), m_isAlive(true) {
+	m_element = rand() % 3;
 	m_attackNum = 0;
 	m_standbyTime = 0;
 	auto model2 = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
@@ -45,7 +46,9 @@ Entity::~Entity()
 int		Entity::GetElement() {
 	return m_element;
 };
-
+void		Entity::SetElement(int element) {
+	 m_element=element;
+};
 
 bool		Entity::IsAttacking() {
 	return m_isAttacking;
@@ -126,8 +129,11 @@ void Entity::Attack(float deltaTime) {
 		if (m_isAttacking) {
 			MoveTo(m_opponent->Get2DPosition().x, deltaTime);
 			if (abs(Get2DPosition().x - m_opponent->Get2DPosition().x) <50) {
-				if(m_standbyTime==0) 
+				if (m_standbyTime == 0) {
+
 					SetTexture(ResourceManagers::GetInstance()->GetTexture(m_name + "_attack.tga"), false);
+					SetLastTexture(ResourceManagers::GetInstance()->GetTexture(m_name + "_idle.tga"));
+				}
 				m_standbyTime += deltaTime;
 				if (m_standbyTime > 0.29) {
 					int damage = m_attack * m_attackNum;
@@ -303,14 +309,15 @@ void Entity::TakeDamageOfEffect()
 		int mana = GetMaxMana();
 		LostMana(mana / 20);
 		m_burnedTurn--;
+	}
 
+			std::cout <<"freeze:" << m_freezedTurn << std::endl;
 		if (IsFreezed()) {
 			m_freezedTurn--;
 		}
 		if (IsMuted()) {
 			m_mutedTurn--;
 		}
-	}
 	if (m_curHp < 0) {
 		SetHp(0);
 		if (IsAlive())

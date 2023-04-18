@@ -58,11 +58,11 @@ void WaterCharacter::UseSkill1() {
 	GetEffect()->SetTexture(ResourceManagers::GetInstance()->GetTexture("water_effect1.tga"), false);
 	GetEffect()->SetLastTexture(nullptr);
 	GetEffect()->SetSize(GF_playerWidth/2, GF_playerHeight/2);
-	std::cout << "Water1" << std::endl;
+	//std::cout << "Water1" << std::endl;
 
 }
 void WaterCharacter::UseSkill2() {
-	m_opponent->SetFreezed(3);
+	m_opponent->SetFreezed(2);
 	m_opponent->GetContinousEffect()->Set2DPosition(m_opponent->Get2DPosition().x, m_opponent->Get2DPosition().y);
 	m_opponent->GetContinousEffect()->SetTexture(ResourceManagers::GetInstance()->GetTexture("water_effect22.tga"),false);
 	m_opponent->GetContinousEffect()->SetLastTexture(ResourceManagers::GetInstance()->GetTexture("water_effect222.tga"));

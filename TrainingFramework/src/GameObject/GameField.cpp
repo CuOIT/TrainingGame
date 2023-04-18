@@ -24,7 +24,7 @@ inline void GameField::Init(std::shared_ptr<Entity> player, std::shared_ptr<Enti
 	m_player->SetIsAlive(true);
 	m_player->SetAttackNum(0);
 	m_player->SetBurned(false);
-	m_player->SetPoisoned(10);
+	m_player->SetPoisoned(0);
 	m_player->SetFreezed(0);
 	m_player->SetDefense(0);
 	m_player->SetHp(m_player->GetMaxHp());
@@ -36,6 +36,8 @@ inline void GameField::Init(std::shared_ptr<Entity> player, std::shared_ptr<Enti
 	m_enemy = std::make_shared<Entity>(model, shader, texture, 6, 1, 0, 0.1f,enemy->GetName(), enemy->GetMaxHp(), enemy->GetMaxMana(), enemy->GetAttack(), enemy->GetDefense());
 	m_player->SetOpponent(m_enemy);
 	m_enemy->SetOpponent(m_player);
+	//m_enemy->SetElement(enemy->GetElement());
+	//std::cout << "Ele: " << m_enemy->GetElement();
 	m_player->Set2DPosition(GF_posXOfPlayer, GF_posYOfPlayer);
 	m_player->SetSize(GF_playerWidth, GF_playerHeight);
 
@@ -63,20 +65,20 @@ inline void GameField::Init(std::shared_ptr<Entity> player, std::shared_ptr<Enti
 	auto skillList = m_player->GetSkillList();
 	skillList[0]->Set2DPosition(20, 240);
 	skillList[0]->SetOnClick([player]() {
-		if (player->GetCurrentMana() >= 0) {
-			player->LostMana(5);
+		if (player->GetCurrentMana() >= 50) {
+			player->LostMana(50);
 			player->UseSkill1();
-		std::cout << "USE 1" << std::endl;
+		//std::cout << "USE 1" << std::endl;
 		}
 		});
 	m_skillButtonList.push_back(skillList[0]);
 	//skill2
 	skillList[1]->Set2DPosition(20, 300);
 	skillList[1]->SetOnClick([player,enemy]() {
-		if (player->GetCurrentMana()>= 0) {
-			player->LostMana(10);
+		if (player->GetCurrentMana()>= 100) {
+			player->LostMana(100);
 			player->UseSkill2();
-			std::cout << "USE 2" << std::endl;
+			//std::cout << "USE 2" << std::endl;
 		}
 		});
 	m_skillButtonList.push_back(skillList[1]);
@@ -84,17 +86,18 @@ inline void GameField::Init(std::shared_ptr<Entity> player, std::shared_ptr<Enti
 	skillList[2]->Set2DPosition(20, 360);
 	std::shared_ptr gb = m_gameBoard;
 	skillList[2]->SetOnClick([player,gb,this]() {
-		if (player->GetCurrentMana() >= 0) {
+		if (player->GetCurrentMana() >= 150) {
+			player->LostMana(150);
 			player->UseSkill3(gb);
 			this->SetPhase(Phase::DESTROY_PHASE);
-			std::cout << "USE 3" << std::endl;
+			//std::cout << "USE 3" << std::endl;
 		}
 		});
 	m_skillButtonList.push_back(skillList[2]);
 
 	//m_infoText = std::make_shared<Text>(shader, font, "", Vector4(0.95f, 0.98f, 0.98f, 1.0f), 0.5f);
-	m_PStatusBar = std::make_shared<StatusBar>(player->GetMaxHp(), player->GetMaxMana(), true);
-	m_EStatusBar = std::make_shared<StatusBar>(enemy->GetMaxHp(), enemy->GetMaxMana(), false);
+	m_PStatusBar = std::make_shared<StatusBar>(m_player, true);
+	m_EStatusBar = std::make_shared<StatusBar>(m_enemy, false);
 	while (!m_turn.empty()) m_turn.pop();
 	m_turn.push(PLAYER_TURN);	
 };
@@ -251,18 +254,25 @@ void GameField::Update(float deltaTime) {
 	m_enemy->Update(deltaTime);
 	m_enemy->GetEffect()->Update(deltaTime);
 	m_enemy->GetContinousEffect()->Update(deltaTime);
-	m_PStatusBar->Update(deltaTime,m_player);
+	m_PStatusBar->Update(deltaTime);
 
-	m_EStatusBar->Update(deltaTime, m_enemy);
+	m_EStatusBar->Update(deltaTime);
 }
 void GameField::Draw() {
 	m_gameBoard->Draw();
+	if (m_currentTurn == PLAYER_TURN)
+	{
 	m_enemy->Draw();
 	m_player->Draw();
-	if (m_enemy->GetContinousEffect() != nullptr) {
+	}
+	else {
+		m_player->Draw();
+		m_enemy->Draw();	
+	}
+	if (m_enemy->IsFreezed()) {
 		m_enemy->GetContinousEffect()->Draw();	
 	}
-	if (m_player->GetContinousEffect() != nullptr) {
+	if (m_player->IsFreezed()) {
 		m_player->GetContinousEffect()->Draw();
 	}
 	if (m_enemy->GetEffect() != nullptr) {

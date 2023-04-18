@@ -7,7 +7,7 @@
 class StatusBar {
 	//#define w
 public:
-	StatusBar(int maxHp, int maxMana, bool isPlayer);
+	StatusBar(std::shared_ptr<Entity>, bool isPlayer);
 	~StatusBar();
 
 	void SetHp(int hp);
@@ -15,7 +15,7 @@ public:
 	void SetShiled(int shield);
 	void SetPoison(int poison);
 
-	void Update(float deltaTime, std::shared_ptr<Entity> entity);
+	void Update(float deltaTime);
 	void Draw();
 private:
 	std::shared_ptr<Sprite2D> m_avatar;
@@ -35,6 +35,10 @@ private:
 
 	std::shared_ptr<Sprite2D> m_mutedStt;
 	std::shared_ptr<Text> m_mutedText;
+	std::shared_ptr<Entity> m_entity;
+
+	std::shared_ptr<Sprite2D> m_element;
+
 	bool m_isPlayer;
 	int m_maxHp;
 	int m_maxMana;

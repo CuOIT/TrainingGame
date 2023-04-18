@@ -17,13 +17,15 @@ GSMenu::~GSMenu()
 void GSMenu::Init()
 {
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
-	auto texture = ResourceManagers::GetInstance()->GetTexture("bg_main_menu.tga");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("bg_menu2.tga");
 
 	// background
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 	m_background = std::make_shared<Sprite2D>(model, shader, texture);
-	m_background->Set2DPosition(Globals::screenWidth / 2.0f, Globals::screenHeight / 2.0f);
-	m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
+	int w = Globals::screenHeight * 16 / 9;
+	int h = Globals::screenHeight;
+	m_background->Set2DPosition(w/2, h/2);
+	m_background->SetSize(w, h);
 
 	// bg button
 	// continue
@@ -76,28 +78,28 @@ void GSMenu::Init()
 
 	// text for btn
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
-	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Woodlook-nvyP.ttf");
-	std::shared_ptr<Text> text = std::make_shared<Text>(shader, font, "CONTINUE", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 1.2f);
-	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 80.0f, Globals::screenHeight / 2.0f - 145.0f));
+	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("EvilEmpire-4BBVK.ttf");
+	std::shared_ptr<Text> text = std::make_shared<Text>(shader, font, "CONTINUE", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 1.8f);
+	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 70.0f, Globals::screenHeight / 2.0f - 145.0f));
 	m_listText.push_back(text);
 
-	text = std::make_shared<Text>(shader, font, "NEW GAME", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 1.2f);
+	text = std::make_shared<Text>(shader, font, "NEW GAME", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 1.8f);
 	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 80.0f, Globals::screenHeight / 2.0f + 5.0f));
 	m_listText.push_back(text);
 	
 	text = std::make_shared<Text>(shader, font, "GUIDE", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 1.8f);
-	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 70.0f, Globals::screenHeight / 2.0f + 160.0f));
+	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f -40.0f, Globals::screenHeight / 2.0f + 160.0f));
 	m_listText.push_back(text);
 
 	text = std::make_shared<Text>(shader, font, "EXIT", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 1.8f);
-	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 50.0f, Globals::screenHeight / 2.0f + 310.0f));
+	text->Set2DPosition(Vector2(Globals::screenWidth / 2.0f - 30.0f, Globals::screenHeight / 2.0f + 310.0f));
 	m_listText.push_back(text);
 
 	// game title
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 	//font = ResourceManagers::GetInstance()->GetFont("Woodlook-nvyP.ttf");
 	text = std::make_shared<Text>(shader, font, "Warrior Battle", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 3.0f, TextAlign::CENTER);
-	text->Set2DPosition(50, 100);
+	text->Set2DPosition(100, 100);
 	//text->Set2DPosition(Vector2(200, 200));
 	m_listText.push_back(text);
 
@@ -118,7 +120,8 @@ void GSMenu::Pause()
 
 void GSMenu::Resume()
 {
-
+	std::string name = "gravity_fall_theme_sound.wav";
+	ResourceManagers::GetInstance()->PlaySound(name, true);
 }
 
 
@@ -147,7 +150,12 @@ void GSMenu::HandleMouseMoveEvents(float x, float y)
 
 void GSMenu::Update(float deltaTime)
 {
-	m_background->Update(deltaTime);
+	int x = m_background->Get2DPosition().x;
+	int y = m_background->Get2DPosition().y;
+	//x = (x - Globals::screenWidth+ w / 2 + (int)(10*deltaTime)) % (w-Globals::screenWidth) + Globals::screenWidth - w / 2;
+
+	x = ((100 * x - 100 * Globals::screenWidth + 50 * MN_bgWidth + int(7000 * deltaTime)) % (100 * MN_deltaX)) / 100 + Globals::screenWidth - MN_bgWidth / 2;
+	m_background->Set2DPosition(x, y);
 	for (auto it : m_listButton)
 	{
 		it->Update(deltaTime);

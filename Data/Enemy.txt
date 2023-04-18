@@ -1,5 +1,5 @@
 1 orc 100 100 5 0
-2 warrior3 150 100 5 0
+2 orc2 150 100 5 0
 3 warrior2 200 100 5 0
 4 warrior3 250 100 5 0
 5 warrior2 300 100 5 0
