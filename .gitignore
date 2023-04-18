@@ -62,7 +62,7 @@ freetype/objs
 Debug-Nvidia
 Debug-AMD
 BIN-AMD
-BIN-Nvidia/TrainingFramework.pdb
+BIN-Nvidia/*.pdb
 .vs
 
 # --------------------------------------------------------
